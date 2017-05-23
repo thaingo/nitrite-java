@@ -513,44 +513,42 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 </div>
 <div id="content">
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// create a Nitrite instance using builder</span>
-Nitrite db = Nitrite.builder()
-        .compressed()
-        .filePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/tmp/test.db</span><span class="delimiter">&quot;</span></span>)
-        .openOrCreate(<span class="string"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>);
-
-<span class="comment">// create a collection</span>
-NitriteCollection collection = db.getCollection(<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>);
-
-<span class="comment">// create a document to populate data</span>
-<span class="predefined-type">Document</span> doc = createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">John</span><span class="delimiter">&quot;</span></span>)
-     .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Doe</span><span class="delimiter">&quot;</span></span>)
-     .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">birthDay</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> <span class="predefined-type">Date</span>())
-     .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> <span class="type">byte</span><span class="type">[]</span> {<span class="integer">1</span>, <span class="integer">2</span>, <span class="integer">3</span>})
-     .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">fruits</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">String</span>&gt;() {{ add(<span class="string"><span class="delimiter">&quot;</span><span class="content">apple</span><span class="delimiter">&quot;</span></span>); add(<span class="string"><span class="delimiter">&quot;</span><span class="content">orange</span><span class="delimiter">&quot;</span></span>); add(<span class="string"><span class="delimiter">&quot;</span><span class="content">banana</span><span class="delimiter">&quot;</span></span>); }})
-     .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">note</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">a quick brown fox jump over the lazy dog</span><span class="delimiter">&quot;</span></span>);
-
-<span class="comment">// insert the document</span>
-collection.insert(doc);
-
-<span class="comment">// create indices on firstName, note</span>
-collection.createIndex(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, option(IndexType.NonUnique));
-collection.createIndex(<span class="string"><span class="delimiter">&quot;</span><span class="content">note</span><span class="delimiter">&quot;</span></span>, option(IndexType.Fulltext));
-
-<span class="comment">// find by filter</span>
-<span class="predefined-type">Cursor</span> cursor = collection.find(eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">John</span><span class="delimiter">&quot;</span></span>));
-<span class="predefined-type">Iterable</span>&lt;<span class="predefined-type">Document</span>&gt; documents = cursor.project();
-
-<span class="comment">// close the database</span>
-db.close();</code></pre>
+<div class="paragraph">
+<p>Nitrite provides a set of annotations for entity objects while using it in ObjectRepository. The
+annotations are to let Nitrite knows about various information about the ObjectRepository while
+constructing it. It also helps to reduce some boilerplate code.</p>
 </div>
+<div class="listingblock">
+<div class="title">Example</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Employee class</span>
+<span class="annotation">@Indices</span>({
+        <span class="annotation">@Index</span>(field = <span class="string"><span class="delimiter">&quot;</span><span class="content">joinDate</span><span class="delimiter">&quot;</span></span>, type = IndexType.NonUnique),
+        <span class="annotation">@Index</span>(field = <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, type = IndexType.Unique)
+})
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Employee</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
+    <span class="annotation">@Id</span>
+    <span class="directive">private</span> <span class="type">long</span> empId;
+
+    <span class="directive">private</span> <span class="predefined-type">Date</span> joinDate;
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> address;
+
+    <span class="comment">// ... public getters and setters</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Index</code> annotation is to let Nitrite knows about the field which will be indexed. <code>Id</code> annotation
+is to mark a field as id field. This id field is used to uniquely identify an object inside an
+ObjectRepository. More on these annotations will be discussed later.</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-01-12 07:43:56 +05:30
+Last updated 2017-05-23 09:38:07 +05:30
 </div>
 </div>
 </body>

@@ -519,7 +519,7 @@ table.CodeRay td.code>pre{padding:0}
 <span id="author" class="author">Anindya Chatterjee</span><br>
 <span id="email" class="email"><a href="mailto:anindya@dizitart.com">anindya@dizitart.com</a></span><br>
 <span id="revnumber">version 1.0,</span>
-<span id="revdate">2017-04-21 19:16:28 +05:30</span>
+<span id="revdate">2017-05-23 09:09:09 +05:30</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -552,7 +552,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#nitritecollection">7.1. NitriteCollection</a></li>
 <li><a href="#objectrepository">7.2. ObjectRepository</a>
 <ul class="sectlevel3">
-<li><a href="#nitritemapper">7.2.1. NitriteMapper</a></li>
+<li><a href="#annotations">7.2.1. Annotations</a></li>
+<li><a href="#nitritemapper">7.2.2. NitriteMapper</a></li>
 </ul>
 </li>
 <li><a href="#operations">7.3. Operations</a></li>
@@ -1468,7 +1469,42 @@ ObjectRepository is thread-safe for concurrent use.
 </table>
 </div>
 <div class="sect3">
-<h4 id="nitritemapper">7.2.1. NitriteMapper</h4>
+<h4 id="annotations">7.2.1. Annotations</h4>
+<div class="paragraph">
+<p>Nitrite provides a set of annotations for entity objects while using it in ObjectRepository. The
+annotations are to let Nitrite knows about various information about the ObjectRepository while
+constructing it. It also helps to reduce some boilerplate code.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Employee class</span>
+<span class="annotation">@Indices</span>({
+        <span class="annotation">@Index</span>(field = <span class="string"><span class="delimiter">&quot;</span><span class="content">joinDate</span><span class="delimiter">&quot;</span></span>, type = IndexType.NonUnique),
+        <span class="annotation">@Index</span>(field = <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, type = IndexType.Unique)
+})
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Employee</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
+    <span class="annotation">@Id</span>
+    <span class="directive">private</span> <span class="type">long</span> empId;
+
+    <span class="directive">private</span> <span class="predefined-type">Date</span> joinDate;
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> address;
+
+    <span class="comment">// ... public getters and setters</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Index</code> annotation is to let Nitrite knows about the field which will be indexed. <code>Id</code> annotation
+is to mark a field as id field. This id field is used to uniquely identify an object inside an
+ObjectRepository. More on these annotations will be discussed later.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="nitritemapper">7.2.2. NitriteMapper</h4>
 <div class="paragraph">
 <p>Nitrite converts java objects to Document before storing it in an ObjectRepository and similarly converts the Document
 back to POJO while retrieving. The conversion is seamless for the end users. This conversion is managed by a NitriteMapper
@@ -3824,7 +3860,7 @@ ENTRYPOINT [ &quot;./datagate.sh&quot; ]</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2017-04-21 19:16:28 +05:30
+Last updated 2017-05-23 09:09:09 +05:30
 </div>
 </div>
 </body>
