@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Untitled</title>
+<title>Initialization</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -509,231 +509,288 @@ table.CodeRay td.code>pre{padding:0}
 .CodeRay .head .head{color:#f4f}
 </style>
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel2">
+<li><a href="#initialization">Initialization</a></li>
+<li><a href="#filters">Filters</a></li>
+<li><a href="#others">Others</a></li>
+<li><a href="#kotlin-data-class">Kotlin Data Class</a></li>
+<li><a href="#tips">Tips</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Update operations modify documents/objects in a collection.</p>
-</div>
-<div class="listingblock">
-<div class="title">Update operations for NitriteCollection</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Document</span> update)
-WriteResult update(<span class="predefined-type">Document</span> update, <span class="type">boolean</span> upsert)
-WriteResult update(<span class="predefined-type">Filter</span> filter, <span class="predefined-type">Document</span> update)
-WriteResult update(<span class="predefined-type">Filter</span> filter, <span class="predefined-type">Document</span> update, UpdateOptions updateOptions)</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Update operations for ObjectRepository</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(T element)
-WriteResult update(T element, <span class="type">boolean</span> upsert)
-WriteResult update(ObjectFilter filter, T update)
-WriteResult update(ObjectFilter filter, T update, <span class="type">boolean</span> upsert)
-WriteResult update(ObjectFilter filter, <span class="predefined-type">Document</span> update)
-WriteResult update(ObjectFilter filter, <span class="predefined-type">Document</span> update, <span class="type">boolean</span> justOnce)</code></pre>
-</div>
+<p>Potassium Nitrite (KNO<sub>2</sub>) is a kotlin extension of nitrite database.
+It aims to streamline the usage of nitrite with kotlin by leveraging its language
+features like extension function, builders, infix functions etc.</p>
 </div>
 <div class="paragraph">
-<p>If the <code>filter</code> is <code>null</code>, it will update all elements in the collection.</p>
+<p>To use potassium-nitrite in any kotlin application, just add the below dependency:</p>
 </div>
 <div class="paragraph">
-<p><strong>Update one element</strong></p>
+<p><strong>Maven</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Document</span> document)
-WriteResult update(T object)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.dizitart<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>potassium-nitrite<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>{version}<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>It updates a single element in the collection. The <code>object</code> must have
-a field marked with <code>@Id</code> annotation.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Employee emp = <span class="keyword">new</span> Employee();
-emp.setEmpId(<span class="integer">12564</span>);
-emp.setAddress(<span class="string"><span class="delimiter">&quot;</span><span class="content">12 Some Street</span><span class="delimiter">&quot;</span></span>);
-employeeRepository.insert(emp);
-
-<span class="comment">// update object</span>
-emp.setAddress(<span class="string"><span class="delimiter">&quot;</span><span class="content">25 New Street</span><span class="delimiter">&quot;</span></span>);
-employeeRepository.update(emp);
-
-
-
-<span class="predefined-type">Document</span> doc = createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">John Doe</span><span class="delimiter">&quot;</span></span>)
-                    .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">age</span><span class="delimiter">&quot;</span></span>, <span class="integer">30</span>);
-NitriteId nitriteId = doc.getId();
-collection.insert(doc);
-
-<span class="comment">// update the document</span>
-<span class="predefined-type">Document</span> document = collection.getById(nitriteId);
-document.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">age</span><span class="delimiter">&quot;</span></span>, <span class="integer">31</span>);
-
-collection.update(document);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Update with Upsert</strong></p>
+<p><strong>Gradle</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Document</span> update, <span class="type">boolean</span> upsert)
-WriteResult update(T object, <span class="type">boolean</span> upsert)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">'</span><span class="content">org.dizitart:potassium-nitrite:{version}</span><span class="delimiter">'</span></span></code></pre>
 </div>
 </div>
+<div class="sect2">
+<h3 id="initialization">Initialization</h3>
 <div class="paragraph">
-<p>Specified element must have an id. If the element is not found in the
-collection, it will be inserted only if upsert option is set to <code>true</code>.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">emp.setAddress(<span class="string"><span class="delimiter">&quot;</span><span class="content">25 New Street</span><span class="delimiter">&quot;</span></span>);
-<span class="comment">// if emp object is not there in repository, it will be inserted</span>
-employeeRepository.update(emp, <span class="predefined-constant">true</span>);
-
-
-<span class="predefined-type">Document</span> document = createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">John</span><span class="delimiter">&quot;</span></span>)
-                    .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Doe</span><span class="delimiter">&quot;</span></span>);
-<span class="comment">// generates NitriteId of the document</span>
-document.getId();
-<span class="comment">// if filter does not find any document, it will insert 'document'</span>
-WriteResult updateResult = collection.update(document, <span class="predefined-constant">true</span>);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Update Multiple Objects</strong></p>
+<p>Database can be initialized using builder method <code>nitrite</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Filter</span> filter, <span class="predefined-type">Document</span> update)
-WriteResult update(ObjectFilter filter, T update)
-WriteResult update(ObjectFilter filter, <span class="predefined-type">Document</span> update)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="kotlin">// without credentials
+val db = nitrite {
+    file = File(fileName)       // or, path = fileName
+    autoCommitBufferSize = 2048
+    compress = true
+    autoCompact = false
+}
+
+// with credentials
+val db = nitrite(&quot;userId&quot;, &quot;password&quot;) {
+    file = File(fileName)       // or, path = fileName
+    autoCommitBufferSize = 2048
+    compress = true
+    autoCompact = false
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Updates multiple elements in the collection. If the <code>filter</code> is
-<code>null</code>, it will update all objects in the collection.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Employee emp = <span class="keyword">new</span> Employee();
-emp.setEmpId(<span class="integer">12564</span>);
-emp.setAddress(<span class="string"><span class="delimiter">&quot;</span><span class="content">12 Some Street</span><span class="delimiter">&quot;</span></span>);
-emp.setCity(<span class="string"><span class="delimiter">&quot;</span><span class="content">Kolkata</span><span class="delimiter">&quot;</span></span>);
-employeeRepository.insert(emp);
-
-<span class="comment">// update all employees' join date whose city = Kolkata</span>
-Employee empUpdate = <span class="keyword">new</span> Employee();
-<span class="comment">// id field should not be set here</span>
-empUpdate.setJoinDate(<span class="keyword">new</span> <span class="predefined-type">Date</span>());
-
-<span class="comment">// if emp object is not there in repository, it will not insert</span>
-employeeRepository.update(eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">city</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Kolkata</span><span class="delimiter">&quot;</span></span>), empUpdate);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Update Multiple Objects with Options</strong></p>
+<p><code>NitriteCollection</code> and <code>ObjectRepository</code> can be initialized as follow:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Filter</span> filter, <span class="predefined-type">Document</span> update, UpdateOptions updateOptions)
-WriteResult update(ObjectFilter filter, T update, <span class="type">boolean</span> upsert)
-WriteResult update(ObjectFilter filter, <span class="predefined-type">Document</span> update, <span class="type">boolean</span> justOnce)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="kotlin">// add import statement
+import org.dizitart.kno2.*
+
+// Initialize a Nitrite Collection
+val collection = db.getCollection(&quot;test&quot;) {
+    insert(documentOf(&quot;a&quot; to 1),
+            documentOf(&quot;a&quot; to 2),
+            documentOf(&quot;a&quot; to 3),
+            documentOf(&quot;a&quot; to 4),
+            documentOf(&quot;a&quot; to 5))
+
+    val cursor = find(limit(0, 2))
+}
+
+// Initialize an Object Repository
+val repository = db.getRepository&lt;Employee&gt; {
+    insert(Employee(1, &quot;red&quot;), Employee(2, &quot;yellow&quot;))
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Updates multiple elements in the repository. Update operation can be customized
-with the help of <code>updateOptions</code>. If the <code>filter</code> is <code>null</code>, it will update
-all objects in the collection unless <code>justOnce</code> is set to <code>true</code> in <code>updateOptions</code>.</p>
-</div>
-<div class="paragraph">
-<p><strong>UpdateOptions</strong></p>
-</div>
-<div class="paragraph">
-<p>Update operation can be customized with the help of <code>updateOptions</code>. It provides two options:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Upsert - indicates whether the update operation will insert a new document if it
-does not find any existing document to update using the <code>filter</code> (default is <code>false</code>).</p>
-</li>
-<li>
-<p>JustOnce - indicates whether only one document will be updated or all of them if the
-<code>filter</code> finds multiple documents (default is <code>false</code>).</p>
-</li>
-</ul>
+<p>The library has some builder methods to create documents:</p>
 </div>
 <div class="listingblock">
-<div class="title">Example</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// simple update example</span>
-<span class="comment">// update the documents whose firstName = fn1 with lastName = newLastName1</span>
-WriteResult updateResult = collection.update(eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">fn1</span><span class="delimiter">&quot;</span></span>),
-                createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">newLastName1</span><span class="delimiter">&quot;</span></span>));
+<pre class="CodeRay highlight"><code data-lang="kotlin">// add import statement
+import org.dizitart.kno2.*
 
+// create empty document
+val doc = emptyDocument()
+val doc = documentOf()
 
-<span class="comment">// update with update options</span>
-<span class="comment">// create an update options</span>
-UpdateOptions updateOptions = <span class="keyword">new</span> UpdateOptions();
-updateOptions.setJustOnce(<span class="predefined-constant">true</span>);    <span class="comment">// only first document will be updated</span>
-updateOptions.setUpsert(<span class="predefined-constant">false</span>);     <span class="comment">// no upsert</span>
+// create a document with one pair
+val doc = documentOf(&quot;a&quot; to 1)
 
-<span class="comment">// update the document whose firstName != fn1 with lastName = newLastName1 but no upsert</span>
-<span class="comment">// and it will update only 1 document</span>
-<span class="predefined-type">Document</span> document = createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">newLastName1</span><span class="delimiter">&quot;</span></span>);
-WriteResult updateResult = collection.update(not(eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">fn1</span><span class="delimiter">&quot;</span></span>)),
-                document, updateOptions);</code></pre>
+// create a document with more pairs
+val doc = documentOf(&quot;a&quot; to 1, &quot;b&quot; to 2, &quot;c&quot; to 3)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="filters">Filters</h3>
+<div class="paragraph">
+<p>Potassium nitrite has some convenient infix functions for creating search filters.</p>
+</div>
+<div class="paragraph">
+<p><strong>Document Filter</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="kotlin">// add import statement
+import org.dizitart.kno2.filters.*
+
+// equivalent to eq(&quot;a&quot;, 1)
+val cursor = find(&quot;a&quot; eq 1)
+
+// equivalent to gt(&quot;a&quot;, 1)
+val cursor = find(&quot;a&quot; gt 1)
+
+// equivalent to gte(&quot;a&quot;, 1)
+val cursor = find(&quot;a&quot; gte 1)
+
+// equivalent to lt(&quot;a&quot;, 1)
+val cursor = find(&quot;a&quot; lt 1)
+
+// equivalent to lte(&quot;a&quot;, 1)
+val cursor = find(&quot;a&quot; lte 1)
+
+// equivalent to `in`(&quot;a&quot;, arrayOf(1, 2, 5))
+val cursor = find(&quot;a&quot; within arrayOf(1, 2, 5))
+
+// equivalent to `in`(&quot;a&quot;, 1..5)
+val cursor = find(&quot;a&quot; within 1..5)
+
+// equivalent to `in`(&quot;a&quot;, listOf(1, 2, 3))
+val cursor = find(&quot;a&quot; within listOf(1, 2, 3))
+
+// equivalent to elemMatch(&quot;a&quot;, `in`(&quot;$&quot;, 3..5))
+val cursor = find(&quot;a&quot; elemMatch (&quot;$&quot; within 3..5))
+
+// equivalent to text(&quot;a&quot;, &quot;*ipsum&quot;)
+val cursor = find(&quot;a&quot; text &quot;*ipsum&quot;)
+
+// equivalent to regex(&quot;a&quot;, &quot;[a-z]+&quot;)
+val cursor = find(&quot;a&quot; regex &quot;[a-z]+&quot;)
+
+// equivalent to and(eq(&quot;a&quot;, 1), gt(&quot;b&quot;, 2))
+val cursor = find((&quot;a&quot; eq 1) and (&quot;b&quot; gt 2))
+
+// equivalent to or(eq(&quot;a&quot;, 1), gt(&quot;b&quot;, 2))
+val cursor = find((&quot;a&quot; eq 1) or (&quot;b&quot; gt 2))
+
+// equivalent to not(&quot;a&quot; within 1..5))
+val cursor = find(!(&quot;a&quot; within 1..5))</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Error Scenario</strong></p>
+<p><strong>Object Filters</strong></p>
 </div>
 <div class="paragraph">
-<p>Update operation will result in an error if:</p>
+<p>Infix functions for object filters only applies for simple properties of kotlin classes</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>the <code>update</code> parameter is set to <code>null</code></p>
-</li>
-<li>
-<p>the <code>updateOptions</code> is <code>null</code></p>
-</li>
-<li>
-<p><code>update</code> object does not have any id field for <code>update(T, boolean)</code>
-and <code>update(T)</code> operations.</p>
-</li>
-<li>
-<p><code>update</code> object has <code>null</code> value in id field for <code>update(T, boolean)</code>
-and <code>update(T)</code> operations.</p>
-</li>
-</ul>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="kotlin">// add import statement
+import org.dizitart.kno2.filters.*
+
+@Indices(Index(value = &quot;text&quot;, type = IndexType.Fulltext))
+data class TestData(@Id val id: Int, val text: String, val list: List&lt;ListData&gt; = listOf())
+
+class ListData(val name: String, val score: Int)
+
+// equivalent to eq(&quot;id&quot;, 1)
+val cursor = find(TestData::id eq 1)
+
+// equivalent to gt(&quot;id&quot;, 1)
+val cursor = find(TestData::id gt 1)
+
+// equivalent to gte(&quot;id&quot;, 1)
+val cursor = find(TestData::id gte 1)
+
+// equivalent to lt(&quot;id&quot;, 1)
+val cursor = find(TestData::id lt 1)
+
+// equivalent to lte(&quot;id&quot;, 1)
+val cursor = find(TestData::id lte 1)
+
+// equivalent to `in`(&quot;id&quot;, 1..2)
+val cursor = find(TestData::id within 1..2)
+
+// equivalent to elemMatch(&quot;list&quot;, eq(&quot;score&quot;, 4))
+val cursor = find(TestData::list elemMatch (ListData::score eq 4))
+
+// equivalent to text(&quot;text&quot;, &quot;*u*&quot;)
+val cursor = find(TestData::text text &quot;*u*&quot;)
+
+// equivalent to regex(&quot;text&quot;, &quot;[0-9]+&quot;)
+val cursor = find(TestData::text regex &quot;[0-9]+&quot;)
+
+// equivalent to and(eq(&quot;id&quot;, 1), text(&quot;text&quot;, &quot;12345&quot;))
+val cursor = find((TestData::id eq 1) and (TestData::text text &quot;12345&quot;))
+
+// equivalent to or(eq(&quot;id&quot;, 1), text(&quot;text&quot;, &quot;12345&quot;))
+val cursor = find((TestData::id eq 1) or (TestData::text text &quot;12345&quot;))
+
+// equivalent to not(lt(&quot;id&quot;, 1))
+val cursor = find(!(TestData::id lt 1))</code></pre>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-An update operation raises an <strong>UPDATE</strong> or <strong>INSERT</strong> event.
-</td>
-</tr>
-</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="others">Others</h3>
+<div class="paragraph">
+<p>Here are some utility functions for various other capabilities</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="kotlin">// export data to a file
+db exportTo file
+
+// import data from file
+db importFrom file</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="kotlin-data-class">Kotlin Data Class</h3>
+<div class="paragraph">
+<p>The library has a build-in support for kotlin data classes via jackson-kotlin module.
+This module is already registered to the default jackson mapper so that user does
+not have to deal with it explicitly.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tips">Tips</h3>
+<div class="paragraph">
+<p>In Android Nitrite DB might fail if it&#8217;s being opened by two processes at the same time.
+The solution to that problem is to apply the classic singleton design pattern.
+The idea is to make sure only one process is accessing the DB file, and subsequent requests are using the already built Nitrite DB object
+and not try to open the DB file again if it has already been opened in the same context.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of Singleton Nitrite DB in Kotlin:</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="kotlin">class DBHandler {
+
+    companion object {
+
+        @Volatile private var INSTANCE: Nitrite? = null
+
+        fun getDBInstance(context: Context): Nitrite {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: buildNitriteDB(context).also { INSTANCE = it }
+            }
+        }
+
+        private fun buildNitriteDB(context: Context): Nitrite {
+            return Nitrite.builder()
+                    .compressed()
+                    .filePath(context.filesDir.path + &quot;/app.db&quot;)
+                    .openOrCreate()
+        }
+    }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-08 09:45:34 +05:30
+Last updated 2018-04-08 22:50:05 +05:30
 </div>
 </div>
 </body>

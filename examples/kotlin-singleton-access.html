@@ -514,226 +514,43 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Update operations modify documents/objects in a collection.</p>
+<p>class DBHandler {</p>
 </div>
-<div class="listingblock">
-<div class="title">Update operations for NitriteCollection</div>
+<div class="literalblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Document</span> update)
-WriteResult update(<span class="predefined-type">Document</span> update, <span class="type">boolean</span> upsert)
-WriteResult update(<span class="predefined-type">Filter</span> filter, <span class="predefined-type">Document</span> update)
-WriteResult update(<span class="predefined-type">Filter</span> filter, <span class="predefined-type">Document</span> update, UpdateOptions updateOptions)</code></pre>
+<pre>companion object {</pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="title">Update operations for ObjectRepository</div>
+<div class="literalblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(T element)
-WriteResult update(T element, <span class="type">boolean</span> upsert)
-WriteResult update(ObjectFilter filter, T update)
-WriteResult update(ObjectFilter filter, T update, <span class="type">boolean</span> upsert)
-WriteResult update(ObjectFilter filter, <span class="predefined-type">Document</span> update)
-WriteResult update(ObjectFilter filter, <span class="predefined-type">Document</span> update, <span class="type">boolean</span> justOnce)</code></pre>
+<pre>@Volatile private var INSTANCE: Nitrite? = null</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>If the <code>filter</code> is <code>null</code>, it will update all elements in the collection.</p>
-</div>
-<div class="paragraph">
-<p><strong>Update one element</strong></p>
-</div>
-<div class="listingblock">
+<div class="literalblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Document</span> document)
-WriteResult update(T object)</code></pre>
+<pre>fun getDBInstance(context: Context): Nitrite {
+    return INSTANCE ?: synchronized(this) {
+        INSTANCE ?: buildNitriteDB(context).also { INSTANCE = it }
+    }
+}</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>It updates a single element in the collection. The <code>object</code> must have
-a field marked with <code>@Id</code> annotation.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example</div>
+<div class="literalblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Employee emp = <span class="keyword">new</span> Employee();
-emp.setEmpId(<span class="integer">12564</span>);
-emp.setAddress(<span class="string"><span class="delimiter">&quot;</span><span class="content">12 Some Street</span><span class="delimiter">&quot;</span></span>);
-employeeRepository.insert(emp);
-
-<span class="comment">// update object</span>
-emp.setAddress(<span class="string"><span class="delimiter">&quot;</span><span class="content">25 New Street</span><span class="delimiter">&quot;</span></span>);
-employeeRepository.update(emp);
-
-
-
-<span class="predefined-type">Document</span> doc = createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">John Doe</span><span class="delimiter">&quot;</span></span>)
-                    .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">age</span><span class="delimiter">&quot;</span></span>, <span class="integer">30</span>);
-NitriteId nitriteId = doc.getId();
-collection.insert(doc);
-
-<span class="comment">// update the document</span>
-<span class="predefined-type">Document</span> document = collection.getById(nitriteId);
-document.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">age</span><span class="delimiter">&quot;</span></span>, <span class="integer">31</span>);
-
-collection.update(document);</code></pre>
+<pre>        private fun buildNitriteDB(context: Context): Nitrite {
+            return Nitrite.builder()
+                    .compressed()
+                    .filePath(context.filesDir.path + "/app.db")
+                    .openOrCreate()
+        }
+    }
+}</pre>
 </div>
-</div>
-<div class="paragraph">
-<p><strong>Update with Upsert</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Document</span> update, <span class="type">boolean</span> upsert)
-WriteResult update(T object, <span class="type">boolean</span> upsert)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Specified element must have an id. If the element is not found in the
-collection, it will be inserted only if upsert option is set to <code>true</code>.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">emp.setAddress(<span class="string"><span class="delimiter">&quot;</span><span class="content">25 New Street</span><span class="delimiter">&quot;</span></span>);
-<span class="comment">// if emp object is not there in repository, it will be inserted</span>
-employeeRepository.update(emp, <span class="predefined-constant">true</span>);
-
-
-<span class="predefined-type">Document</span> document = createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">John</span><span class="delimiter">&quot;</span></span>)
-                    .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Doe</span><span class="delimiter">&quot;</span></span>);
-<span class="comment">// generates NitriteId of the document</span>
-document.getId();
-<span class="comment">// if filter does not find any document, it will insert 'document'</span>
-WriteResult updateResult = collection.update(document, <span class="predefined-constant">true</span>);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Update Multiple Objects</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Filter</span> filter, <span class="predefined-type">Document</span> update)
-WriteResult update(ObjectFilter filter, T update)
-WriteResult update(ObjectFilter filter, <span class="predefined-type">Document</span> update)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Updates multiple elements in the collection. If the <code>filter</code> is
-<code>null</code>, it will update all objects in the collection.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Employee emp = <span class="keyword">new</span> Employee();
-emp.setEmpId(<span class="integer">12564</span>);
-emp.setAddress(<span class="string"><span class="delimiter">&quot;</span><span class="content">12 Some Street</span><span class="delimiter">&quot;</span></span>);
-emp.setCity(<span class="string"><span class="delimiter">&quot;</span><span class="content">Kolkata</span><span class="delimiter">&quot;</span></span>);
-employeeRepository.insert(emp);
-
-<span class="comment">// update all employees' join date whose city = Kolkata</span>
-Employee empUpdate = <span class="keyword">new</span> Employee();
-<span class="comment">// id field should not be set here</span>
-empUpdate.setJoinDate(<span class="keyword">new</span> <span class="predefined-type">Date</span>());
-
-<span class="comment">// if emp object is not there in repository, it will not insert</span>
-employeeRepository.update(eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">city</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Kolkata</span><span class="delimiter">&quot;</span></span>), empUpdate);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Update Multiple Objects with Options</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">WriteResult update(<span class="predefined-type">Filter</span> filter, <span class="predefined-type">Document</span> update, UpdateOptions updateOptions)
-WriteResult update(ObjectFilter filter, T update, <span class="type">boolean</span> upsert)
-WriteResult update(ObjectFilter filter, <span class="predefined-type">Document</span> update, <span class="type">boolean</span> justOnce)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Updates multiple elements in the repository. Update operation can be customized
-with the help of <code>updateOptions</code>. If the <code>filter</code> is <code>null</code>, it will update
-all objects in the collection unless <code>justOnce</code> is set to <code>true</code> in <code>updateOptions</code>.</p>
-</div>
-<div class="paragraph">
-<p><strong>UpdateOptions</strong></p>
-</div>
-<div class="paragraph">
-<p>Update operation can be customized with the help of <code>updateOptions</code>. It provides two options:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Upsert - indicates whether the update operation will insert a new document if it
-does not find any existing document to update using the <code>filter</code> (default is <code>false</code>).</p>
-</li>
-<li>
-<p>JustOnce - indicates whether only one document will be updated or all of them if the
-<code>filter</code> finds multiple documents (default is <code>false</code>).</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="title">Example</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// simple update example</span>
-<span class="comment">// update the documents whose firstName = fn1 with lastName = newLastName1</span>
-WriteResult updateResult = collection.update(eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">fn1</span><span class="delimiter">&quot;</span></span>),
-                createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">newLastName1</span><span class="delimiter">&quot;</span></span>));
-
-
-<span class="comment">// update with update options</span>
-<span class="comment">// create an update options</span>
-UpdateOptions updateOptions = <span class="keyword">new</span> UpdateOptions();
-updateOptions.setJustOnce(<span class="predefined-constant">true</span>);    <span class="comment">// only first document will be updated</span>
-updateOptions.setUpsert(<span class="predefined-constant">false</span>);     <span class="comment">// no upsert</span>
-
-<span class="comment">// update the document whose firstName != fn1 with lastName = newLastName1 but no upsert</span>
-<span class="comment">// and it will update only 1 document</span>
-<span class="predefined-type">Document</span> document = createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">newLastName1</span><span class="delimiter">&quot;</span></span>);
-WriteResult updateResult = collection.update(not(eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">fn1</span><span class="delimiter">&quot;</span></span>)),
-                document, updateOptions);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Error Scenario</strong></p>
-</div>
-<div class="paragraph">
-<p>Update operation will result in an error if:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>the <code>update</code> parameter is set to <code>null</code></p>
-</li>
-<li>
-<p>the <code>updateOptions</code> is <code>null</code></p>
-</li>
-<li>
-<p><code>update</code> object does not have any id field for <code>update(T, boolean)</code>
-and <code>update(T)</code> operations.</p>
-</li>
-<li>
-<p><code>update</code> object has <code>null</code> value in id field for <code>update(T, boolean)</code>
-and <code>update(T)</code> operations.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-An update operation raises an <strong>UPDATE</strong> or <strong>INSERT</strong> event.
-</td>
-</tr>
-</table>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-08 09:45:34 +05:30
+Last updated 2018-04-08 22:51:37 +05:30
 </div>
 </div>
 </body>
