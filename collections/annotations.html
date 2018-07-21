@@ -523,8 +523,8 @@ constructing it. It also helps to reduce some boilerplate code.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Employee class</span>
 <span class="annotation">@Indices</span>({
-        <span class="annotation">@Index</span>(field = <span class="string"><span class="delimiter">&quot;</span><span class="content">joinDate</span><span class="delimiter">&quot;</span></span>, type = IndexType.NonUnique),
-        <span class="annotation">@Index</span>(field = <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, type = IndexType.Unique)
+        <span class="annotation">@Index</span>(value = <span class="string"><span class="delimiter">&quot;</span><span class="content">joinDate</span><span class="delimiter">&quot;</span></span>, type = IndexType.NonUnique),
+        <span class="annotation">@Index</span>(value = <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, type = IndexType.Unique)
 })
 <span class="directive">public</span> <span class="type">class</span> <span class="class">Employee</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
     <span class="annotation">@Id</span>
@@ -548,7 +548,7 @@ ObjectRepository. More on these annotations will be discussed later.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-29 08:06:03 +05:30
+Last updated 2018-07-14 12:07:28 +05:30
 </div>
 </div>
 </body>

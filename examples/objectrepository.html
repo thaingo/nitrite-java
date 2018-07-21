@@ -540,8 +540,8 @@ emp.setJoinDate(new Date());</p>
 </div>
 <div class="paragraph">
 <p>@Indices({
-        @Index(field = "joinDate", type = IndexType.NonUnique),
-        @Index(field = "name", type = IndexType.Unique)
+        @Index(value = "joinDate", type = IndexType.NonUnique),
+        @Index(value = "name", type = IndexType.Unique)
 })
 public class Employee implements Serializable {
     @Id
@@ -566,7 +566,7 @@ public class Employee implements Serializable {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-29 08:06:04 +05:30
+Last updated 2018-07-14 12:07:28 +05:30
 </div>
 </div>
 </body>
