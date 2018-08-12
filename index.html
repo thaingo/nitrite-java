@@ -1290,8 +1290,8 @@ which are JSON-like field and value pairs. Document is a schema-less data struct
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">NitriteMapper nitriteMapper = <span class="keyword">new</span> JacksonMapper();
-<span class="predefined-type">Document</span> doc = nitriteMapper.parse(jsonString);</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java">MapperFacade facade = <span class="keyword">new</span> JacksonFacade();
+<span class="predefined-type">Document</span> doc = facade.parse(jsonString);</code></pre>
 </div>
 </div>
 </td>
