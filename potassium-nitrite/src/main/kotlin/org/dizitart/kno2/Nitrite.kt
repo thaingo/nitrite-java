@@ -18,8 +18,9 @@
 
 package org.dizitart.kno2
 
-import org.dizitart.no2.*
-import org.dizitart.no2.objects.ObjectRepository
+import org.dizitart.no2.Nitrite
+import org.dizitart.no2.collection.*
+import org.dizitart.no2.collection.objects.ObjectRepository
 
 /**
  * @since 2.1.0

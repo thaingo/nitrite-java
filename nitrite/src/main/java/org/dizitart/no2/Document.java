@@ -18,18 +18,21 @@
 
 package org.dizitart.no2;
 
+import org.dizitart.no2.common.Constants;
+import org.dizitart.no2.common.KeyValuePair;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.ValidationException;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.dizitart.no2.Constants.*;
 import static org.dizitart.no2.NitriteId.createId;
 import static org.dizitart.no2.NitriteId.newId;
+import static org.dizitart.no2.common.Constants.*;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.DOC_GET_TYPE_NULL;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
@@ -87,6 +90,7 @@ public class Document extends LinkedHashMap<String, Object> implements Iterable<
      * @param value the value
      * @return the document
      */
+    @NotNull
     @Override
     public Document put(final String key, final Object value) {
         if (DOC_ID.contentEquals(key) && !validId(value)) {
@@ -189,6 +193,7 @@ public class Document extends LinkedHashMap<String, Object> implements Iterable<
         return get(DOC_MODIFIED, Long.class);
     }
 
+    @NotNull
     @Override
     public Iterator<KeyValuePair> iterator() {
         return new PairIterator(super.entrySet().iterator());

@@ -45,8 +45,10 @@ public class Iterables {
      */
     public static <T> T firstOrDefault(Iterable<T> iterable) {
         if (iterable == null) return null;
-        for (T item : iterable) {
-            return item;
+
+        Iterator<T> iterator = iterable.iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
         }
         return null;
     }
@@ -98,13 +100,13 @@ public class Iterables {
      */
     public static <T extends Comparable<? super T>> boolean
     isSorted(Iterable<T> iterable, boolean ascending) {
-        Iterator<T> iter = iterable.iterator();
-        if (!iter.hasNext()) {
+        Iterator<T> iterator = iterable.iterator();
+        if (!iterator.hasNext()) {
             return true;
         }
-        T t = iter.next();
-        while (iter.hasNext()) {
-            T t2 = iter.next();
+        T t = iterator.next();
+        while (iterator.hasNext()) {
+            T t2 = iterator.next();
             if (ascending) {
                 if (t.compareTo(t2) > 0) {
                     return false;

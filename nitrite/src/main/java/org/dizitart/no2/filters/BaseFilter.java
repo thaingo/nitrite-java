@@ -20,9 +20,9 @@ package org.dizitart.no2.filters;
 
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
-import org.dizitart.no2.Filter;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.internals.NitriteService;
+import org.dizitart.no2.collection.Filter;
+import org.dizitart.no2.index.IndexedQueryTemplate;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.util.ArrayList;
@@ -39,29 +39,26 @@ import java.util.concurrent.Callable;
 @Slf4j
 public abstract class BaseFilter implements Filter {
     /**
-     * The Nitrite service.
+     * The {@link IndexedQueryTemplate}.
      */
-    protected NitriteService nitriteService;
+    protected IndexedQueryTemplate indexedQueryTemplate;
 
     @Override
-    public void setNitriteService(NitriteService nitriteService) {
-        this.nitriteService = nitriteService;
+    public void setIndexedQueryTemplate(IndexedQueryTemplate indexedQueryTemplate) {
+        this.indexedQueryTemplate = indexedQueryTemplate;
     }
 
     List<Callable<Set<NitriteId>>> createTasks(Filter[] filters,
                                                final NitriteMap<NitriteId, Document> documentMap) {
         List<Callable<Set<NitriteId>>> tasks = new ArrayList<>();
         for (final Filter filter : filters) {
-            filter.setNitriteService(nitriteService);
-            tasks.add(new Callable<Set<NitriteId>>() {
-                @Override
-                public Set<NitriteId> call() throws Exception {
-                    try {
-                        return filter.apply(documentMap);
-                    } catch (Exception e) {
-                        log.error("Error while executing filter " + filter.toString(), e);
-                        throw e;
-                    }
+            filter.setIndexedQueryTemplate(indexedQueryTemplate);
+            tasks.add(() -> {
+                try {
+                    return filter.apply(documentMap);
+                } catch (Exception e) {
+                    log.error("Error while executing filter " + filter.toString(), e);
+                    throw e;
                 }
             });
         }

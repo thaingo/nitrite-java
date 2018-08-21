@@ -18,11 +18,12 @@
 
 package org.dizitart.no2;
 
+import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.exceptions.NitriteException;
 import org.junit.Test;
 
-import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
+import static org.dizitart.no2.Document.createDocument;
 import static org.junit.Assert.assertEquals;
 
 /**

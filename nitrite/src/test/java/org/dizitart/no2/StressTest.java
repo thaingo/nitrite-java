@@ -18,6 +18,10 @@
 
 package org.dizitart.no2;
 
+import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.IndexOptions;
+import org.dizitart.no2.collection.IndexType;
+import org.dizitart.no2.collection.NitriteCollection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,8 +35,8 @@ import java.nio.file.Paths;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.junit.Assert.assertNotNull;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Anindya Chatterjee

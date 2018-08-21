@@ -19,16 +19,18 @@
 package org.dizitart.no2.sync;
 
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-import org.dizitart.no2.sync.data.UserAgent;
+import okhttp3.Credentials;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import org.dizitart.no2.sync.types.UserAgent;
 
-import javax.net.ssl.*;
-import java.io.IOException;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 import java.net.Proxy;
-import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
-import static org.dizitart.no2.sync.data.UserAgent.*;
+import static org.dizitart.no2.sync.types.UserAgent.USER_AGENT;
 import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
 
 /**
@@ -143,30 +145,24 @@ public class DataGateClient {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 
         if (!isNullOrEmpty(username)) {
-            clientBuilder.addInterceptor(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Request request = chain.request();
-                    Request newRequest;
-                    newRequest = request.newBuilder()
-                            .addHeader("Authorization", Credentials.basic(username, password))
-                            .build();
-                    return chain.proceed(newRequest);
-                }
+            clientBuilder.addInterceptor(chain -> {
+                Request request = chain.request();
+                Request newRequest;
+                newRequest = request.newBuilder()
+                        .addHeader("Authorization", Credentials.basic(username, password))
+                        .build();
+                return chain.proceed(newRequest);
             });
         }
 
         if (userAgent != null) {
-            clientBuilder.addInterceptor(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Request request = chain.request();
-                    Request newRequest;
-                    newRequest = request.newBuilder()
-                            .addHeader(USER_AGENT, userAgent.toString())
-                            .build();
-                    return chain.proceed(newRequest);
-                }
+            clientBuilder.addInterceptor(chain -> {
+                Request request = chain.request();
+                Request newRequest;
+                newRequest = request.newBuilder()
+                        .addHeader(USER_AGENT, userAgent.toString())
+                        .build();
+                return chain.proceed(newRequest);
             });
         }
 
@@ -180,11 +176,11 @@ public class DataGateClient {
                 final X509TrustManager[] trustManagers = new X509TrustManager[]{
                     new X509TrustManager() {
                         @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
                         }
 
                         @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
                         }
 
                         @Override
@@ -206,12 +202,7 @@ public class DataGateClient {
                 log.error("Error while bypassing certificate chains", e);
             }
 
-            clientBuilder.hostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
+            clientBuilder.hostnameVerifier((hostname, session) -> true);
         }
 
         if (readTimeout != 0) {

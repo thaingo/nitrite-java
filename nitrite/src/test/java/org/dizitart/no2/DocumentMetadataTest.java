@@ -18,15 +18,16 @@
 
 package org.dizitart.no2;
 
+import org.dizitart.no2.collection.Cursor;
 import org.dizitart.no2.event.ChangeInfo;
 import org.dizitart.no2.event.ChangeListener;
 import org.dizitart.no2.event.ChangeType;
 import org.junit.Test;
 
+import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.filters.Filters.eq;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.dizitart.no2.Document.createDocument;
 
 /**
  * @author Anindya Chatterjee.

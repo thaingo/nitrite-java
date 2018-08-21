@@ -18,9 +18,9 @@
 
 package org.dizitart.no2.util;
 
-import org.dizitart.no2.Index;
-import org.dizitart.no2.IndexType;
+import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.exceptions.ValidationException;
+import org.dizitart.no2.index.Index;
 import org.junit.Test;
 
 import static org.dizitart.no2.util.IndexUtils.internalName;

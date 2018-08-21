@@ -18,14 +18,15 @@
 
 package org.dizitart.no2;
 
+import org.dizitart.no2.collection.NitriteCollection;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
+import static org.dizitart.no2.Document.createDocument;
 import static org.junit.Assert.assertEquals;
 
 /**

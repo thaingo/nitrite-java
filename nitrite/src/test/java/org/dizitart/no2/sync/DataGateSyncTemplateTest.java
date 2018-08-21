@@ -25,7 +25,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Retry;
-import org.dizitart.no2.sync.data.*;
+import org.dizitart.no2.sync.types.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,9 +39,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.sync.TimeSpan.timeSpan;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Anindya Chatterjee.

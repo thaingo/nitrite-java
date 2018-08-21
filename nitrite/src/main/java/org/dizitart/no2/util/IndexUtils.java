@@ -19,12 +19,12 @@
 package org.dizitart.no2.util;
 
 import lombok.experimental.UtilityClass;
-import org.dizitart.no2.Index;
+import org.dizitart.no2.index.Index;
 
 import java.util.*;
 
-import static org.dizitart.no2.Constants.INDEX_PREFIX;
-import static org.dizitart.no2.Constants.INTERNAL_NAME_SEPARATOR;
+import static org.dizitart.no2.common.Constants.INDEX_PREFIX;
+import static org.dizitart.no2.common.Constants.INTERNAL_NAME_SEPARATOR;
 import static org.dizitart.no2.exceptions.ErrorCodes.VE_INDEX_NULL_INDEX;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 import static org.dizitart.no2.util.ValidationUtils.notNull;
@@ -66,12 +66,7 @@ public class IndexUtils {
      */
     public static <K, V extends Comparable<V>> Map<K, V> sortByScore(Map<K, V> unsortedMap) {
         List<Map.Entry<K, V>> list = new LinkedList<>(unsortedMap.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            @Override
-            public int compare(Map.Entry<K, V> e1, Map.Entry<K, V> e2) {
-                return (e2.getValue()).compareTo(e1.getValue());
-            }
-        });
+        Collections.sort(list, (e1, e2) -> (e2.getValue()).compareTo(e1.getValue()));
 
         Map<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : list) {

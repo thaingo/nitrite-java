@@ -18,7 +18,11 @@
 
 package org.dizitart.no2.tool;
 
-import org.dizitart.no2.*;
+import org.dizitart.no2.Document;
+import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.collection.IndexOptions;
+import org.dizitart.no2.collection.IndexType;
+import org.dizitart.no2.collection.NitriteCollection;
 import org.junit.After;
 import org.junit.Test;
 
@@ -29,8 +33,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
+import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.filters.Filters.ALL;
 import static org.dizitart.no2.tool.Recovery.recover;
 import static org.junit.Assert.assertTrue;

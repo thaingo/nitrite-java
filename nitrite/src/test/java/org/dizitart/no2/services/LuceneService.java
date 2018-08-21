@@ -34,7 +34,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.exceptions.IndexingException;
-import org.dizitart.no2.fulltext.TextIndexingService;
+import org.dizitart.no2.index.TextIndexer;
 
 import java.io.IOException;
 import java.util.LinkedHashSet;
@@ -43,7 +43,7 @@ import java.util.Set;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
 
-public class LuceneService implements TextIndexingService {
+public class LuceneService implements TextIndexer {
     private static final String CONTENT_ID = "content_id";
     private static final int MAX_SEARCH = Byte.MAX_VALUE;
 
@@ -77,7 +77,7 @@ public class LuceneService implements TextIndexingService {
     }
 
     @Override
-    public void createIndex(NitriteId id, String field, String text) {
+    public void writeIndex(NitriteId id, String field, String text, boolean unique) {
         try {
             Document document = new Document();
             String jsonId = keySerializer.writeValueAsString(id);
@@ -99,7 +99,7 @@ public class LuceneService implements TextIndexingService {
     }
 
     @Override
-    public void updateIndex(NitriteId id, String field, String text) {
+    public void updateIndex(NitriteId id, String field, String text, String oldText, boolean unique) {
         try {
             String jsonId = keySerializer.writeValueAsString(id);
             Document document = getDocument(jsonId);
@@ -124,7 +124,7 @@ public class LuceneService implements TextIndexingService {
     }
 
     @Override
-    public void deleteIndex(NitriteId id, String field, String text) {
+    public void removeIndex(NitriteId id, String field, String text) {
         try {
             String jsonId = keySerializer.writeValueAsString(id);
             Term idTerm = new Term(CONTENT_ID, jsonId);
@@ -141,7 +141,7 @@ public class LuceneService implements TextIndexingService {
     }
 
     @Override
-    public void deleteIndexesByField(String field) {
+    public void dropIndex(String field) {
         if (!isNullOrEmpty(field)) {
             try {
                 Query query;
@@ -166,7 +166,12 @@ public class LuceneService implements TextIndexingService {
     }
 
     @Override
-    public Set<NitriteId> searchByIndex(String field, String searchString) {
+    public void rebuildIndex(String field, boolean unique) {
+        // nothing to be done
+    }
+
+    @Override
+    public Set<NitriteId> findText(String field, String searchString) {
         IndexReader indexReader = null;
         try {
             QueryParser parser = new QueryParser(field, analyzer);
@@ -241,31 +246,6 @@ public class LuceneService implements TextIndexingService {
             } catch (IOException ignored) {
                 // ignored
             }
-        }
-    }
-
-    @Override
-    public void drop() {
-        try {
-            indexDirectory = new RAMDirectory();
-            analyzer = new StandardAnalyzer();
-
-            IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
-            iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-            indexWriter = new IndexWriter(indexDirectory, iwc);
-            commit();
-        } catch (IOException e) {
-            throw new IndexingException(errorMessage("could not drop full-text index", 0), e);
-        }
-    }
-
-    @Override
-    public void clear() {
-        try {
-            indexWriter.deleteAll();
-            commit();
-        } catch (IOException e) {
-            throw new IndexingException(errorMessage("could not clear full-text index", 0), e);
         }
     }
 

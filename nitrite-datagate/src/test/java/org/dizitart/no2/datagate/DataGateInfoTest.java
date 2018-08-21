@@ -18,7 +18,7 @@
 
 package org.dizitart.no2.datagate;
 
-import org.dizitart.no2.sync.data.InfoResponse;
+import org.dizitart.no2.sync.types.InfoResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.dizitart.no2.datagate.Constants.STORAGE_VENDOR;
-import static org.dizitart.no2.datagate.Constants.VENDOR;
-import static org.dizitart.no2.datagate.Constants.VERSION;
+import static org.dizitart.no2.datagate.Constants.*;
 import static org.junit.Assert.assertNotNull;
 
 /**

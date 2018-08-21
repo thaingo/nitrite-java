@@ -19,16 +19,20 @@
 package org.dizitart.no2.tool;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import org.dizitart.no2.*;
-import org.dizitart.no2.mapper.NitriteMapper;
-import org.dizitart.no2.objects.ObjectRepository;
+import org.dizitart.no2.Document;
+import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.NitriteCollection;
+import org.dizitart.no2.collection.PersistentCollection;
+import org.dizitart.no2.collection.objects.ObjectRepository;
+import org.dizitart.no2.index.Index;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static org.dizitart.no2.Constants.*;
+import static org.dizitart.no2.common.Constants.*;
 
 /**
  * @author Anindya Chatterjee
@@ -37,11 +41,9 @@ class NitriteJsonExporter {
     private Nitrite db;
     private JsonGenerator generator;
     private ExportOptions options;
-    private NitriteMapper nitriteMapper;
 
     public NitriteJsonExporter(Nitrite db) {
         this.db = db;
-        this.nitriteMapper = db.getContext().getNitriteMapper();
     }
 
     public void setGenerator(JsonGenerator generator) {
@@ -106,7 +108,7 @@ class NitriteJsonExporter {
         Collection<Index> indices = repository.listIndices();
         writeIndices(indices);
 
-        org.dizitart.no2.Cursor cursor = repository.getDocumentCollection().find();
+        Cursor cursor = repository.getDocumentCollection().find();
         writeContent(cursor);
         generator.writeEndObject();
     }

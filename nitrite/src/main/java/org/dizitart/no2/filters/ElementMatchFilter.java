@@ -20,8 +20,8 @@ package org.dizitart.no2.filters;
 
 import lombok.ToString;
 import org.dizitart.no2.Document;
-import org.dizitart.no2.Filter;
 import org.dizitart.no2.NitriteId;
+import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.store.NitriteMap;
 
@@ -60,7 +60,7 @@ class ElementMatchFilter extends BaseFilter {
             throw new FilterException(FULL_TEXT_ELEM_MATCH_NOT_SUPPORTED);
         }
 
-        elementFilter.setNitriteService(nitriteService);
+        elementFilter.setIndexedQueryTemplate(indexedQueryTemplate);
 
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {

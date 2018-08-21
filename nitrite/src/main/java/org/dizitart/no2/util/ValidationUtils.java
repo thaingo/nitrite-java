@@ -20,8 +20,8 @@ package org.dizitart.no2.util;
 
 import lombok.experimental.UtilityClass;
 import org.dizitart.no2.Document;
-import org.dizitart.no2.FindOptions;
 import org.dizitart.no2.NitriteId;
+import org.dizitart.no2.collection.FindOptions;
 import org.dizitart.no2.exceptions.ErrorMessage;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.exceptions.InvalidOperationException;
@@ -30,7 +30,7 @@ import org.dizitart.no2.mapper.NitriteMapper;
 
 import java.lang.reflect.Modifier;
 
-import static org.dizitart.no2.Constants.RESERVED_NAMES;
+import static org.dizitart.no2.common.Constants.RESERVED_NAMES;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
 import static org.dizitart.no2.util.DocumentUtils.dummyDocument;

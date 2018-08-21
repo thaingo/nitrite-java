@@ -21,7 +21,6 @@ package org.dizitart.no2.filters;
 import lombok.Getter;
 import lombok.ToString;
 import org.dizitart.no2.exceptions.FilterException;
-import org.dizitart.no2.internals.NitriteService;
 
 import static org.dizitart.no2.exceptions.ErrorMessage.VALUE_IS_NOT_COMPARABLE;
 
@@ -38,10 +37,5 @@ abstract class ComparisonFilter extends BaseFilter {
             throw new FilterException(VALUE_IS_NOT_COMPARABLE);
         }
         this.field = field;
-    }
-
-    @Override
-    public void setNitriteService(NitriteService nitriteService) {
-        this.nitriteService = nitriteService;
     }
 }

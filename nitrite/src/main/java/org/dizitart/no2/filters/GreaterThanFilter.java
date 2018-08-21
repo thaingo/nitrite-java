@@ -22,13 +22,14 @@ import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.exceptions.FilterException;
+import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.dizitart.no2.Constants.DOC_ID;
+import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.dizitart.no2.exceptions.ErrorCodes.FE_GT_FIELD_NOT_COMPARABLE;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
@@ -57,9 +58,10 @@ class GreaterThanFilter extends ComparisonFilter {
                 }
             }
             return nitriteIdSet;
-        } else if (nitriteService.hasIndex(field)
-                && !nitriteService.isIndexing(field)) {
-            return nitriteService.findGreaterThanWithIndex(field, comparable);
+        } else if (indexedQueryTemplate.hasIndex(field)
+                && !indexedQueryTemplate.isIndexing(field)) {
+            ComparableIndexer comparableIndexer = indexedQueryTemplate.getComparableIndexer();
+            return comparableIndexer.findGreaterThan(field, comparable);
         } else {
             return matchedSet(documentMap);
         }
