@@ -25,12 +25,10 @@ import org.dizitart.no2.collection.*;
 import org.dizitart.no2.event.ChangeInfo;
 import org.dizitart.no2.event.ChangeListener;
 import org.dizitart.no2.event.EventBus;
-import org.dizitart.no2.index.ComparableIndexer;
-import org.dizitart.no2.index.Index;
-import org.dizitart.no2.index.IndexedQueryTemplate;
-import org.dizitart.no2.index.TextIndexer;
+import org.dizitart.no2.index.*;
 import org.dizitart.no2.index.fulltext.EnglishTextTokenizer;
 import org.dizitart.no2.index.fulltext.TextTokenizer;
+import org.dizitart.no2.mapper.NitriteMapper;
 import org.dizitart.no2.store.IndexStore;
 import org.dizitart.no2.store.NitriteMap;
 
@@ -306,10 +304,12 @@ public class CollectionOperation {
         this.indexStore = new NitriteIndexStore(mapStore);
         TextIndexer textIndexer = getTextIndexer();
         ComparableIndexer comparableIndexer = new NitriteComparableIndexer(mapStore, indexStore);
-        this.indexTemplate = new IndexTemplate(indexStore, comparableIndexer, textIndexer);
+        SpatialIndexer spatialIndexer = new NitriteSpatialIndexer(mapStore, indexStore);
+        NitriteMapper nitriteMapper = nitriteContext.getNitriteMapper();
+        this.indexTemplate = new IndexTemplate(nitriteMapper, indexStore, comparableIndexer, textIndexer, spatialIndexer);
 
         IndexedQueryTemplate indexedQueryTemplate
-            = new NitriteIndexedQueryTemplate(indexTemplate, comparableIndexer, textIndexer);
+            = new NitriteIndexedQueryTemplate(indexTemplate, comparableIndexer, textIndexer, spatialIndexer);
         this.queryTemplate = new QueryTemplate(indexedQueryTemplate, mapStore);
         this.readWriteOperation = new ReadWriteOperation(indexTemplate, queryTemplate, mapStore, eventBus);
     }

@@ -18,43 +18,41 @@
 
 package org.dizitart.no2.filters;
 
-import lombok.Getter;
 import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Filter;
+import org.dizitart.no2.exceptions.FilterException;
+import org.dizitart.no2.index.SpatialIndexer;
 import org.dizitart.no2.store.NitriteMap;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.Set;
 
-import static org.dizitart.no2.util.ValidationUtils.validateSearchTerm;
+import static org.dizitart.no2.exceptions.ErrorCodes.FE_WITHIN_FILTER_FIELD_NOT_INDEXED;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
- * @author Anindya Chatterjee.
+ * @author Anindya Chatterjee
  */
-@Getter
 @ToString
-class GreaterEqualObjectFilter extends BaseObjectFilter {
+class WithinFilter extends BaseFilter {
     private String field;
-    private Comparable value;
+    private Geometry geometry;
 
-    GreaterEqualObjectFilter(String field, Comparable value) {
+    WithinFilter(String field, Geometry geometry) {
         this.field = field;
-        this.value = value;
+        this.geometry = geometry;
     }
 
     @Override
     public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        validateSearchTerm(nitriteMapper, field, value);
-        Comparable comparable;
-        if (nitriteMapper.isValueType(value)) {
-            comparable = (Comparable) nitriteMapper.asValue(value);
+        if (indexedQueryTemplate.hasIndex(field)
+                && !indexedQueryTemplate.isIndexing(field)) {
+            SpatialIndexer spatialIndexer = indexedQueryTemplate.getSpatialIndexer();
+            return spatialIndexer.findWithin(field, geometry);
         } else {
-            comparable = value;
+            throw new FilterException(errorMessage(field + " is not indexed",
+                    FE_WITHIN_FILTER_FIELD_NOT_INDEXED));
         }
-
-        Filter gte = Filters.gte(field, comparable);
-        gte.setIndexedQueryTemplate(indexedQueryTemplate);
-        return gte.apply(documentMap);
     }
 }

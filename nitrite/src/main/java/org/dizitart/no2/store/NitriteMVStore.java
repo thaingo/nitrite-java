@@ -21,6 +21,9 @@ package org.dizitart.no2.store;
 import org.dizitart.no2.meta.Attributes;
 import org.h2.mvstore.MVMap;
 import org.h2.mvstore.MVStore;
+import org.h2.mvstore.rtree.MVRTreeMap;
+import org.h2.mvstore.rtree.SpatialKey;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.Set;
 
@@ -91,9 +94,22 @@ public final class NitriteMVStore implements NitriteStore {
     }
 
     @Override
+    public NitriteRTreeMap openRTreeMap(String mapName) {
+        MVRTreeMap<Geometry> map = mvStore.openMap(mapName, new MVRTreeMap.Builder<>());
+        return new NitriteMVRTreeMap(map, this);
+    }
+
+    @Override
     public <Key, Value> void removeMap(NitriteMap<Key, Value> map) {
         NitriteMVMap<Key, Value> nitriteMVMap = (NitriteMVMap<Key, Value>) map;
         MVMap<Key, Value> mvMap = nitriteMVMap.getUnderlyingMVMap();
+        mvStore.removeMap(mvMap);
+    }
+
+    @Override
+    public void removeRTreeMap(NitriteRTreeMap map) {
+        NitriteMVRTreeMap nitriteMVRTreeMap = (NitriteMVRTreeMap) map;
+        MVMap<SpatialKey, Geometry> mvMap = nitriteMVRTreeMap.getUnderlyingMVMap();
         mvStore.removeMap(mvMap);
     }
 

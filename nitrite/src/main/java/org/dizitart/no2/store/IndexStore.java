@@ -35,6 +35,8 @@ public interface IndexStore {
 
     NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> getIndexMap(String field);
 
+    NitriteRTreeMap getSpatialIndexMap(String field);
+
     void mark(String field, boolean dirty);
 
     boolean isDirtyIndex(String field);

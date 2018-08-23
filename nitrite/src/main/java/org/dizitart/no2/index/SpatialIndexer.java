@@ -16,18 +16,24 @@
  *
  */
 
-package org.dizitart.kno2
+package org.dizitart.no2.index;
 
-import com.fasterxml.jackson.databind.Module
-import org.dizitart.no2.mapper.JacksonMapper
+import org.dizitart.no2.NitriteId;
+import org.dizitart.no2.spatial.EqualityType;
+import org.locationtech.jts.geom.Geometry;
+
+import java.util.Set;
 
 /**
- * Default [JacksonMapper] for potassium nitrite.
  *
+ * @since 4.0.0
  * @author Anindya Chatterjee
- * @author Stefan Mandel
- * @since 2.1.0
  */
-open class KNO2JacksonMapper(modules: Set<Module>) : JacksonMapper(modules) {
-    constructor() : this(emptySet())
+public interface SpatialIndexer extends Indexer<Geometry> {
+
+    Set<NitriteId> findEqual(String field, Geometry geometry, EqualityType equalityType);
+
+    Set<NitriteId> findWithin(String field, Geometry geometry);
+
+    Set<NitriteId> findIntersects(String field, Geometry geometry);
 }

@@ -37,7 +37,7 @@ import static org.dizitart.no2.util.NumberUtils.compare;
 
 @ToString
 class GreaterThanFilter extends ComparisonFilter {
-    GreaterThanFilter(String field, Object value) {
+    GreaterThanFilter(String field, Comparable value) {
         super(field, value);
     }
 

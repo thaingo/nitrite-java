@@ -21,6 +21,7 @@ package org.dizitart.no2.filters;
 import lombok.experimental.UtilityClass;
 import org.dizitart.no2.collection.objects.ObjectFilter;
 import org.dizitart.no2.index.TextIndexer;
+import org.locationtech.jts.geom.Geometry;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
@@ -138,7 +139,7 @@ public class ObjectFilters {
      * @param value the value
      * @return the greater than filter
      */
-    public static ObjectFilter gt(String field, Object value) {
+    public static ObjectFilter gt(String field, Comparable value) {
         return new GreaterObjectFilter(field, value);
     }
 
@@ -158,7 +159,7 @@ public class ObjectFilters {
      * @param value the value
      * @return the greater or equal filter
      */
-    public static ObjectFilter gte(String field, Object value) {
+    public static ObjectFilter gte(String field, Comparable value) {
         return new GreaterEqualObjectFilter(field, value);
     }
 
@@ -178,7 +179,7 @@ public class ObjectFilters {
      * @param value the value
      * @return the lesser than filter
      */
-    public static ObjectFilter lt(String field, Object value) {
+    public static ObjectFilter lt(String field, Comparable value) {
         return new LessThanObjectFilter(field, value);
     }
 
@@ -198,7 +199,7 @@ public class ObjectFilters {
      * @param value the value
      * @return the lesser equal filter
      */
-    public static ObjectFilter lte(String field, Object value) {
+    public static ObjectFilter lte(String field, Comparable value) {
         return new LesserEqualObjectFilter(field, value);
     }
 
@@ -260,7 +261,7 @@ public class ObjectFilters {
      * @param values the range values
      * @return the in filter
      */
-    public static ObjectFilter in(String field, Object... values) {
+    public static ObjectFilter in(String field, Comparable... values) {
         return new InObjectFilter(field, values);
     }
 
@@ -283,5 +284,14 @@ public class ObjectFilters {
      */
     public static ObjectFilter elemMatch(final String field, final ObjectFilter filter) {
         return new ElemMatchObjectFilter(field, filter);
+    }
+
+
+    public static ObjectFilter within(String field, Geometry geometry) {
+        return new WithinObjectFilter(field, geometry);
+    }
+
+    public static ObjectFilter intersects(String field, Geometry geometry) {
+        return new IntersectsObjectFilter(field, geometry);
     }
 }

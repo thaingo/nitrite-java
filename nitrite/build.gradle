@@ -43,6 +43,7 @@ dependencies {
     compile "com.squareup.okhttp3:okhttp:$okhttpVersion"
     compile "uk.co.jemos.podam:podam:$podamVersion"
     compile "io.reactivex.rxjava2:rxjava:$rxjavaVersion"
+    compile "org.locationtech.jts:jts-core:$jtsVersion"
 
     testCompile "junit:junit:$junitVersion"
     testCompile "org.apache.lucene:lucene-core:$luceneVersion"

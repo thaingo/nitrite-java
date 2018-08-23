@@ -198,31 +198,35 @@ public class ErrorCodes {
     static final int FE_SEARCH_TERM_INVALID_LEADING_STAR = 4043;
     static final int FE_SEARCH_TERM_INVALID_TRAILING_STAR = 4044;
     static final int FE_MULTIPLE_WORDS_WITH_WILDCARD = 4045;
+    public static final int FE_EQUAL_NOT_COMPARABLE = 4046;
+    public static final int FE_TEXT_FILTER_FIELD_NOT_INDEXED = 4047;
+    public static final int FE_WITHIN_FILTER_FIELD_NOT_INDEXED = 4048;
+    public static final int FE_INTERSECTS_FILTER_FIELD_NOT_INDEXED = 4049;
 
     // endregion
 
     // region IndexingException Codes
 
-    public static final int IE_TEXT_FILTER_FIELD_NOT_INDEXED = 5001;
-    public static final int IE_REBUILD_INDEX_FIELD_NOT_INDEXED = 5002;
-    public static final int IE_VALIDATE_REBUILD_INDEX_RUNNING = 5003;
-    static final int IE_FULL_TEXT_NON_STRING_VALUE = 5004;
-    public static final int IE_INDEX_EXISTS = 5005;
-    public static final int IE_CREATE_INDEX_FAILED = 5006;
-    public static final int IE_CAN_NOT_DROP_ALL_RUNNING_INDEX = 5007;
-    public static final int IE_CAN_NOT_DROP_RUNNING_INDEX = 5008;
-    public static final int IE_REBUILD_INDEX_RUNNING = 5009;
-    public static final int IE_DROP_NON_EXISTING_INDEX = 5010;
-    public static final int IE_REMOVE_FULL_TEXT_INDEX_FAILED = 5011;
-    public static final int IE_OBJ_INDEX_INVALID_FIELD = 5012;
-    public static final int IE_INDEX_ON_ARRAY_NOT_SUPPORTED = 5013;
-    public static final int IE_INDEX_ON_NON_COMPARABLE_FIELD = 5014;
-    public static final int IE_OBJ_INDEX_ON_ARRAY_NOT_SUPPORTED = 5015;
-    public static final int IE_OBJ_INDEX_ON_NON_COMPARABLE_FIELD = 5016;
-    public static final int IE_FAILED_TO_WRITE_FTS_DATA = 5017;
-    static final int IE_FAILED_TO_QUERY_FTS_DATA = 5018;
-    public static final int IE_INVALID_TYPE_FOR_INDEX = 5019;
-    public static final int IE_REBUILD_INDEX_DOES_NOT_EXISTS = 5020;
+    public static final int IE_REBUILD_INDEX_FIELD_NOT_INDEXED = 5001;
+    public static final int IE_VALIDATE_REBUILD_INDEX_RUNNING = 5002;
+    static final int IE_FULL_TEXT_NON_STRING_VALUE = 5003;
+    public static final int IE_INDEX_EXISTS = 5004;
+    public static final int IE_CREATE_INDEX_FAILED = 5005;
+    public static final int IE_CAN_NOT_DROP_ALL_RUNNING_INDEX = 5006;
+    public static final int IE_CAN_NOT_DROP_RUNNING_INDEX = 5007;
+    public static final int IE_REBUILD_INDEX_RUNNING = 5008;
+    public static final int IE_DROP_NON_EXISTING_INDEX = 5009;
+    public static final int IE_REMOVE_FULL_TEXT_INDEX_FAILED = 5010;
+    public static final int IE_OBJ_INDEX_INVALID_FIELD = 5011;
+    public static final int IE_INDEX_ON_ARRAY_NOT_SUPPORTED = 5012;
+    public static final int IE_INDEX_ON_NON_COMPARABLE_FIELD = 5013;
+    public static final int IE_OBJ_INDEX_ON_ARRAY_NOT_SUPPORTED = 5014;
+    public static final int IE_OBJ_INDEX_ON_NON_COMPARABLE_FIELD = 5015;
+    public static final int IE_FAILED_TO_WRITE_FTS_DATA = 5016;
+    static final int IE_FAILED_TO_QUERY_FTS_DATA = 5017;
+    public static final int IE_INVALID_TYPE_FOR_INDEX = 5018;
+    public static final int IE_REBUILD_INDEX_DOES_NOT_EXISTS = 5019;
+    public static final int IE_REBUILD_INDEX_NON_SPATIAL = 5020;
 
     // endregion
 
@@ -268,6 +272,8 @@ public class ErrorCodes {
     public static final int OME_NO_DEFAULT_CTOR = 9002;
     public static final int OME_PARSE_JSON_FAILED = 9003;
     static final int OME_SERIALIZE_TO_JSON_FAILED = 9004;
+    public static final int OME_AS_STRING_FAILED = 9005;
+    public static final int OME_FROM_STRING_FAILED = 9006;
 
     // endregion
 

@@ -21,7 +21,7 @@ package org.dizitart.kno2
 import org.dizitart.no2.exceptions.SecurityException
 import org.dizitart.no2.index.fulltext.EnglishTextTokenizer
 import org.dizitart.no2.index.fulltext.UniversalTextTokenizer
-import org.dizitart.no2.mapper.GenericMapper
+import org.dizitart.no2.mapper.AbstractMapper
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
@@ -77,7 +77,7 @@ class BuilderTest : BaseTest() {
         assertFalse(context.isAutoCompactEnabled)
         assertTrue(context.isCompressed)
         assertTrue(context.nitriteMapper is KNO2JacksonMapper)
-        assertTrue(context.nitriteMapper is GenericMapper)
+        assertTrue(context.nitriteMapper is AbstractMapper)
         assertNull(context.textIndexer)
         assertTrue(context.textTokenizer is UniversalTextTokenizer)
 

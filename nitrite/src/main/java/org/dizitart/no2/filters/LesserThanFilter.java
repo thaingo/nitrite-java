@@ -39,7 +39,7 @@ import static org.dizitart.no2.util.NumberUtils.compare;
 @Getter
 @ToString
 class LesserThanFilter extends ComparisonFilter {
-    LesserThanFilter(String field, Object value) {
+    LesserThanFilter(String field, Comparable value) {
         super(field, value);
     }
 

@@ -16,18 +16,22 @@
  *
  */
 
-package org.dizitart.kno2
+package org.dizitart.no2.serialization;
 
-import com.fasterxml.jackson.databind.Module
-import org.dizitart.no2.mapper.JacksonMapper
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.locationtech.jts.geom.Geometry;
 
 /**
- * Default [JacksonMapper] for potassium nitrite.
  *
+ * @since 4.0.0
  * @author Anindya Chatterjee
- * @author Stefan Mandel
- * @since 2.1.0
  */
-open class KNO2JacksonMapper(modules: Set<Module>) : JacksonMapper(modules) {
-    constructor() : this(emptySet())
+public class GeometryModule extends SimpleModule {
+
+    @Override
+    public void setupModule(SetupContext context) {
+        addSerializer(Geometry.class, new GeometrySerializer());
+        addDeserializer(Geometry.class, new GeometryDeserializer());
+        super.setupModule(context);
+    }
 }

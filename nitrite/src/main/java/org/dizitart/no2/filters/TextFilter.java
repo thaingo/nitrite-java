@@ -21,13 +21,13 @@ package org.dizitart.no2.filters;
 import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.exceptions.IndexingException;
+import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.index.TextIndexer;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.util.Set;
 
-import static org.dizitart.no2.exceptions.ErrorCodes.IE_TEXT_FILTER_FIELD_NOT_INDEXED;
+import static org.dizitart.no2.exceptions.ErrorCodes.FE_TEXT_FILTER_FIELD_NOT_INDEXED;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 @ToString
@@ -43,8 +43,8 @@ class TextFilter extends StringFilter {
             TextIndexer textIndexer = indexedQueryTemplate.getTextIndexer();
             return textIndexer.findText(field, value);
         } else {
-            throw new IndexingException(errorMessage(field + " is not indexed",
-                    IE_TEXT_FILTER_FIELD_NOT_INDEXED));
+            throw new FilterException(errorMessage(field + " is not indexed",
+                    FE_TEXT_FILTER_FIELD_NOT_INDEXED));
         }
     }
 }

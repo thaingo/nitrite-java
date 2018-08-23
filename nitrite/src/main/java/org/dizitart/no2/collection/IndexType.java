@@ -27,16 +27,26 @@ import org.dizitart.no2.index.Index;
  * @since 1.0
  */
 public enum IndexType {
+
     /**
      * Specifies an unique index.
      */
     Unique,
+
     /**
      * Specifies a non unique index.
      */
     NonUnique,
+
     /**
      * Specifies a fulltext search index.
      */
-    Fulltext
+    Fulltext,
+
+    /**
+     * Specifies a spatial index.
+     *
+     * @since 4.0.0
+     * */
+    Spatial
 }

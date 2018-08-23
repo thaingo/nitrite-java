@@ -4,6 +4,7 @@ package org.dizitart.no2.index;
  * @author Anindya Chatterjee.
  */
 public interface IndexedQueryTemplate {
+
     boolean hasIndex(String field);
 
     boolean isIndexing(String field);
@@ -11,4 +12,6 @@ public interface IndexedQueryTemplate {
     ComparableIndexer getComparableIndexer();
 
     TextIndexer getTextIndexer();
+
+    SpatialIndexer getSpatialIndexer();
 }

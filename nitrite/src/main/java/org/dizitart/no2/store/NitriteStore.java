@@ -93,6 +93,9 @@ public interface NitriteStore {
      */
     <Key, Value> NitriteMap<Key, Value> openMap(String mapName);
 
+
+    NitriteRTreeMap openRTreeMap(String mapName);
+
     /**
      * Removes a map from the store.
      *
@@ -101,6 +104,9 @@ public interface NitriteStore {
      * @param nitriteMap the map to remove.
      */
     <Key, Value> void removeMap(NitriteMap<Key, Value> nitriteMap);
+
+
+    void removeRTreeMap(NitriteRTreeMap map);
 
     /**
      * Gets the metadata of all {@link NitriteMap}s.

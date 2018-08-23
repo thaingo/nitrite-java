@@ -2,6 +2,7 @@ package org.dizitart.no2.collection.operation;
 
 import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.index.IndexedQueryTemplate;
+import org.dizitart.no2.index.SpatialIndexer;
 import org.dizitart.no2.index.TextIndexer;
 
 /**
@@ -11,14 +12,17 @@ class NitriteIndexedQueryTemplate implements IndexedQueryTemplate {
 
     private ComparableIndexer comparableIndexer;
     private TextIndexer textIndexer;
+    private SpatialIndexer spatialIndexer;
     private IndexTemplate indexTemplate;
 
     NitriteIndexedQueryTemplate(IndexTemplate indexTemplate,
                                 ComparableIndexer comparableIndexer,
-                                TextIndexer textIndexer) {
+                                TextIndexer textIndexer,
+                                SpatialIndexer spatialIndexer) {
         this.comparableIndexer = comparableIndexer;
         this.textIndexer = textIndexer;
         this.indexTemplate = indexTemplate;
+        this.spatialIndexer = spatialIndexer;
     }
 
     @Override
@@ -29,6 +33,11 @@ class NitriteIndexedQueryTemplate implements IndexedQueryTemplate {
     @Override
     public TextIndexer getTextIndexer() {
         return textIndexer;
+    }
+
+    @Override
+    public SpatialIndexer getSpatialIndexer() {
+        return spatialIndexer;
     }
 
     @Override

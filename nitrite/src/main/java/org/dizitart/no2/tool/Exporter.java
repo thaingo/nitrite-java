@@ -24,7 +24,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.exceptions.NitriteIOException;
-import org.dizitart.no2.mapper.JacksonFacade;
+import org.dizitart.no2.mapper.JacksonMapper;
 
 import java.io.*;
 
@@ -60,7 +60,7 @@ public class Exporter {
         Exporter exporter = new Exporter();
         exporter.db = db;
 
-        ObjectMapper objectMapper = new JacksonFacade().getObjectMapper();
+        ObjectMapper objectMapper = new JacksonMapper().getObjectMapper();
         exporter.jsonFactory = objectMapper.getFactory();
         exporter.options = new ExportOptions();
         return exporter;

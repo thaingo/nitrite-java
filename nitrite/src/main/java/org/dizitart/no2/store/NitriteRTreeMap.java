@@ -16,18 +16,21 @@
  *
  */
 
-package org.dizitart.kno2
+package org.dizitart.no2.store;
 
-import com.fasterxml.jackson.databind.Module
-import org.dizitart.no2.mapper.JacksonMapper
+import org.h2.mvstore.rtree.SpatialKey;
+import org.locationtech.jts.geom.Geometry;
+
+import java.util.Iterator;
 
 /**
- * Default [JacksonMapper] for potassium nitrite.
- *
  * @author Anindya Chatterjee
- * @author Stefan Mandel
- * @since 2.1.0
  */
-open class KNO2JacksonMapper(modules: Set<Module>) : JacksonMapper(modules) {
-    constructor() : this(emptySet())
+public interface NitriteRTreeMap extends NitriteMap<SpatialKey, Geometry> {
+
+    void add(SpatialKey key, Geometry value);
+
+    Iterator<SpatialKey> findIntersectingKeys(SpatialKey spatialKey);
+
+    Iterator<SpatialKey> findContainedKeys(SpatialKey spatialKey);
 }

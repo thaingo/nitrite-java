@@ -49,7 +49,8 @@ class EqualsObjectFilter extends BaseObjectFilter {
 
         Filter eqFilter;
         if (nitriteMapper.isValueType(value)) {
-            eqFilter = Filters.eq(field, nitriteMapper.asValue(value));
+            Object object = nitriteMapper.asValue(value);
+            eqFilter = Filters.eq(field, object);
         } else {
             eqFilter = Filters.eq(field, value);
         }

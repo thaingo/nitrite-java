@@ -34,10 +34,10 @@ import static org.dizitart.no2.util.ValidationUtils.validateInFilterValue;
 @ToString
 class InFilter extends BaseFilter {
     private String field;
-    private Object[] values;
-    private List<Object> objectList;
+    private Comparable[] values;
+    private List<Comparable> objectList;
 
-    InFilter(String field, Object... values) {
+    InFilter(String field, Comparable... values) {
         this.field = field;
         this.values = values;
         this.objectList = Arrays.asList(values);
@@ -61,8 +61,12 @@ class InFilter extends BaseFilter {
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
             Object fieldValue = getFieldValue(document, field);
-            if (objectList.contains(fieldValue)) {
-                nitriteIdSet.add(entry.getKey());
+
+            if (fieldValue instanceof Comparable) {
+                Comparable comparable = (Comparable) fieldValue;
+                if (objectList.contains(comparable)) {
+                    nitriteIdSet.add(entry.getKey());
+                }
             }
         }
         return nitriteIdSet;

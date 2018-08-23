@@ -20,7 +20,6 @@ package org.dizitart.no2.collection.operation;
 
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
 import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.store.IndexStore;
@@ -30,7 +29,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.CAN_NOT_SEARCH_NON_COMPARABLE_ON_INDEXED_FIELD;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
 import static org.dizitart.no2.util.ValidationUtils.notNull;
@@ -181,20 +179,16 @@ class NitriteComparableIndexer implements ComparableIndexer {
     }
 
     @Override
-    public Set<NitriteId> findEqual(String field, Object value) {
+    public Set<NitriteId> findEqual(String field, Comparable value) {
         notNull(field, errorMessage("field can not be null", VE_FIND_EQUAL_INDEX_NULL_FIELD));
         if (value == null) return new HashSet<>();
-
-        if (!(value instanceof Comparable)) {
-            throw new FilterException(CAN_NOT_SEARCH_NON_COMPARABLE_ON_INDEXED_FIELD);
-        }
 
         NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap
                 = indexStore.getIndexMap(field);
 
         Set<NitriteId> resultSet = null;
         if (indexMap != null) {
-            resultSet = indexMap.get((Comparable) value);
+            resultSet = indexMap.get(value);
         }
 
         if (resultSet == null) resultSet = new LinkedHashSet<>();
@@ -282,7 +276,7 @@ class NitriteComparableIndexer implements ComparableIndexer {
     }
 
     @Override
-    public Set<NitriteId> findIn(String field, List<Object> values) {
+    public Set<NitriteId> findIn(String field, List<Comparable> values) {
         notNull(field, errorMessage("field can not be null", VE_FIND_IN_INDEX_NULL_FIELD));
         notNull(values, errorMessage("values can not be null", VE_FIND_IN_INDEX_NULL_VALUE));
 

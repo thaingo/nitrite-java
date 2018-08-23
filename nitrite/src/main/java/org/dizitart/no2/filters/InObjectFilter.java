@@ -41,10 +41,10 @@ import static org.dizitart.no2.util.ValidationUtils.validateInFilterValue;
 @ToString
 class InObjectFilter extends BaseObjectFilter {
     private String field;
-    private Object[] values;
-    private List<Object> objectList;
+    private Comparable[] values;
+    private List<Comparable> objectList;
 
-    InObjectFilter(String field, Object... values) {
+    InObjectFilter(String field, Comparable... values) {
         this.field = field;
         this.values = values;
         this.objectList = Arrays.asList(values);
@@ -54,14 +54,14 @@ class InObjectFilter extends BaseObjectFilter {
     public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
         validateInFilterValue(field, values);
 
-        Object[] valueArray = new Object[values.length];
+        Comparable[] valueArray = new Comparable[values.length];
         for (int i = 0; i < values.length; i++) {
-            if (!nitriteMapper.isValueType(values[i]) || !(values[i] instanceof Comparable)) {
+            if (values[i] == null || !nitriteMapper.isValueType(values[i])) {
                 throw new FilterException(errorMessage("search term " + values[i] + " is not a comparable",
                         FE_IN_SEARCH_TERM_NOT_COMPARABLE));
             }
             if (nitriteMapper.isValueType(values[i])) {
-                valueArray[i] = nitriteMapper.asValue(values[i]);
+                valueArray[i] = (Comparable) nitriteMapper.asValue(values[i]);
             } else {
                 valueArray[i] = values[i];
             }

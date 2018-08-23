@@ -16,18 +16,13 @@
  *
  */
 
-package org.dizitart.kno2
-
-import com.fasterxml.jackson.databind.Module
-import org.dizitart.no2.mapper.JacksonMapper
+package org.dizitart.no2.spatial;
 
 /**
- * Default [JacksonMapper] for potassium nitrite.
- *
  * @author Anindya Chatterjee
- * @author Stefan Mandel
- * @since 2.1.0
  */
-open class KNO2JacksonMapper(modules: Set<Module>) : JacksonMapper(modules) {
-    constructor() : this(emptySet())
+public enum EqualityType {
+    Exact,
+    Normalized,
+    Topological
 }

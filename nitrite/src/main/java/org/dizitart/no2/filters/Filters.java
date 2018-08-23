@@ -21,6 +21,7 @@ package org.dizitart.no2.filters;
 import lombok.experimental.UtilityClass;
 import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.index.TextIndexer;
+import org.locationtech.jts.geom.Geometry;
 
 /**
  * A helper class to create all type of {@link Filter}s.
@@ -131,7 +132,7 @@ public class Filters {
      * @param value the value
      * @return the greater than filter
      */
-    public static Filter gt(String field, Object value) {
+    public static Filter gt(String field, Comparable value) {
         return new GreaterThanFilter(field, value);
     }
 
@@ -151,7 +152,7 @@ public class Filters {
      * @param value the value
      * @return the greater or equal filter
      */
-    public static Filter gte(String field, Object value) {
+    public static Filter gte(String field, Comparable value) {
         return new GreaterEqualFilter(field, value);
     }
 
@@ -171,7 +172,7 @@ public class Filters {
      * @param value the value
      * @return the lesser than filter
      */
-    public static Filter lt(String field, Object value) {
+    public static Filter lt(String field, Comparable value) {
         return new LesserThanFilter(field, value);
     }
 
@@ -191,7 +192,7 @@ public class Filters {
      * @param value the value
      * @return the lesser equal filter
      */
-    public static Filter lte(String field, Object value) {
+    public static Filter lte(String field, Comparable value) {
         return new LesserEqualFilter(field, value);
     }
 
@@ -253,7 +254,7 @@ public class Filters {
      * @param values the range values
      * @return the in filter
      */
-    public static Filter in(String field, Object... values) {
+    public static Filter in(String field, Comparable... values) {
         return new InFilter(field, values);
     }
 
@@ -276,5 +277,13 @@ public class Filters {
      */
     public static Filter elemMatch(String field, Filter filter) {
         return new ElementMatchFilter(field, filter);
+    }
+
+    public static Filter within(String field, Geometry geometry) {
+        return new WithinFilter(field, geometry);
+    }
+
+    public static Filter intersects(String field, Geometry geometry) {
+        return new IntersectsFilter(field, geometry);
     }
 }

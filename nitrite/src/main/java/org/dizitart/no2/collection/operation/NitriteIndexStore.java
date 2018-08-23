@@ -26,6 +26,7 @@ import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.index.Index;
 import org.dizitart.no2.store.IndexStore;
 import org.dizitart.no2.store.NitriteMap;
+import org.dizitart.no2.store.NitriteRTreeMap;
 import org.dizitart.no2.store.NitriteStore;
 
 import java.io.Serializable;
@@ -75,6 +76,15 @@ class NitriteIndexStore implements IndexStore {
         IndexMeta meta = getIndexMetaMap().get(field);
         if (meta != null && meta.index != null) {
             return mvStore.openMap(meta.indexMap);
+        }
+        return null;
+    }
+
+    @Override
+    public NitriteRTreeMap getSpatialIndexMap(String field) {
+        IndexMeta meta = getIndexMetaMap().get(field);
+        if (meta != null && meta.index != null) {
+            return mvStore.openRTreeMap(meta.indexMap);
         }
         return null;
     }

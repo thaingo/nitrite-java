@@ -36,9 +36,9 @@ import static org.dizitart.no2.util.ValidationUtils.validateSearchTerm;
 @ToString
 class GreaterObjectFilter extends BaseObjectFilter {
     private String field;
-    private Object value;
+    private Comparable value;
 
-    GreaterObjectFilter(String field, Object value) {
+    GreaterObjectFilter(String field, Comparable value) {
         this.field = field;
         this.value = value;
     }
@@ -50,7 +50,7 @@ class GreaterObjectFilter extends BaseObjectFilter {
         if (nitriteMapper.isValueType(value)) {
             comparable = (Comparable) nitriteMapper.asValue(value);
         } else  {
-            comparable = (Comparable) value;
+            comparable = value;
         }
 
         Filter gt = Filters.gt(field, comparable);

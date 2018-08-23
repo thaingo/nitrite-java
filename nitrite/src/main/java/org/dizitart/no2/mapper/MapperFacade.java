@@ -28,7 +28,7 @@ import org.dizitart.no2.Document;
  * @author Anindya Chatterjee
  * @since 3.0.1
  */
-public interface MapperFacade extends NitriteMapper {
+public interface MapperFacade {
 
 	/**
 	 * Parses a json string into a nitrite {@link Document}.

@@ -353,7 +353,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindWithArrayEqual() {
         insert();
-        Cursor ids = collection.find(eq("data", new Object[]{3, 4, 3}));
+        Cursor ids = collection.find(eq("data", new Comparable[]{3, 4, 3}));
         assertNotNull(ids);
         assertEquals(ids.size(), 1);
     }

@@ -36,9 +36,9 @@ import static org.dizitart.no2.util.ValidationUtils.validateSearchTerm;
 @ToString
 class LesserEqualObjectFilter extends BaseObjectFilter {
     private String field;
-    private Object value;
+    private Comparable value;
 
-    LesserEqualObjectFilter(String field, Object value) {
+    LesserEqualObjectFilter(String field, Comparable value) {
         this.field = field;
         this.value = value;
     }
@@ -50,7 +50,7 @@ class LesserEqualObjectFilter extends BaseObjectFilter {
         if (nitriteMapper.isValueType(value)) {
             comparable = (Comparable) nitriteMapper.asValue(value);
         } else {
-            comparable = (Comparable) value;
+            comparable = value;
         }
 
         Filter lte = Filters.lte(field, comparable);

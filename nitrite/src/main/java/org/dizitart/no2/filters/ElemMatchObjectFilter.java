@@ -276,13 +276,15 @@ class ElemMatchObjectFilter extends BaseObjectFilter {
     }
 
     private boolean matchIn(Object item, ObjectFilter filter) {
-        List<Object> values = ((InObjectFilter) filter).getObjectList();
+        List<Comparable> values = ((InObjectFilter) filter).getObjectList();
         if (values != null) {
             if (item instanceof Document) {
                 Document document = (Document) item;
                 Object docValue = getFieldValue(document, ((InObjectFilter) filter).getField());
-                return values.contains(docValue);
-            } else {
+                if (docValue instanceof Comparable) {
+                    return values.contains(docValue);
+                }
+            } else if (item instanceof Comparable) {
                 return values.contains(item);
             }
         }

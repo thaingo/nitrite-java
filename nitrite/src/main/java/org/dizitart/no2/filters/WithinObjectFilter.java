@@ -18,43 +18,32 @@
 
 package org.dizitart.no2.filters;
 
-import lombok.Getter;
 import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.store.NitriteMap;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.Set;
 
-import static org.dizitart.no2.util.ValidationUtils.validateSearchTerm;
-
 /**
- * @author Anindya Chatterjee.
+ * @author Anindya Chatterjee
  */
-@Getter
 @ToString
-class GreaterEqualObjectFilter extends BaseObjectFilter {
+class WithinObjectFilter extends BaseObjectFilter {
     private String field;
-    private Comparable value;
+    private Geometry geometry;
 
-    GreaterEqualObjectFilter(String field, Comparable value) {
+    WithinObjectFilter(String field, Geometry geometry) {
         this.field = field;
-        this.value = value;
+        this.geometry = geometry;
     }
 
     @Override
     public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        validateSearchTerm(nitriteMapper, field, value);
-        Comparable comparable;
-        if (nitriteMapper.isValueType(value)) {
-            comparable = (Comparable) nitriteMapper.asValue(value);
-        } else {
-            comparable = value;
-        }
-
-        Filter gte = Filters.gte(field, comparable);
-        gte.setIndexedQueryTemplate(indexedQueryTemplate);
-        return gte.apply(documentMap);
+        Filter within = new WithinFilter(field, geometry);
+        within.setIndexedQueryTemplate(indexedQueryTemplate);
+        return within.apply(documentMap);
     }
 }

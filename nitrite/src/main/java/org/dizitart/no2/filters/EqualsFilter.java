@@ -22,14 +22,20 @@ import lombok.Getter;
 import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
+import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.index.ComparableIndexer;
+import org.dizitart.no2.index.SpatialIndexer;
+import org.dizitart.no2.spatial.EqualityType;
 import org.dizitart.no2.store.NitriteMap;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 import static org.dizitart.no2.common.Constants.DOC_ID;
+import static org.dizitart.no2.exceptions.ErrorCodes.FE_EQUAL_NOT_COMPARABLE;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
 import static org.dizitart.no2.util.EqualsUtils.deepEquals;
 
@@ -62,8 +68,17 @@ class EqualsFilter extends BaseFilter {
         } else if (indexedQueryTemplate.hasIndex(field)
                 && !indexedQueryTemplate.isIndexing(field)
                 && value != null) {
-            ComparableIndexer comparableIndexer = indexedQueryTemplate.getComparableIndexer();
-            return comparableIndexer.findEqual(field, value);
+
+            if (value instanceof Geometry) {
+                SpatialIndexer spatialIndexer = indexedQueryTemplate.getSpatialIndexer();
+                return spatialIndexer.findEqual(field, (Geometry) value, EqualityType.Exact);
+            } else if (value instanceof Comparable) {
+                ComparableIndexer comparableIndexer = indexedQueryTemplate.getComparableIndexer();
+                return comparableIndexer.findEqual(field, (Comparable) value);
+            } else {
+                throw new FilterException(errorMessage(value + " is not comparable",
+                        FE_EQUAL_NOT_COMPARABLE));
+            }
         } else {
             return matchedSet(documentMap);
         }

@@ -35,7 +35,7 @@ public interface ComparableIndexer extends Indexer<Comparable> {
      * @param value the value
      * @return the result set.
      */
-    Set<NitriteId> findEqual(String field, Object value);
+    Set<NitriteId> findEqual(String field, Comparable value);
 
     /**
      * Finds with greater than filer using index.
@@ -80,5 +80,5 @@ public interface ComparableIndexer extends Indexer<Comparable> {
      * @param values the values
      * @return the result set
      */
-    Set<NitriteId> findIn(String field, List<Object> values);
+    Set<NitriteId> findIn(String field, List<Comparable> values);
 }

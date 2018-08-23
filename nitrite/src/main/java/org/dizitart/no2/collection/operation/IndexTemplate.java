@@ -25,8 +25,11 @@ import org.dizitart.no2.common.ExecutorServiceManager;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.index.Index;
+import org.dizitart.no2.index.SpatialIndexer;
 import org.dizitart.no2.index.TextIndexer;
+import org.dizitart.no2.mapper.NitriteMapper;
 import org.dizitart.no2.store.IndexStore;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.Collection;
 import java.util.Map;
@@ -50,17 +53,23 @@ class IndexTemplate {
     private final ExecutorService rebuildExecutor;
     private final TextIndexer textIndexer;
     private final ComparableIndexer comparableIndexer;
+    private final SpatialIndexer spatialIndexer;
+    private final NitriteMapper nitriteMapper;
 
     private final Object indexLock = new Object();
 
-    IndexTemplate(IndexStore indexStore,
+    IndexTemplate(NitriteMapper nitriteMapper,
+                  IndexStore indexStore,
                   ComparableIndexer comparableIndexer,
-                  TextIndexer textIndexer) {
+                  TextIndexer textIndexer,
+                  SpatialIndexer spatialIndexer) {
         this.indexBuildRegistry = new ConcurrentHashMap<>();
         this.rebuildExecutor = ExecutorServiceManager.daemonExecutor();
         this.indexStore = indexStore;
         this.textIndexer = textIndexer;
         this.comparableIndexer = comparableIndexer;
+        this.spatialIndexer = spatialIndexer;
+        this.nitriteMapper = nitriteMapper;
     }
 
     void ensureIndex(String field, IndexType indexType, boolean isAsync) {
@@ -115,6 +124,9 @@ class IndexTemplate {
                         case Fulltext:
                             textIndexer.writeIndex(nitriteId, field, (String) fieldValue, false);
                             break;
+                        case Spatial:
+                            spatialIndexer.writeIndex(nitriteId, field, parseGeometry(fieldValue), false);
+                            break;
                     }
                 }
             }
@@ -148,6 +160,9 @@ class IndexTemplate {
                             break;
                         case Fulltext:
                             textIndexer.removeIndex(nitriteId, field, (String) fieldValue);
+                            break;
+                        case Spatial:
+                            spatialIndexer.removeIndex(nitriteId, field, parseGeometry(fieldValue));
                             break;
                     }
                 }
@@ -190,6 +205,9 @@ class IndexTemplate {
                             break;
                         case Fulltext:
                             textIndexer.updateIndex(nitriteId, field, (String) newValue, null,false);
+                            break;
+                        case Spatial:
+                            spatialIndexer.updateIndex(nitriteId, field, parseGeometry(newValue), parseGeometry(oldValue), false);
                             break;
                     }
                 }
@@ -234,6 +252,9 @@ class IndexTemplate {
                     break;
                 case Fulltext:
                     textIndexer.dropIndex(field);
+                    break;
+                case Spatial:
+                    spatialIndexer.dropIndex(field);
                     break;
             }
         } else {
@@ -292,6 +313,9 @@ class IndexTemplate {
                 case Fulltext:
                     textIndexer.rebuildIndex(field, false);
                     break;
+                case Spatial:
+                    spatialIndexer.rebuildIndex(field, false);
+                    break;
             }
         } finally {
             // remove dirty marker to denote indexing completed successfully
@@ -308,5 +332,15 @@ class IndexTemplate {
         flag = new AtomicBoolean(false);
         indexBuildRegistry.put(field, flag);
         return flag;
+    }
+
+    private Geometry parseGeometry(Object fieldValue) {
+        Geometry geometry = null;
+        if (fieldValue instanceof String) {
+            geometry = nitriteMapper.fromString((String) fieldValue, Geometry.class);
+        } else if (fieldValue instanceof Geometry) {
+            geometry = (Geometry) fieldValue;
+        }
+        return geometry;
     }
 }

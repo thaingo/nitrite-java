@@ -74,4 +74,8 @@ public interface NitriteMapper {
      */
     Object asValue(Object object);
 
+
+    String asString(Object object);
+
+    <T> T fromString(String value, Class<T> type);
 }

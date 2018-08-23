@@ -48,23 +48,23 @@ import java.util.Set;
  * |Matches values that are equal to a specified value.
  * 
  * |Greater
- * |{@link org.dizitart.no2.filters.Filters#gt(String, Object)}
+ * |{@link org.dizitart.no2.filters.Filters#gt(String, Comparable)}
  * |Matches values that are greater than a specified value.
  * 
  * |GreaterEquals
- * |{@link org.dizitart.no2.filters.Filters#gte(String, Object)}
+ * |{@link org.dizitart.no2.filters.Filters#gte(String, Comparable)}
  * |Matches values that are greater than or equal to a specified value.
  * 
  * |Lesser
- * |{@link org.dizitart.no2.filters.Filters#lt(String, Object)}
+ * |{@link org.dizitart.no2.filters.Filters#lt(String, Comparable)}
  * |Matches values that are less than a specified value.
  * 
  * |LesserEquals
- * |{@link org.dizitart.no2.filters.Filters#lte(String, Object)}
+ * |{@link org.dizitart.no2.filters.Filters#lte(String, Comparable)}
  * |Matches values that are less than or equal to a specified value.
  * 
  * |In
- * |{@link org.dizitart.no2.filters.Filters#in(String, Object[])}
+ * |{@link org.dizitart.no2.filters.Filters#in(String, Comparable[])}
  * |Matches any of the values specified in an array.
  * |===
  * 

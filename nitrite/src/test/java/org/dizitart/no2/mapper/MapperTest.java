@@ -31,7 +31,7 @@ import static org.junit.Assert.assertEquals;
  * @author Anindya Chatterjee
  */
 public class MapperTest {
-    private GenericMapper jacksonMapper;
+    private JacksonMapper jacksonMapper;
 
     @Before
     public void setUp() {
