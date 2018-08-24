@@ -7,6 +7,8 @@ image:https://javadoc.io/badge/org.dizitart/nitrite.svg["Javadocs", link=https:/
 image:https://badges.gitter.im/dizitart/nitrite-database.svg["Gitter", link="https://gitter.im/dizitart/nitrite-database?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"]
 image:https://opencollective.com/nitrite-database/backers/badge.svg["Backers on Open Collective", link="#backers"]
 image:https://opencollective.com/nitrite-database/sponsors/badge.svg["Backers on Open Collective", link="#sponsors"]
+image:https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdizitart%2Fnitrite-database.svg?type=shield["FOSSA Status", link="https://app.fossa.io/projects/git%2Bgithub.com%2Fdizitart%2Fnitrite-database?ref=badge_shield"]
+
 
 image:http://www.dizitart.org/nitrite-database/logo/nitrite-logo.svg[Logo 200, 200]
 
