@@ -125,7 +125,7 @@ public class CollectionIndexTest extends BaseCollectionTest {
     }
 
     @Test
-    public void testCreateIndexAsync() throws InterruptedException {
+    public void testCreateIndexAsync() {
         insert();
         collection.createIndex("body", indexOptions(IndexType.Fulltext, true));
         assertTrue(collection.isIndexing("body"));
@@ -176,11 +176,7 @@ public class CollectionIndexTest extends BaseCollectionTest {
     }
 
     private Callable<Boolean> bodyIndexingCompleted() {
-        return new Callable<Boolean>() {
-            public Boolean call() throws Exception {
-                return !collection.isIndexing("body");
-            }
-        };
+        return () -> !collection.isIndexing("body");
     }
 
     @Test

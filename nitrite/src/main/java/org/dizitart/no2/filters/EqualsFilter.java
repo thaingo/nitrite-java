@@ -24,10 +24,7 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.index.ComparableIndexer;
-import org.dizitart.no2.index.SpatialIndexer;
-import org.dizitart.no2.spatial.EqualityType;
 import org.dizitart.no2.store.NitriteMap;
-import org.locationtech.jts.geom.Geometry;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -69,10 +66,7 @@ class EqualsFilter extends BaseFilter {
                 && !indexedQueryTemplate.isIndexing(field)
                 && value != null) {
 
-            if (value instanceof Geometry) {
-                SpatialIndexer spatialIndexer = indexedQueryTemplate.getSpatialIndexer();
-                return spatialIndexer.findEqual(field, (Geometry) value, EqualityType.Exact);
-            } else if (value instanceof Comparable) {
+            if (value instanceof Comparable) {
                 ComparableIndexer comparableIndexer = indexedQueryTemplate.getComparableIndexer();
                 return comparableIndexer.findEqual(field, (Comparable) value);
             } else {
