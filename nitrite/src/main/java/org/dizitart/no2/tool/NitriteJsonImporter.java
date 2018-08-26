@@ -59,6 +59,10 @@ class NitriteJsonImporter {
             if (TAG_REPOSITORIES.equals(fieldName)) {
                 readRepository();
             }
+
+            if (TAG_KEYED_REPOSITORIES.equals(fieldName)) {
+                readKeyedRepository();
+            }
         }
     }
 
@@ -80,6 +84,44 @@ class NitriteJsonImporter {
                     String typeId = parser.getText();
                     Class<?> type = Class.forName(typeId);
                     repository = db.getRepository(type);
+                }
+
+                if (TAG_INDICES.equals(fieldName)) {
+                    readIndices(repository);
+                }
+
+                if (TAG_DATA.equals(fieldName) && repository != null) {
+                    readCollectionData(repository.getDocumentCollection());
+                }
+            }
+        }
+    }
+
+    private void readKeyedRepository() throws IOException, ClassNotFoundException {
+        ObjectRepository<?> repository = null;
+        // move to [
+        parser.nextToken();
+
+        // loop till token equal to "]"
+        while (parser.nextToken() != JsonToken.END_ARRAY) {
+            String key = null;
+
+            // loop until end of collection object
+            while (parser.nextToken() != JsonToken.END_OBJECT) {
+                String fieldName = parser.getCurrentName();
+
+                if (TAG_KEY.equals(fieldName)) {
+                    parser.nextToken();
+                    key = parser.getText();
+                }
+
+                if (key != null && TAG_TYPE.equals(fieldName)) {
+                    // move to next token
+                    parser.nextToken();
+
+                    String typeId = parser.getText();
+                    Class<?> type = Class.forName(typeId);
+                    repository = db.getRepository(key, type);
                 }
 
                 if (TAG_INDICES.equals(fieldName)) {

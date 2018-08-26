@@ -45,6 +45,7 @@ public class ExporterImporterTest extends BaseExternalTest {
         Random random = new Random();
         for (int i = 0; i < 5; i++) {
             sourceEmpRepo.insert(DataGenerator.generateEmployee());
+            sourceKeyedEmpRepo.insert(DataGenerator.generateEmployee());
             sourceCompRepo.insert(DataGenerator.generateCompanyRecord());
 
             Document document = createDocument("first-field", random.nextGaussian());
@@ -63,6 +64,7 @@ public class ExporterImporterTest extends BaseExternalTest {
         NitriteCollection destFirstColl = destDb.getCollection("first");
         NitriteCollection destSecondColl = destDb.getCollection("second");
         ObjectRepository<Employee> destEmpRepo = destDb.getRepository(Employee.class);
+        ObjectRepository<Employee> destKeyedEmpRepo = destDb.getRepository("key", Employee.class);
         ObjectRepository<Company> destCompRepo = destDb.getRepository(Company.class);
 
         assertEquals(filter(sourceFirstColl.find().toList()),
@@ -72,10 +74,13 @@ public class ExporterImporterTest extends BaseExternalTest {
 
         assertEquals(sourceEmpRepo.find().toList(),
                 destEmpRepo.find().toList());
+        assertEquals(sourceKeyedEmpRepo.find().toList(),
+                destKeyedEmpRepo.find().toList());
         assertEquals(sourceCompRepo.find().toList(),
                 destCompRepo.find().toList());
 
         assertEquals(sourceEmpRepo.listIndices(), destEmpRepo.listIndices());
+        assertEquals(sourceKeyedEmpRepo.listIndices(), destKeyedEmpRepo.listIndices());
         assertEquals(sourceCompRepo.listIndices(), destCompRepo.listIndices());
         assertEquals(sourceFirstColl.listIndices(), destFirstColl.listIndices());
         assertEquals(sourceSecondColl.listIndices(), destSecondColl.listIndices());

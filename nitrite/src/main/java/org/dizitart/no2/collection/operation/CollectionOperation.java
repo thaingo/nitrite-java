@@ -220,6 +220,7 @@ public class CollectionOperation {
      */
     public void dropCollection() {
         indexTemplate.dropAllIndices();
+        nitriteContext.dropCollection(mapStore.getName());
         mapStore.drop();
     }
 

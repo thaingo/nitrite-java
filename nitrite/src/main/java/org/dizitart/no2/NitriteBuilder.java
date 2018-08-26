@@ -40,14 +40,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.dizitart.no2.common.Constants.KEY_OBJ_SEPARATOR;
 import static org.dizitart.no2.common.Security.createSecurely;
 import static org.dizitart.no2.common.Security.openSecurely;
 import static org.dizitart.no2.exceptions.ErrorCodes.NIOE_DIR_DOES_NOT_EXISTS;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
 import static org.dizitart.no2.tool.Recovery.recover;
-import static org.dizitart.no2.util.ObjectUtils.isKeyedObjectStore;
-import static org.dizitart.no2.util.ObjectUtils.isObjectStore;
+import static org.dizitart.no2.util.ObjectUtils.*;
 import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.util.ValidationUtils.isValidCollectionName;
 
@@ -526,7 +524,7 @@ public class NitriteBuilder {
         Set<String> collectionRegistry = new HashSet<>();
         if (store != null) {
             for (String name : store.getMapNames()) {
-                if (isValidCollectionName(name) && !isObjectStore(name)) {
+                if (isValidCollectionName(name) && !isRepository(name)) {
                     collectionRegistry.add(name);
                 }
             }
@@ -540,11 +538,10 @@ public class NitriteBuilder {
         Map<String, Class<?>> repositoryRegistry = new HashMap<>();
         if (store != null) {
             for (String name : store.getMapNames()) {
-                if (isValidCollectionName(name) && isObjectStore(name)) {
+                if (isValidCollectionName(name) && isRepository(name)) {
                     try {
-                        if (isKeyedObjectStore(name)) {
-                            String[] split = name.split("\\" + KEY_OBJ_SEPARATOR);
-                            String typeName = split[0];
+                        if (isKeyedRepository(name)) {
+                            String typeName = getKeyedRepositoryType(name);
                             Class<?> type = Class.forName(typeName);
                             repositoryRegistry.put(name, type);
                         } else {

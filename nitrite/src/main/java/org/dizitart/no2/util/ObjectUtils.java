@@ -26,18 +26,17 @@ import org.dizitart.no2.collection.objects.ObjectFilter;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.NotIdentifiableException;
+import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.index.annotations.Id;
 import org.dizitart.no2.index.annotations.Index;
 import org.dizitart.no2.index.annotations.Indices;
 import org.dizitart.no2.index.annotations.InheritIndices;
 import org.dizitart.no2.mapper.NitriteMapper;
-import org.locationtech.jts.geom.Geometry;
 import org.objenesis.ObjenesisStd;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static org.dizitart.no2.common.Constants.GEOMETRY_ID;
 import static org.dizitart.no2.common.Constants.KEY_OBJ_SEPARATOR;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
@@ -62,7 +61,7 @@ public class ObjectUtils {
      * @param type          the type of object stored in the repository
      * @return the name of the object repository.
      */
-    public static <T> String findObjectStoreName(Class<T> type) {
+    public static <T> String findRepositoryName(Class<T> type) {
         notNull(type, errorMessage("type can not be null", VE_OBJ_STORE_NULL_TYPE));
         return type.getName();
     }
@@ -76,7 +75,7 @@ public class ObjectUtils {
      * @param type the type of object stored in the repository
      * @return the name of the object repository.
      */
-    public static <T> String findObjectStoreName(String key, Class<T> type) {
+    public static <T> String findRepositoryName(String key, Class<T> type) {
         notNull(key, errorMessage("key can not be null", VE_OBJ_STORE_NULL_KEY));
         notEmpty(key, errorMessage("key can not be empty", VE_OBJ_STORE_EMPTY_KEY));
         notNull(type, errorMessage("type can not be null", VE_OBJ_STORE_NULL_TYPE));
@@ -179,28 +178,28 @@ public class ObjectUtils {
     }
 
     /**
-     * Checks whether a collection name is a valid object store name.
+     * Checks whether a collection name is a valid object repository name.
      *
      * @param collectionName the collection name
      * @return `true` if it is a valid object store name; `false` otherwise.
      */
-    public static boolean isObjectStore(String collectionName) {
+    public static boolean isRepository(String collectionName) {
         try {
             if (isNullOrEmpty(collectionName)) return false;
             Class clazz = Class.forName(collectionName);
             return clazz != null;
         } catch (ClassNotFoundException e) {
-            return isKeyedObjectStore(collectionName);
+            return isKeyedRepository(collectionName);
         }
     }
 
     /**
-     * Checks whether a collection name is a valid keyed object store name.
+     * Checks whether a collection name is a valid keyed object repository name.
      *
      * @param collectionName the collection name
      * @return `true` if it is a valid object store name; `false` otherwise.
      */
-    public static boolean isKeyedObjectStore(String collectionName) {
+    public static boolean isKeyedRepository(String collectionName) {
         try {
             if (isNullOrEmpty(collectionName)) return false;
             if (!collectionName.contains(KEY_OBJ_SEPARATOR)) return false;
@@ -215,6 +214,36 @@ public class ObjectUtils {
         } catch (ClassNotFoundException e) {
             return false;
         }
+    }
+
+    /**
+     * Gets the key name of a keyed-{@link org.dizitart.no2.collection.objects.ObjectRepository}
+     *
+     * @param collectionName name of the collection
+     * @return the key
+     * */
+    public static String getKeyName(String collectionName) {
+        if (collectionName.contains(KEY_OBJ_SEPARATOR)) {
+            String[] split = collectionName.split("\\" + KEY_OBJ_SEPARATOR);
+            return split[1];
+        }
+        throw new ValidationException(errorMessage(collectionName + " is not a valid keyed object repository",
+                VE_INVALID_KEYED_OBJ_STORE_KEY));
+    }
+
+    /**
+     * Gets the type name of a keyed-{@link org.dizitart.no2.collection.objects.ObjectRepository}
+     *
+     * @param collectionName name of the collection
+     * @return the type name
+     * */
+    public static String getKeyedRepositoryType(String collectionName) {
+        if (collectionName.contains(KEY_OBJ_SEPARATOR)) {
+            String[] split = collectionName.split("\\" + KEY_OBJ_SEPARATOR);
+            return split[0];
+        }
+        throw new ValidationException(errorMessage(collectionName + " is not a valid keyed object repository",
+                VE_INVALID_KEYED_OBJ_STORE_TYPE));
     }
 
     public static <T> T newInstance(Class<T> type) {
@@ -252,16 +281,6 @@ public class ObjectUtils {
             }
         }
         return document;
-    }
-
-    public static Object decodeValue(NitriteMapper nitriteMapper, Object value) {
-        if (value instanceof String) {
-            String encodedValue = (String) value;
-            if (encodedValue.startsWith(GEOMETRY_ID)) {
-                return nitriteMapper.fromString(encodedValue, Geometry.class);
-            }
-        }
-        return value;
     }
 
     private <T> void populateIndex(NitriteMapper nitriteMapper, Class<T> type,

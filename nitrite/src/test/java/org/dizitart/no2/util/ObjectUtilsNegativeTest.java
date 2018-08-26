@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import static org.dizitart.no2.util.ObjectUtils.extractIndices;
-import static org.dizitart.no2.util.ObjectUtils.findObjectStoreName;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -38,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 public class ObjectUtilsNegativeTest {
     @Test(expected = ValidationException.class)
     public void testObjectStoreNameInvalid() {
-        assertEquals(findObjectStoreName(null), null);
+        assertEquals(ObjectUtils.findRepositoryName(null), null);
     }
 
     @Test(expected = IndexingException.class)

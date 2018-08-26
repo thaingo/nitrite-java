@@ -28,11 +28,10 @@ import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.index.Index;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.dizitart.no2.common.Constants.*;
+import static org.dizitart.no2.util.ObjectUtils.*;
 
 /**
  * @author Anindya Chatterjee
@@ -55,53 +54,86 @@ class NitriteJsonExporter {
         if (collections.isEmpty()) {
             Set<String> collectionNames = db.listCollectionNames();
             Set<String> repositoryNames = db.listRepositories();
-
-            generator.writeStartObject();
-
-            generator.writeFieldName(TAG_COLLECTIONS);
-            generator.writeStartArray();
-            for (String collectionName : collectionNames) {
-                NitriteCollection nitriteCollection = db.getCollection(collectionName);
-                writeCollection(nitriteCollection);
-            }
-            generator.writeEndArray();
-
-            generator.writeFieldName(TAG_REPOSITORIES);
-            generator.writeStartArray();
-            for (String repoName : repositoryNames) {
-                Class<?> type = Class.forName(repoName);
-                ObjectRepository<?> repository = db.getRepository(type);
-                writeRepository(repository);
-            }
-            generator.writeEndArray();
-
-            generator.writeEndObject();
+            Map<String, String> keyedRepositoryNames = db.listKeyedRepository();
+            exportData(collectionNames, repositoryNames, keyedRepositoryNames);
         } else {
+            Set<String> collectionNames = new HashSet<>();
+            Set<String> repositoryNames = new HashSet<>();
+            Map<String, String> keyedRepositoryNames = new HashMap<>();
             for (PersistentCollection<?> collection : collections) {
-                if (collection != null) {
-                    generator.writeStartObject();
-                    if (collection instanceof NitriteCollection) {
-                        NitriteCollection nitriteCollection = (NitriteCollection) collection;
-                        generator.writeFieldName(TAG_COLLECTIONS);
-                        generator.writeStartArray();
-                        writeCollection(nitriteCollection);
-                        generator.writeEndArray();
-                    } else if (collection instanceof ObjectRepository) {
-                        ObjectRepository<?> repository = (ObjectRepository<?>) collection;
-                        generator.writeFieldName(TAG_REPOSITORIES);
-                        generator.writeStartArray();
-                        writeRepository(repository);
-                        generator.writeEndArray();
+                String name = collection.getName();
+                if (isRepository(name)) {
+                    if (isKeyedRepository(name)) {
+                        keyedRepositoryNames.put(getKeyName(name), getKeyedRepositoryType(name));
+                    } else {
+                        repositoryNames.add(name);
                     }
-                    generator.writeEndObject();
+                } else {
+                    collectionNames.add(name);
                 }
             }
+            exportData(collectionNames, repositoryNames, keyedRepositoryNames);
         }
         generator.close();
     }
 
+    private void exportData(Set<String> collectionNames,
+                            Set<String> repositoryNames,
+                            Map<String, String> keyedRepositoryNames) throws IOException, ClassNotFoundException {
+        generator.writeStartObject();
+
+        generator.writeFieldName(TAG_COLLECTIONS);
+        generator.writeStartArray();
+        for (String collectionName : collectionNames) {
+            NitriteCollection nitriteCollection = db.getCollection(collectionName);
+            writeCollection(nitriteCollection);
+        }
+        generator.writeEndArray();
+
+        generator.writeFieldName(TAG_REPOSITORIES);
+        generator.writeStartArray();
+        for (String repoName : repositoryNames) {
+            Class<?> type = Class.forName(repoName);
+            ObjectRepository<?> repository = db.getRepository(type);
+            writeRepository(repository);
+        }
+        generator.writeEndArray();
+
+        generator.writeFieldName(TAG_KEYED_REPOSITORIES);
+        generator.writeStartArray();
+        for (Map.Entry<String, String> entry : keyedRepositoryNames.entrySet()) {
+            String key = entry.getKey();
+            String typeName = entry.getValue();
+            Class<?> type = Class.forName(typeName);
+            ObjectRepository<?> repository = db.getRepository(key, type);
+            writeKeyedRepository(key, repository);
+        }
+        generator.writeEndArray();
+
+        generator.writeEndObject();
+    }
+
+
+
     private void writeRepository(ObjectRepository<?> repository) throws IOException {
         generator.writeStartObject();
+        generator.writeFieldName(TAG_TYPE);
+        generator.writeString(repository.getType().getName());
+
+        Collection<Index> indices = repository.listIndices();
+        writeIndices(indices);
+
+        Cursor cursor = repository.getDocumentCollection().find();
+        writeContent(cursor);
+        generator.writeEndObject();
+    }
+
+    private void writeKeyedRepository(String key, ObjectRepository<?> repository) throws IOException {
+        generator.writeStartObject();
+
+        generator.writeFieldName(TAG_KEY);
+        generator.writeString(key);
+
         generator.writeFieldName(TAG_TYPE);
         generator.writeString(repository.getType().getName());
 

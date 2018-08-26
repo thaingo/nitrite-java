@@ -40,6 +40,7 @@ import static org.dizitart.no2.common.Constants.*;
  */
 public abstract class BaseExternalTest {
     protected ObjectRepository<Employee> sourceEmpRepo;
+    protected ObjectRepository<Employee> sourceKeyedEmpRepo;
     protected ObjectRepository<Company> sourceCompRepo;
     protected NitriteCollection sourceFirstColl;
     protected NitriteCollection sourceSecondColl;
@@ -63,6 +64,7 @@ public abstract class BaseExternalTest {
                 .openOrCreate();
 
         sourceEmpRepo = sourceDb.getRepository(Employee.class);
+        sourceKeyedEmpRepo = sourceDb.getRepository("key", Employee.class);
         sourceCompRepo = sourceDb.getRepository(Company.class);
 
         sourceFirstColl = sourceDb.getCollection("first");

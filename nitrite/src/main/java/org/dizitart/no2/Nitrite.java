@@ -30,12 +30,13 @@ import org.dizitart.no2.store.NitriteStore;
 
 import java.io.Closeable;
 import java.nio.channels.NonWritableChannelException;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 import static org.dizitart.no2.common.Security.validateUserPassword;
-import static org.dizitart.no2.util.ObjectUtils.findObjectStoreName;
+import static org.dizitart.no2.util.ObjectUtils.*;
 import static org.dizitart.no2.util.ValidationUtils.validateCollectionName;
 
 
@@ -136,7 +137,7 @@ public class Nitrite implements Closeable {
      */
     public <T> ObjectRepository<T> getRepository(Class<T> type) {
         if (store != null) {
-            String name = findObjectStoreName(type);
+            String name = findRepositoryName(type);
             NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
             NitriteCollection collection = CollectionFactory.open(mapStore, context);
             ObjectRepository<T> repository = RepositoryFactory.open(type, collection, context);
@@ -164,7 +165,7 @@ public class Nitrite implements Closeable {
      */
     public <T> ObjectRepository<T> getRepository(String key, Class<T> type) {
         if (store != null) {
-            String name = findObjectStoreName(key, type);
+            String name = findRepositoryName(key, type);
             NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
             NitriteCollection collection = CollectionFactory.open(mapStore, context);
             ObjectRepository<T> repository = RepositoryFactory.open(type, collection, context);
@@ -192,7 +193,33 @@ public class Nitrite implements Closeable {
      * @return the set of all registered classes' names.
      */
     public Set<String> listRepositories() {
-        return new LinkedHashSet<>(context.getRepositoryRegistry().keySet());
+        Set<String> resultSet = new LinkedHashSet<>();
+        Set<String> repository = context.getRepositoryRegistry().keySet();
+        for (String name : repository) {
+            if (!isKeyedRepository(name)) {
+                resultSet.add(name);
+            }
+        }
+        return resultSet;
+    }
+
+    /**
+     * Gets the map of all key to the fully qualified class names corresponding
+     * to all keyed-{@link ObjectRepository}s in the store.
+     *
+     * @return the set of all registered classes' names.
+     */
+    public Map<String, String> listKeyedRepository() {
+        Map<String, String> resultMap = new HashMap<>();
+        Set<String> repository = context.getRepositoryRegistry().keySet();
+        for (String name : repository) {
+            if (isKeyedRepository(name)) {
+                String key = getKeyName(name);
+                String type = getKeyedRepositoryType(name);
+                resultMap.put(key, type);
+            }
+        }
+        return resultMap;
     }
 
     /**
@@ -213,7 +240,7 @@ public class Nitrite implements Closeable {
      * @return `true` if the repository exists; otherwise `false`.
      */
     public <T> boolean hasRepository(Class<T> type) {
-        return context.getRepositoryRegistry().containsKey(findObjectStoreName(type));
+        return context.getRepositoryRegistry().containsKey(findRepositoryName(type));
     }
 
     /**
@@ -226,7 +253,7 @@ public class Nitrite implements Closeable {
      * @return `true` if the repository exists; otherwise `false`.
      */
     public <T> boolean hasRepository(String key, Class<T> type) {
-        return context.getRepositoryRegistry().containsKey(findObjectStoreName(key, type));
+        return context.getRepositoryRegistry().containsKey(findRepositoryName(key, type));
     }
 
     /**

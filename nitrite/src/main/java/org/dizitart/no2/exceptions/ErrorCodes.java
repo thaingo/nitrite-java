@@ -113,6 +113,8 @@ public class ErrorCodes {
     static final int VE_PROJECTION_WITH_NOT_NULL_VALUE = 1083;
     public static final int VE_OBJ_STORE_NULL_KEY = 1084;
     public static final int VE_OBJ_STORE_EMPTY_KEY = 1085;
+    public static final int VE_INVALID_KEYED_OBJ_STORE_KEY = 1086;
+    public static final int VE_INVALID_KEYED_OBJ_STORE_TYPE = 1087;
 
     // endregion
 
