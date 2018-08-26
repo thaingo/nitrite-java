@@ -31,11 +31,13 @@ import org.dizitart.no2.index.annotations.Index;
 import org.dizitart.no2.index.annotations.Indices;
 import org.dizitart.no2.index.annotations.InheritIndices;
 import org.dizitart.no2.mapper.NitriteMapper;
+import org.locationtech.jts.geom.Geometry;
 import org.objenesis.ObjenesisStd;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static org.dizitart.no2.common.Constants.GEOMETRY_ID;
 import static org.dizitart.no2.common.Constants.KEY_OBJ_SEPARATOR;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
@@ -250,6 +252,16 @@ public class ObjectUtils {
             }
         }
         return document;
+    }
+
+    public static Object decodeValue(NitriteMapper nitriteMapper, Object value) {
+        if (value instanceof String) {
+            String encodedValue = (String) value;
+            if (encodedValue.startsWith(GEOMETRY_ID)) {
+                return nitriteMapper.fromString(encodedValue, Geometry.class);
+            }
+        }
+        return value;
     }
 
     private <T> void populateIndex(NitriteMapper nitriteMapper, Class<T> type,

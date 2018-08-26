@@ -186,6 +186,7 @@ class NitriteComparableIndexer implements ComparableIndexer {
         NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap
                 = indexStore.getIndexMap(field);
 
+
         Set<NitriteId> resultSet = null;
         if (indexMap != null) {
             resultSet = indexMap.get(value);

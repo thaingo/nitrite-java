@@ -78,6 +78,12 @@ class NitriteTextIndexer implements TextIndexer {
                     ConcurrentSkipListSet<NitriteId> nitriteIds = indexMap.get(word);
                     if (nitriteIds != null) {
                         nitriteIds.remove(id);
+
+                        if (nitriteIds.isEmpty()) {
+                            indexMap.remove(word);
+                        } else {
+                            indexMap.put(word, nitriteIds);
+                        }
                     }
                 }
             }
@@ -142,9 +148,9 @@ class NitriteTextIndexer implements TextIndexer {
 
                     if (nitriteIds == null) {
                         nitriteIds = new ConcurrentSkipListSet<>();
-                        indexMap.put(word, nitriteIds);
                     }
                     nitriteIds.add(id);
+                    indexMap.put(word, nitriteIds);
                 }
             }
         } catch (IOException ioe) {

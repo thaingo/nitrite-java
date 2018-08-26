@@ -9,6 +9,8 @@ public interface IndexedQueryTemplate {
 
     boolean isIndexing(String field);
 
+    Index findIndex(String field);
+
     ComparableIndexer getComparableIndexer();
 
     TextIndexer getTextIndexer();

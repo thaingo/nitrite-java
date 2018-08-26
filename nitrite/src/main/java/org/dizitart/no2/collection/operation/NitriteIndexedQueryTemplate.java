@@ -1,9 +1,6 @@
 package org.dizitart.no2.collection.operation;
 
-import org.dizitart.no2.index.ComparableIndexer;
-import org.dizitart.no2.index.IndexedQueryTemplate;
-import org.dizitart.no2.index.SpatialIndexer;
-import org.dizitart.no2.index.TextIndexer;
+import org.dizitart.no2.index.*;
 
 /**
  * @author Anindya Chatterjee.
@@ -48,5 +45,10 @@ class NitriteIndexedQueryTemplate implements IndexedQueryTemplate {
     @Override
     public boolean hasIndex(String field) {
         return indexTemplate.hasIndex(field);
+    }
+
+    @Override
+    public Index findIndex(String field) {
+        return indexTemplate.findIndex(field);
     }
 }

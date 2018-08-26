@@ -205,4 +205,9 @@ public class Constants {
      * The constant HASH_KEY_LENGTH.
      */
     static final int HASH_KEY_LENGTH = 256;
+
+    /**
+     * The constant GEOMETRY_ID
+     * */
+    public static final String GEOMETRY_ID = "geometry:";
 }

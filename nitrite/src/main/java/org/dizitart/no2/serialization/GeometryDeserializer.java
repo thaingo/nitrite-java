@@ -28,6 +28,8 @@ import org.locationtech.jts.io.WKTReader;
 
 import java.io.IOException;
 
+import static org.dizitart.no2.common.Constants.GEOMETRY_ID;
+
 /**
  * @author Anindya Chatterjee
  */
@@ -43,7 +45,12 @@ class GeometryDeserializer extends StdScalarDeserializer<Geometry> {
         String value = p.getValueAsString();
         WKTReader reader = new WKTReader();
         try {
-            return reader.read(value);
+            if (value.contains(GEOMETRY_ID)) {
+                String geometry = value.replace(GEOMETRY_ID, "");
+                return reader.read(geometry);
+            } else {
+                throw new ParseException("Not a valid geometry value " + value);
+            }
         } catch (ParseException e) {
             log.error("Error while parsing WKT geometry string", e);
             throw new IOException(e);

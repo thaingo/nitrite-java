@@ -291,7 +291,6 @@ public class NitriteBuilder {
      *
      * @param nitriteMapper a {@link NitriteMapper} implementation
      * @return the {@link NitriteBuilder} instance.
-     * @see org.dizitart.no2.mapper.GenericMapper
      * @see org.dizitart.no2.mapper.JacksonMapper
      * */
     public NitriteBuilder nitriteMapper(NitriteMapper nitriteMapper) {
@@ -325,7 +324,6 @@ public class NitriteBuilder {
      * @see org.dizitart.no2.mapper.JacksonFacade
      * @see org.dizitart.no2.mapper.JacksonMapper
      * @see NitriteMapper
-     * @see org.dizitart.no2.mapper.GenericMapper
      * */
     public NitriteBuilder registerModule(Module module) {
         this.jacksonModules.add(module);

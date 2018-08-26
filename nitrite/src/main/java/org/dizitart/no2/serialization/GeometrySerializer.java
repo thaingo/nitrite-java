@@ -26,6 +26,8 @@ import org.locationtech.jts.io.WKTWriter;
 
 import java.io.IOException;
 
+import static org.dizitart.no2.common.Constants.GEOMETRY_ID;
+
 /**
  * @author Anindya Chatterjee
  */
@@ -40,7 +42,7 @@ class GeometrySerializer extends StdScalarSerializer<Geometry> {
         if (value != null) {
             WKTWriter writer = new WKTWriter();
             String wktString = writer.write(value);
-            gen.writeString(wktString);
+            gen.writeString(GEOMETRY_ID + wktString);
         }
     }
 }

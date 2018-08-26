@@ -202,6 +202,7 @@ public class ErrorCodes {
     public static final int FE_TEXT_FILTER_FIELD_NOT_INDEXED = 4047;
     public static final int FE_WITHIN_FILTER_FIELD_NOT_INDEXED = 4048;
     public static final int FE_INTERSECTS_FILTER_FIELD_NOT_INDEXED = 4049;
+    public static final int FE_EQ_NOT_SPATIAL = 4050;
 
     // endregion
 

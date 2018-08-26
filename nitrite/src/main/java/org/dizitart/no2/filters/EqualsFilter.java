@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
+import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.store.NitriteMap;
@@ -32,6 +33,7 @@ import java.util.Set;
 
 import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.dizitart.no2.exceptions.ErrorCodes.FE_EQUAL_NOT_COMPARABLE;
+import static org.dizitart.no2.exceptions.ErrorCodes.FE_EQ_NOT_SPATIAL;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
 import static org.dizitart.no2.util.EqualsUtils.deepEquals;
@@ -65,6 +67,11 @@ class EqualsFilter extends BaseFilter {
         } else if (indexedQueryTemplate.hasIndex(field)
                 && !indexedQueryTemplate.isIndexing(field)
                 && value != null) {
+
+            if (indexedQueryTemplate.findIndex(field).getIndexType() == IndexType.Spatial) {
+                throw new FilterException(errorMessage("eq cannot be used as a spatial filter",
+                        FE_EQ_NOT_SPATIAL));
+            }
 
             if (value instanceof Comparable) {
                 ComparableIndexer comparableIndexer = indexedQueryTemplate.getComparableIndexer();
