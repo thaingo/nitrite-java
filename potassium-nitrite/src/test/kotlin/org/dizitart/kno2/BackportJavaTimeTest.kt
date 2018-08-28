@@ -78,8 +78,7 @@ class BackportJavaTimeTest {
     fun testIssue59() {
         val db = nitrite {
             path = dbPath
-            nitriteMapper = object : KNO2JacksonMapper() {}
-            registerModule(ThreeTenAbpModule())
+            nitriteMapper = object : KNO2JacksonMapper(setOf(ThreeTenAbpModule())) {}
         }
 
         val repo = db.getRepository<TestData>()
