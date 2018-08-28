@@ -18,8 +18,7 @@
 
 package org.dizitart.no2.filters;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.Filter;
@@ -27,28 +26,36 @@ import org.dizitart.no2.index.IndexedQueryTemplate;
 import org.dizitart.no2.mapper.NitriteMapper;
 import org.dizitart.no2.store.NitriteMap;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-@Getter
-@ToString
-class NotFilter implements Filter {
-    private Filter filter;
+/**
+ * @author Anindya Chatterjee
+ */
+@Slf4j
+abstract class LogicalFilter implements Filter {
     private IndexedQueryTemplate indexedQueryTemplate;
     private NitriteMapper nitriteMapper;
 
-    NotFilter(Filter filter) {
-        this.filter = filter;
-    }
 
-    @Override
-    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        if (filter instanceof BaseFilter) {
+    List<Callable<Set<NitriteId>>> createTasks(Filter[] filters,
+                                               final NitriteMap<NitriteId, Document> documentMap) {
+        List<Callable<Set<NitriteId>>> tasks = new ArrayList<>();
+        for (final Filter filter : filters) {
             filter.setIndexedQueryTemplate(indexedQueryTemplate);
             filter.setNitriteMapper(nitriteMapper);
+            tasks.add(() -> {
+                try {
+                    return filter.apply(documentMap);
+                } catch (Exception e) {
+                    log.error("Error while executing filter " + filter.toString(), e);
+                    throw e;
+                }
+            });
         }
-
-        return matchedSet(documentMap);
+        return tasks;
     }
 
     @Override
@@ -59,11 +66,5 @@ class NotFilter implements Filter {
     @Override
     public void setNitriteMapper(NitriteMapper nitriteMapper) {
         this.nitriteMapper = nitriteMapper;
-    }
-
-    private Set<NitriteId> matchedSet(NitriteMap<NitriteId, Document> documentMap) {
-        Set<NitriteId> resultSet = new LinkedHashSet<>(documentMap.keySet());
-        resultSet.removeAll(filter.apply(documentMap));
-        return resultSet;
     }
 }

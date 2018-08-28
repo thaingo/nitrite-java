@@ -40,7 +40,7 @@ import static org.dizitart.no2.exceptions.ErrorMessage.INVALID_AND_FILTER;
 @Getter
 @Slf4j
 @ToString
-class AndFilter extends BaseFilter {
+class AndFilter extends LogicalFilter {
     private Filter[] filters;
 
     AndFilter(final Filter... filters) {

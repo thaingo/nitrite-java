@@ -30,7 +30,6 @@ import org.dizitart.no2.collection.objects.data.Employee;
 import org.dizitart.no2.collection.objects.data.Note;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
-import org.dizitart.no2.filters.ObjectFilters;
 import org.dizitart.no2.index.Index;
 import org.dizitart.no2.util.Iterables;
 import org.junit.Test;
@@ -42,7 +41,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static org.awaitility.Awaitility.await;
-import static org.dizitart.no2.filters.ObjectFilters.*;
+import static org.dizitart.no2.filters.Filters.*;
 import static org.junit.Assert.*;
 
 /**
@@ -314,7 +313,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
 
     @Test(expected = InvalidIdException.class)
     public void testMultiUpdateWithObject() {
-        employeeRepository.remove(ObjectFilters.ALL);
+        employeeRepository.remove(ALL);
 
         Date now = new Date();
         Employee employee1 = new Employee();

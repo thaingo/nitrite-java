@@ -25,7 +25,6 @@ import org.dizitart.no2.event.ChangeAware;
 import org.dizitart.no2.event.ChangeType;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
-import org.dizitart.no2.filters.ObjectFilters;
 import org.dizitart.no2.index.annotations.Id;
 
 /**
@@ -131,7 +130,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      */
-    WriteResult update(ObjectFilter filter, T update);
+    WriteResult update(Filter filter, T update);
 
     /**
      * Updates objects in the repository. Update operation can be customized
@@ -159,7 +158,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      * @throws org.dizitart.no2.exceptions.ValidationException if `updateOptions` is `null`.
      */
-    WriteResult update(ObjectFilter filter, T update, boolean upsert);
+    WriteResult update(Filter filter, T update, boolean upsert);
 
     /**
      * Updates objects in the repository by setting the field specified in `document`.
@@ -182,7 +181,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      */
-    WriteResult update(ObjectFilter filter, Document update);
+    WriteResult update(Filter filter, Document update);
 
     /**
      * Updates objects in the repository by setting the field specified in `document`.
@@ -209,7 +208,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      */
-    WriteResult update(ObjectFilter filter, Document update, boolean justOnce);
+    WriteResult update(Filter filter, Document update, boolean justOnce);
 
     /**
      * Removes matching elements from the collection.
@@ -224,7 +223,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @param filter the filter to apply to select elements from collection.
      * @return the result of the remove operation.
      */
-    WriteResult remove(ObjectFilter filter);
+    WriteResult remove(Filter filter);
 
     /**
      * Removes objects from the collection. Remove operation can be customized by
@@ -242,7 +241,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @param removeOptions the remove options to customize the operations.
      * @return the result of the remove operation.
      */
-    WriteResult remove(ObjectFilter filter, RemoveOptions removeOptions);
+    WriteResult remove(Filter filter, RemoveOptions removeOptions);
 
     /**
      * Returns a cursor to all objects in the collection.
@@ -264,10 +263,10 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @param filter the filter to apply to select objects from collection.
      * @return a cursor to all selected objects.
      * @throws org.dizitart.no2.exceptions.ValidationException if `filter` is null.
-     * @see ObjectFilters
+     * @see org.dizitart.no2.filters.Filters
      * @see Cursor#project(Class)
      */
-    Cursor<T> find(ObjectFilter filter);
+    Cursor<T> find(Filter filter);
 
     /**
      * Returns a customized cursor to all objects in the collection.
@@ -303,7 +302,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @see SortOrder
      * @see Cursor#project(Class)
      */
-    Cursor<T> find(ObjectFilter filter, FindOptions findOptions);
+    Cursor<T> find(Filter filter, FindOptions findOptions);
 
     /**
      * Returns the type associated with the {@link ObjectRepository}.

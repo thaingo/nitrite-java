@@ -18,18 +18,18 @@
 
 package org.dizitart.no2.collection.objects;
 
+import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.collection.FindOptions;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.collection.SortOrder;
 import org.dizitart.no2.collection.objects.data.*;
-import org.dizitart.no2.filters.ObjectFilters;
 import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
 
 import static org.dizitart.no2.collection.FindOptions.sort;
-import static org.dizitart.no2.filters.ObjectFilters.*;
+import static org.dizitart.no2.filters.Filters.*;
 import static org.junit.Assert.*;
 
 /**
@@ -358,12 +358,12 @@ public class RepositorySearchTest extends BaseObjectRepositoryTest {
     @Test
     public void testFilterAll() {
         ObjectRepository<ElemMatch> repository = db.getRepository(ElemMatch.class);
-        Cursor<ElemMatch> cursor = repository.find(ObjectFilters.ALL);
+        Cursor<ElemMatch> cursor = repository.find(ALL);
         assertNotNull(cursor);
         assertEquals(cursor.size(), 0);
 
         repository.insert(new ElemMatch());
-        cursor = repository.find(ObjectFilters.ALL);
+        cursor = repository.find(ALL);
         assertNotNull(cursor);
         assertEquals(cursor.size(), 1);
     }
@@ -414,7 +414,7 @@ public class RepositorySearchTest extends BaseObjectRepositoryTest {
         repository.insert(p2);
         repository.insert(p3);
 
-        ObjectFilter married = eq("status", "Married");
+        Filter married = eq("status", "Married");
         FindOptions sortBy = FindOptions.sort("status", SortOrder.Descending);
 
         assertEquals(repository.find(married).size(), 2);

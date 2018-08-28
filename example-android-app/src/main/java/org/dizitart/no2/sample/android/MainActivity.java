@@ -30,7 +30,7 @@ import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.event.ChangeInfo;
 import org.dizitart.no2.event.ChangeListener;
-import org.dizitart.no2.filters.ObjectFilters;
+import org.dizitart.no2.filters.Filters;
 import org.dizitart.no2.util.Iterables;
 
 import java.util.ArrayList;
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void flushUsers() {
-        repository.remove(ObjectFilters.ALL);
+        repository.remove(Filters.ALL);
     }
 
     @Override

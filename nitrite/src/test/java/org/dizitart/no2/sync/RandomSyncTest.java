@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
-import static org.dizitart.no2.filters.ObjectFilters.eq;
+import static org.dizitart.no2.filters.Filters.eq;
 import static org.dizitart.no2.sync.TimeSpan.timeSpan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

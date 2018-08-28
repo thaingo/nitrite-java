@@ -23,6 +23,8 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.exceptions.FilterException;
+import org.dizitart.no2.index.IndexedQueryTemplate;
+import org.dizitart.no2.mapper.NitriteMapper;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.lang.reflect.Array;
@@ -40,9 +42,11 @@ import static org.dizitart.no2.util.NumberUtils.compare;
  * @author Anindya Chatterjee.
  */
 @ToString
-class ElementMatchFilter extends BaseFilter {
+class ElementMatchFilter implements Filter {
     private String field;
     private Filter elementFilter;
+    private IndexedQueryTemplate indexedQueryTemplate;
+    private NitriteMapper nitriteMapper;
 
     ElementMatchFilter(String field, Filter elementFilter) {
         this.field = field;
@@ -61,6 +65,7 @@ class ElementMatchFilter extends BaseFilter {
         }
 
         elementFilter.setIndexedQueryTemplate(indexedQueryTemplate);
+        elementFilter.setNitriteMapper(nitriteMapper);
 
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
@@ -91,6 +96,16 @@ class ElementMatchFilter extends BaseFilter {
             }
         }
         return nitriteIdSet;
+    }
+
+    @Override
+    public void setIndexedQueryTemplate(IndexedQueryTemplate indexedQueryTemplate) {
+        this.indexedQueryTemplate = indexedQueryTemplate;
+    }
+
+    @Override
+    public void setNitriteMapper(NitriteMapper nitriteMapper) {
+        this.nitriteMapper = nitriteMapper;
     }
 
     private boolean matches(Iterable iterable, Filter filter) {
@@ -157,6 +172,7 @@ class ElementMatchFilter extends BaseFilter {
     @SuppressWarnings("unchecked")
     private boolean matchGreater(Object item, Filter filter) {
         Comparable comparable = ((GreaterThanFilter) filter).getComparable();
+
         if (item instanceof Number && comparable instanceof Number) {
             return compare((Number) item, (Number) comparable) > 0;
         } else if (item instanceof Comparable) {
@@ -183,6 +199,7 @@ class ElementMatchFilter extends BaseFilter {
     @SuppressWarnings("unchecked")
     private boolean matchGreaterEqual(Object item, Filter filter) {
         Comparable comparable = ((GreaterEqualFilter) filter).getComparable();
+
         if (item instanceof Number && comparable instanceof Number) {
             return compare((Number) item, (Number) comparable) >= 0;
         } else if (item instanceof Comparable) {
@@ -209,6 +226,7 @@ class ElementMatchFilter extends BaseFilter {
     @SuppressWarnings("unchecked")
     private boolean matchLesserEqual(Object item, Filter filter) {
         Comparable comparable = ((LesserEqualFilter) filter).getComparable();
+
         if (item instanceof Number && comparable instanceof Number) {
             return compare((Number) item, (Number) comparable) <= 0;
         } else if (item instanceof Comparable) {
@@ -235,6 +253,7 @@ class ElementMatchFilter extends BaseFilter {
     @SuppressWarnings("unchecked")
     private boolean matchLesser(Object item, Filter filter) {
         Comparable comparable = ((LesserThanFilter) filter).getComparable();
+
         if (item instanceof Number && comparable instanceof Number) {
             return compare((Number) item, (Number) comparable) < 0;
         } else if (item instanceof Comparable) {
@@ -275,7 +294,7 @@ class ElementMatchFilter extends BaseFilter {
     }
 
     private boolean matchRegex(Object item, Filter filter) {
-        String value = ((RegexFilter) filter).getValue();
+        String value = ((RegexFilter) filter).getStringValue();
         if (item instanceof String) {
             Pattern pattern = Pattern.compile(value);
             Matcher matcher = pattern.matcher((String) item);

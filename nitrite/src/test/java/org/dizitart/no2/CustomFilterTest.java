@@ -38,10 +38,10 @@ public class CustomFilterTest extends BaseCollectionTest {
     public void testCustomFilter() {
         insert();
         collection.createIndex("firstName", indexOptions(IndexType.NonUnique));
-        Cursor cursor = collection.find(new BaseFilter() {
+        Cursor cursor = collection.find(new BaseFilter("", "") {
             @Override
-            public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-                return indexedQueryTemplate.getComparableIndexer().findEqual("firstName", "fn1");
+            public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+                return getIndexedQueryTemplate().getComparableIndexer().findEqual("firstName", "fn1");
             }
         });
 

@@ -23,7 +23,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.dizitart.no2.filters.ObjectFilters;
 import org.dizitart.no2.index.TextIndexer;
 import org.dizitart.no2.index.fulltext.TextTokenizer;
 import org.dizitart.no2.mapper.JacksonMapper;

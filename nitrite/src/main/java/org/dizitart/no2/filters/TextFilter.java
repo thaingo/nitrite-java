@@ -37,13 +37,15 @@ class TextFilter extends StringFilter {
     }
 
     @Override
-    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        if (indexedQueryTemplate.hasIndex(field)
-                && !indexedQueryTemplate.isIndexing(field)) {
-            TextIndexer textIndexer = indexedQueryTemplate.getTextIndexer();
-            return textIndexer.findText(field, value);
+    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+        String value = getStringValue();
+
+        if (getIndexedQueryTemplate().hasIndex(getField())
+                && !getIndexedQueryTemplate().isIndexing(getField())) {
+            TextIndexer textIndexer = getIndexedQueryTemplate().getTextIndexer();
+            return textIndexer.findText(getField(), value);
         } else {
-            throw new FilterException(errorMessage(field + " is not indexed",
+            throw new FilterException(errorMessage(getField() + " is not indexed",
                     FE_TEXT_FILTER_FIELD_NOT_INDEXED));
         }
     }

@@ -35,23 +35,22 @@ import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
  * @author Anindya Chatterjee
  */
 @ToString
-class WithinFilter extends BaseFilter {
-    private String field;
-    private Geometry geometry;
+class WithinFilter extends SpatialFilter {
 
     WithinFilter(String field, Geometry geometry) {
-        this.field = field;
-        this.geometry = geometry;
+        super(field, geometry);
     }
 
     @Override
-    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        if (indexedQueryTemplate.hasIndex(field)
-                && !indexedQueryTemplate.isIndexing(field)) {
-            SpatialIndexer spatialIndexer = indexedQueryTemplate.getSpatialIndexer();
-            return spatialIndexer.findWithin(field, geometry);
+    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+        Geometry geometry = getGeometry();
+
+        if (getIndexedQueryTemplate().hasIndex(getField())
+                && !getIndexedQueryTemplate().isIndexing(getField())) {
+            SpatialIndexer spatialIndexer = getIndexedQueryTemplate().getSpatialIndexer();
+            return spatialIndexer.findWithin(getField(), geometry);
         } else {
-            throw new FilterException(errorMessage(field + " is not indexed",
+            throw new FilterException(errorMessage(getField() + " is not indexed",
                     FE_WITHIN_FILTER_FIELD_NOT_INDEXED));
         }
     }

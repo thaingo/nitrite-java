@@ -33,8 +33,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
-import static org.dizitart.no2.filters.ObjectFilters.eq;
-import static org.dizitart.no2.filters.ObjectFilters.text;
+import static org.dizitart.no2.filters.Filters.eq;
+import static org.dizitart.no2.filters.Filters.text;
 import static org.junit.Assert.*;
 
 /**

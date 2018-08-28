@@ -23,7 +23,6 @@ import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.RemoveOptions;
 import org.dizitart.no2.collection.UpdateOptions;
-import org.dizitart.no2.collection.objects.ObjectFilter;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 
 /**

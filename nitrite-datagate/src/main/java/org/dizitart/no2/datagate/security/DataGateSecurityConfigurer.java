@@ -52,7 +52,7 @@ public class DataGateSecurityConfigurer extends WebSecurityConfigurerAdapter {
     private UserAccountService userAccountService;
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/resources/**");
     }
 

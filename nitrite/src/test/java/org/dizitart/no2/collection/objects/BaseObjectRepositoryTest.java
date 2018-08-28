@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
-import static org.dizitart.no2.filters.ObjectFilters.ALL;
+import static org.dizitart.no2.filters.Filters.ALL;
 
 @RunWith(value = Parameterized.class)
 public abstract class BaseObjectRepositoryTest {

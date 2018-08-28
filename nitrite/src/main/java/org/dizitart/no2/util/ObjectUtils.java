@@ -22,7 +22,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.objects.ObjectFilter;
+import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.NotIdentifiableException;
@@ -40,7 +40,7 @@ import java.util.*;
 import static org.dizitart.no2.common.Constants.KEY_OBJ_SEPARATOR;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.filters.ObjectFilters.eq;
+import static org.dizitart.no2.filters.Filters.eq;
 import static org.dizitart.no2.util.ReflectionUtils.*;
 import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.util.ValidationUtils.*;
@@ -164,7 +164,7 @@ public class ObjectUtils {
      * @param idField the id field
      * @return the equals filter
      */
-    public static ObjectFilter createUniqueFilter(Object object, Field idField) {
+    public static Filter createUniqueFilter(Object object, Field idField) {
         idField.setAccessible(true);
         try {
             Object value = idField.get(object);

@@ -42,8 +42,10 @@ class GreaterThanFilter extends ComparisonFilter {
     }
 
     @Override
-    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        if (field.equals(DOC_ID)) {
+    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+        Comparable comparable = getComparable();
+
+        if (getField().equals(DOC_ID)) {
             Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
             NitriteId nitriteId = null;
             if (comparable instanceof Long) {
@@ -58,10 +60,10 @@ class GreaterThanFilter extends ComparisonFilter {
                 }
             }
             return nitriteIdSet;
-        } else if (indexedQueryTemplate.hasIndex(field)
-                && !indexedQueryTemplate.isIndexing(field)) {
-            ComparableIndexer comparableIndexer = indexedQueryTemplate.getComparableIndexer();
-            return comparableIndexer.findGreaterThan(field, comparable);
+        } else if (getIndexedQueryTemplate().hasIndex(getField())
+                && !getIndexedQueryTemplate().isIndexing(getField())) {
+            ComparableIndexer comparableIndexer = getIndexedQueryTemplate().getComparableIndexer();
+            return comparableIndexer.findGreaterThan(getField(), comparable);
         } else {
             return matchedSet(documentMap);
         }
@@ -69,10 +71,12 @@ class GreaterThanFilter extends ComparisonFilter {
 
     @SuppressWarnings("unchecked")
     private Set<NitriteId> matchedSet(NitriteMap<NitriteId, Document> documentMap) {
+        Comparable comparable = getComparable();
+
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = getFieldValue(document, field);
+            Object fieldValue = getFieldValue(document, getField());
             if (fieldValue != null) {
                 if (fieldValue instanceof Number && comparable instanceof Number) {
                     if (compare((Number) fieldValue, (Number) comparable) > 0) {

@@ -21,7 +21,6 @@ package org.dizitart.no2.util;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.dizitart.no2.util.Iterables.firstOrDefault;
@@ -47,11 +46,6 @@ public class IterablesTest {
         }};
         assertArrayEquals(toArray(new ArrayList<String>() {{add("a"); add("b"); }}),
                 new String[] {"a", "b"});
-        assertArrayEquals(toArray(new Iterable() {
-            @Override
-            public Iterator iterator() {
-                return list.iterator();
-            }
-        }), new String[] {"a", "b"});
+        assertArrayEquals(toArray(list), new String[] {"a", "b"});
     }
 }

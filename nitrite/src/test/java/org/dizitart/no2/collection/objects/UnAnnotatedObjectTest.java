@@ -26,7 +26,7 @@ import org.dizitart.no2.collection.objects.data.ClassC;
 import org.junit.Test;
 
 import static org.dizitart.no2.collection.FindOptions.sort;
-import static org.dizitart.no2.filters.ObjectFilters.*;
+import static org.dizitart.no2.filters.Filters.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 

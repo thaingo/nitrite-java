@@ -131,33 +131,33 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public WriteResult update(ObjectFilter filter, T update) {
+    public WriteResult update(Filter filter, T update) {
         return update(filter, update, false);
     }
 
     @Override
-    public WriteResult update(ObjectFilter filter, T update, boolean upsert) {
+    public WriteResult update(Filter filter, T update, boolean upsert) {
         validateCollection();
         notNull(update, errorMessage("update can not be null", VE_OBJ_UPDATE_NULL_OBJECT));
 
         Document updateDocument = asDocument(update, true);
         removeIdFields(updateDocument);
-        return collection.update(prepare(filter), updateDocument, updateOptions(upsert, true));
+        return collection.update(setNitriteMapper(filter), updateDocument, updateOptions(upsert, true));
     }
 
     @Override
-    public WriteResult update(ObjectFilter filter, Document update) {
+    public WriteResult update(Filter filter, Document update) {
         return update(filter, update, false);
     }
 
     @Override
-    public WriteResult update(ObjectFilter filter, Document update, boolean justOnce) {
+    public WriteResult update(Filter filter, Document update, boolean justOnce) {
         validateCollection();
         notNull(update, errorMessage("update can not be null", VE_OBJ_UPDATE_NULL_DOCUMENT));
 
         removeIdFields(update);
         serializeFields(update);
-        return collection.update(prepare(filter), update, updateOptions(false, justOnce));
+        return collection.update(setNitriteMapper(filter), update, updateOptions(false, justOnce));
     }
 
     @Override
@@ -169,15 +169,15 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public WriteResult remove(ObjectFilter filter) {
+    public WriteResult remove(Filter filter) {
         validateCollection();
-        return remove(prepare(filter), new RemoveOptions());
+        return remove(setNitriteMapper(filter), new RemoveOptions());
     }
 
     @Override
-    public WriteResult remove(ObjectFilter filter, RemoveOptions removeOptions) {
+    public WriteResult remove(Filter filter, RemoveOptions removeOptions) {
         validateCollection();
-        return collection.remove(prepare(filter), removeOptions);
+        return collection.remove(setNitriteMapper(filter), removeOptions);
     }
 
     @Override
@@ -187,10 +187,10 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public Cursor<T> find(ObjectFilter filter) {
+    public Cursor<T> find(Filter filter) {
         validateCollection();
         return new ObjectCursor<>(nitriteMapper,
-                collection.find(prepare(filter)), type);
+                collection.find(setNitriteMapper(filter)), type);
     }
 
     @Override
@@ -201,10 +201,10 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public Cursor<T> find(ObjectFilter filter, FindOptions findOptions) {
+    public Cursor<T> find(Filter filter, FindOptions findOptions) {
         validateCollection();
         return new ObjectCursor<>(nitriteMapper,
-                collection.find(prepare(filter), findOptions), type);
+                collection.find(setNitriteMapper(filter), findOptions), type);
     }
 
     @Override
@@ -321,7 +321,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
         }
     }
 
-    private ObjectFilter prepare(ObjectFilter objectFilter) {
+    private Filter setNitriteMapper(Filter objectFilter) {
         if (objectFilter != null) {
             objectFilter.setNitriteMapper(nitriteMapper);
             return objectFilter;

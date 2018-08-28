@@ -23,12 +23,12 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.index.IndexedQueryTemplate;
+import org.dizitart.no2.mapper.NitriteMapper;
 import org.dizitart.no2.store.NitriteMap;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
+
+import static org.dizitart.no2.util.ValidationUtils.validateSearchTerm;
 
 /**
  * An abstract implementation of {@link Filter}.
@@ -38,30 +38,59 @@ import java.util.concurrent.Callable;
  */
 @Slf4j
 public abstract class BaseFilter implements Filter {
-    /**
-     * The {@link IndexedQueryTemplate}.
-     */
-    protected IndexedQueryTemplate indexedQueryTemplate;
+    private String field;
+    private Object value;
+    private IndexedQueryTemplate indexedQueryTemplate;
+    private NitriteMapper nitriteMapper;
+
+    protected BaseFilter(String field, Object value) {
+        this.field = field;
+        this.value = value;
+    }
+
+    protected NitriteMapper getNitriteMapper() {
+        return nitriteMapper;
+    }
+
+    protected IndexedQueryTemplate getIndexedQueryTemplate() {
+        return indexedQueryTemplate;
+    }
+
+    protected boolean isObjectFilter() {
+        return this.nitriteMapper != null;
+    }
 
     @Override
     public void setIndexedQueryTemplate(IndexedQueryTemplate indexedQueryTemplate) {
         this.indexedQueryTemplate = indexedQueryTemplate;
     }
 
-    List<Callable<Set<NitriteId>>> createTasks(Filter[] filters,
-                                               final NitriteMap<NitriteId, Document> documentMap) {
-        List<Callable<Set<NitriteId>>> tasks = new ArrayList<>();
-        for (final Filter filter : filters) {
-            filter.setIndexedQueryTemplate(indexedQueryTemplate);
-            tasks.add(() -> {
-                try {
-                    return filter.apply(documentMap);
-                } catch (Exception e) {
-                    log.error("Error while executing filter " + filter.toString(), e);
-                    throw e;
-                }
-            });
-        }
-        return tasks;
+    @Override
+    public void setNitriteMapper(NitriteMapper nitriteMapper) {
+        this.nitriteMapper = nitriteMapper;
     }
+
+    public String getField() {
+        return field;
+    }
+
+    public Object getValue() {
+        if (isObjectFilter()) {
+            validateSearchTerm(getNitriteMapper(), field, value);
+            if (getNitriteMapper().isValueType(value)) {
+                value = getNitriteMapper().asValue(value);
+            }
+        }
+        return value;
+    }
+
+    @Override
+    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
+        if (isObjectFilter()) {
+            validateSearchTerm(nitriteMapper, field, value);
+        }
+        return applyFilter(documentMap);
+    }
+
+    public abstract Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap);
 }

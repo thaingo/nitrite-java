@@ -44,13 +44,15 @@ class RegexFilter extends StringFilter {
     }
 
     @Override
-    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
+    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+        String value = getStringValue();
+
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         Pattern pattern = Pattern.compile(value);
 
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = getFieldValue(document, field);
+            Object fieldValue = getFieldValue(document, getField());
             if (fieldValue != null) {
                 if (fieldValue instanceof String) {
                     Matcher matcher = pattern.matcher((String) fieldValue);
@@ -60,7 +62,7 @@ class RegexFilter extends StringFilter {
                     matcher.reset();
                 } else {
                     throw new FilterException(errorMessage(
-                            field + " does not contain string value.",
+                            getField() + " does not contain string value.",
                             FE_REGEX_NO_STRING_VALUE));
                 }
             }

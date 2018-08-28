@@ -23,7 +23,6 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.junit.Test;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -51,12 +50,7 @@ public class SyncHandleTest extends BaseSyncTest {
         assertFalse(syncHandlePrimary.isPaused());
         assertFalse(syncHandlePrimary.isCancelled());
 
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return eventQueue.poll() == EventType.STARTED;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> eventQueue.poll() == EventType.STARTED);
     }
 
     @Test
@@ -186,12 +180,7 @@ public class SyncHandleTest extends BaseSyncTest {
         Document doc2 = createDocument("second-key", "second-value");
         primary.insert(new Document[]{ doc2 });
 
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find().size() == 3 && primary.find().size() == 3;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find().size() == 3 && primary.find().size() == 3);
 
         assertNotNull(secondary.find(eq("first-key", "first-value")).firstOrDefault());
         assertNotNull(secondary.find(eq("second-key", "second-value")).firstOrDefault());
@@ -200,34 +189,21 @@ public class SyncHandleTest extends BaseSyncTest {
 
         doc1.put("first-key", "new-value");
         primary.update(doc1);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find(eq("first-key", "new-value")).size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find(eq("first-key", "new-value")).size() == 1);
 
         log.info("******************Remove***************");
         primary.remove(doc1);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find(eq("first-key", "new-value")).size() == 0;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find(eq("first-key", "new-value")).size() == 0);
 
         syncHandlePrimary.cancelSync();
         assertTrue(syncHandlePrimary.isCancelled());
 
         secondary.remove(doc2);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                // just wait for more than sync delay time = 1 sec
-                // to make sure sync thread did not run
-                Thread.sleep(2000);
-                return true;
-            }
+        await().atMost(5, TimeUnit.SECONDS).until(() -> {
+            // just wait for more than sync delay time = 1 sec
+            // to make sure sync thread did not run
+            Thread.sleep(2000);
+            return true;
         });
 
         // remove in secondary does not trigger remove in primary as sync is off

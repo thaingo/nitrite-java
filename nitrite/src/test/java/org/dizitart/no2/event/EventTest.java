@@ -39,8 +39,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.awaitility.Awaitility.await;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
-import static org.dizitart.no2.filters.ObjectFilters.ALL;
-import static org.dizitart.no2.filters.ObjectFilters.eq;
+import static org.dizitart.no2.filters.Filters.ALL;
+import static org.dizitart.no2.filters.Filters.eq;
 import static org.dizitart.no2.util.Iterables.firstOrDefault;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

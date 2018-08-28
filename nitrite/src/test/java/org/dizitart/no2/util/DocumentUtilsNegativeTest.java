@@ -26,7 +26,6 @@ import org.dizitart.no2.mapper.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.AbstractCollection;
 
 import static org.dizitart.no2.util.DocumentUtils.emptyDocument;
@@ -40,7 +39,7 @@ public class DocumentUtilsNegativeTest {
     private Document doc;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
     	MapperFacade nitriteMapper = new JacksonFacade();
         doc = nitriteMapper.parse("{" +
                 "  score: 1034," +

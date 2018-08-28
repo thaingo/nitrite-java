@@ -22,35 +22,50 @@ import lombok.Getter;
 import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
+import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.util.*;
 
+import static org.dizitart.no2.exceptions.ErrorCodes.FE_IN_SEARCH_TERM_NOT_COMPARABLE;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
 import static org.dizitart.no2.util.ValidationUtils.validateInFilterValue;
 
 @Getter
 @ToString
 class InFilter extends BaseFilter {
-    private String field;
-    private Comparable[] values;
     private List<Comparable> objectList;
 
     InFilter(String field, Comparable... values) {
-        this.field = field;
-        this.values = values;
+        super(field, values);
         this.objectList = Arrays.asList(values);
     }
 
     @Override
-    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        validateInFilterValue(field, values);
+    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+        validateInFilterValue(getField(), objectList);
 
-        if (indexedQueryTemplate.hasIndex(field)
-                && !indexedQueryTemplate.isIndexing(field) && objectList != null) {
-            ComparableIndexer comparableIndexer = indexedQueryTemplate.getComparableIndexer();
-            return comparableIndexer.findIn(field, objectList);
+        if (isObjectFilter()) {
+            for (int i = 0; i < objectList.size(); i++) {
+                if (objectList.get(i) == null
+                        || !getNitriteMapper().isValueType(objectList.get(i))) {
+                    throw new FilterException(errorMessage("search term " + objectList.get(i)
+                                    + " is not a comparable", FE_IN_SEARCH_TERM_NOT_COMPARABLE));
+                }
+
+                if (getNitriteMapper().isValueType(objectList.get(i))) {
+                    Comparable comparable = (Comparable) getNitriteMapper().asValue(objectList.get(i));
+                    objectList.set(i, comparable);
+                }
+            }
+        }
+
+        if (getIndexedQueryTemplate().hasIndex(getField())
+                && !getIndexedQueryTemplate().isIndexing(getField()) && objectList != null) {
+            ComparableIndexer comparableIndexer = getIndexedQueryTemplate().getComparableIndexer();
+            return comparableIndexer.findIn(getField(), objectList);
         } else {
             return matchedSet(documentMap);
         }
@@ -60,7 +75,7 @@ class InFilter extends BaseFilter {
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = getFieldValue(document, field);
+            Object fieldValue = getFieldValue(document, getField());
 
             if (fieldValue instanceof Comparable) {
                 Comparable comparable = (Comparable) fieldValue;

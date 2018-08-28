@@ -24,12 +24,12 @@ import lombok.Getter;
  * @author Anindya Chatterjee.
  */
 @Getter
-abstract class StringFilter extends BaseFilter {
-    String field;
-    String value;
-
+public abstract class StringFilter extends BaseFilter {
     StringFilter(String field, String value) {
-        this.field = field;
-        this.value = value;
+        super(field, value);
+    }
+
+    public String getStringValue() {
+        return (String) getValue();
     }
 }

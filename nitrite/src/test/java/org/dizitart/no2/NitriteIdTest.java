@@ -46,7 +46,7 @@ public class NitriteIdTest {
         for (Field f : fields) {
             if (f.getName().equals("identifier")) {
                 f.setAccessible(true);
-                assertNotNull(Long.parseLong(f.get(nitriteId).toString()));
+                Long.parseLong(f.get(nitriteId).toString());
                 System.out.println("found id = " + Long.parseLong(f.get(nitriteId).toString()));
             }
         }

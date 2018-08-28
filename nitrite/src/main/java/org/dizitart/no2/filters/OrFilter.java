@@ -40,13 +40,12 @@ import static org.dizitart.no2.exceptions.ErrorMessage.INVALID_OR_FILTER;
 @Getter
 @Slf4j
 @ToString
-class OrFilter extends BaseFilter {
+class OrFilter extends LogicalFilter {
     private Filter[] filters;
 
     OrFilter(Filter... filters) {
         this.filters = filters;
     }
-
 
     @Override
     public Set<NitriteId> apply(final NitriteMap<NitriteId, Document> documentMap) {

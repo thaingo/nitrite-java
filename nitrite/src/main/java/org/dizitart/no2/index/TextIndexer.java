@@ -19,7 +19,6 @@
 package org.dizitart.no2.index;
 
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.filters.ObjectFilters;
 
 import java.util.Set;
 

@@ -34,8 +34,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
-import static org.dizitart.no2.filters.ObjectFilters.ALL;
-import static org.dizitart.no2.filters.ObjectFilters.text;
+import static org.dizitart.no2.filters.Filters.ALL;
+import static org.dizitart.no2.filters.Filters.text;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 

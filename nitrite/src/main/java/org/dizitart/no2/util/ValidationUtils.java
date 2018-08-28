@@ -29,6 +29,7 @@ import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.mapper.NitriteMapper;
 
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import static org.dizitart.no2.common.Constants.RESERVED_NAMES;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
@@ -191,11 +192,11 @@ public class ValidationUtils {
      * @param field  the field
      * @param values the values
      */
-    public static void validateInFilterValue(String field, Object[] values) {
+    public static void validateInFilterValue(String field, List<Comparable> values) {
         notNull(field, errorMessage("field can not be null", VE_IN_FILTER_NULL_FIELD));
         notEmpty(field, errorMessage("field can not be empty", VE_IN_FILTER_EMPTY_FIELD));
         notNull(values, errorMessage("values can not be null", VE_IN_FILTER_NULL_VALUES));
-        if (values.length == 0) {
+        if (values.size() == 0) {
             throw new ValidationException(errorMessage("values can not be empty", VE_IN_FILTER_EMPTY_VALUES));
         }
     }

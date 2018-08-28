@@ -18,32 +18,18 @@
 
 package org.dizitart.no2.filters;
 
-import lombok.ToString;
-import org.dizitart.no2.Document;
-import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Filter;
-import org.dizitart.no2.store.NitriteMap;
 import org.locationtech.jts.geom.Geometry;
-
-import java.util.Set;
 
 /**
  * @author Anindya Chatterjee
  */
-@ToString
-class WithinObjectFilter extends BaseObjectFilter {
-    private String field;
-    private Geometry geometry;
+public abstract class SpatialFilter extends BaseFilter {
 
-    WithinObjectFilter(String field, Geometry geometry) {
-        this.field = field;
-        this.geometry = geometry;
+    protected SpatialFilter(String field, Geometry geometry) {
+        super(field, geometry);
     }
 
-    @Override
-    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        Filter within = new WithinFilter(field, geometry);
-        within.setIndexedQueryTemplate(indexedQueryTemplate);
-        return within.apply(documentMap);
+    public Geometry getGeometry() {
+        return (Geometry) super.getValue();
     }
 }

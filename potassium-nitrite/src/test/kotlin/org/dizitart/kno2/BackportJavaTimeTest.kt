@@ -20,7 +20,10 @@ package org.dizitart.kno2
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.JsonSerializer
+import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
 import org.dizitart.no2.collection.IndexType
 import org.dizitart.no2.index.annotations.Id
@@ -75,7 +78,8 @@ class BackportJavaTimeTest {
     fun testIssue59() {
         val db = nitrite {
             path = dbPath
-            nitriteMapper = object : KNO2JacksonMapper(TestFacade()) {}
+            nitriteMapper = object : KNO2JacksonMapper() {}
+            registerModule(ThreeTenAbpModule())
         }
 
         val repo = db.getRepository<TestData>()
@@ -84,13 +88,5 @@ class BackportJavaTimeTest {
         println(repo.find().firstOrDefault())
 
         Files.delete(Paths.get(dbPath))
-    }
-
-    class TestFacade : KNO2JacksonFacade() {
-        override fun createObjectMapper(): ObjectMapper {
-            val objectMapper = super.createObjectMapper()
-            objectMapper.registerModule(ThreeTenAbpModule())
-            return objectMapper
-        }
     }
 }

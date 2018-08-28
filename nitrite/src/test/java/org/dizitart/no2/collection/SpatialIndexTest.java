@@ -45,9 +45,9 @@ import java.util.Collections;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.Document.createDocument;
-import static org.dizitart.no2.filters.ObjectFilters.eq;
-import static org.dizitart.no2.filters.ObjectFilters.intersects;
-import static org.dizitart.no2.filters.ObjectFilters.within;
+import static org.dizitart.no2.filters.Filters.eq;
+import static org.dizitart.no2.filters.Filters.intersects;
+import static org.dizitart.no2.filters.Filters.within;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 

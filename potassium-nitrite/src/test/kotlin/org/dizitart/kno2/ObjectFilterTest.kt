@@ -20,7 +20,7 @@ package org.dizitart.kno2
 
 import org.dizitart.kno2.filters.*
 import org.dizitart.no2.collection.IndexType
-import org.dizitart.no2.filters.ObjectFilters
+import org.dizitart.no2.filters.Filters.eq
 import org.dizitart.no2.index.annotations.Id
 import org.dizitart.no2.index.annotations.Index
 import org.dizitart.no2.index.annotations.Indices
@@ -218,8 +218,7 @@ class ObjectFilterTest : BaseTest() {
         for(i in 0..100) {
             executor.submit {
                 val simpleObject = try {
-                    repository.find(
-                            ObjectFilters.eq(SimpleObject::id.name, uuid)
+                    repository.find(eq(SimpleObject::id.name, uuid)
                     ).first()
                 } catch (t: Throwable) {
                     t.printStackTrace()
@@ -234,7 +233,7 @@ class ObjectFilterTest : BaseTest() {
                 executor.submit {
                     try {
                         val result = repository.find(
-                                ObjectFilters.eq(SimpleObject::id.name, uuid)
+                                eq(SimpleObject::id.name, uuid)
                         )
                         assertEquals(result.totalCount(), 1)
                     } catch (t: Throwable) {

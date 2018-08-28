@@ -24,11 +24,12 @@ import lombok.ToString;
 @Getter
 @ToString
 abstract class ComparisonFilter extends BaseFilter {
-    protected String field;
-    protected Comparable comparable;
 
     ComparisonFilter(String field, Comparable value) {
-        this.comparable = value;
-        this.field = field;
+        super(field, value);
+    }
+
+    public Comparable getComparable() {
+        return (Comparable) getValue();
     }
 }

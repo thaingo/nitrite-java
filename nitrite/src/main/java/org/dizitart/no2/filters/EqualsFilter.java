@@ -41,17 +41,16 @@ import static org.dizitart.no2.util.EqualsUtils.deepEquals;
 @Getter
 @ToString
 class EqualsFilter extends BaseFilter {
-    private String field;
-    private Object value;
 
     EqualsFilter(String field, Object value) {
-        this.field = field;
-        this.value = value;
+        super(field, value);
     }
 
     @Override
-    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        if (field.equals(DOC_ID)) {
+    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+        Object value = getValue();
+
+        if (getField().equals(DOC_ID)) {
             Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
             NitriteId nitriteId = null;
             if (value instanceof Long) {
@@ -64,18 +63,18 @@ class EqualsFilter extends BaseFilter {
                 }
             }
             return nitriteIdSet;
-        } else if (indexedQueryTemplate.hasIndex(field)
-                && !indexedQueryTemplate.isIndexing(field)
+        } else if (getIndexedQueryTemplate().hasIndex(getField())
+                && !getIndexedQueryTemplate().isIndexing(getField())
                 && value != null) {
 
-            if (indexedQueryTemplate.findIndex(field).getIndexType() == IndexType.Spatial) {
+            if (getIndexedQueryTemplate().findIndex(getField()).getIndexType() == IndexType.Spatial) {
                 throw new FilterException(errorMessage("eq cannot be used as a spatial filter",
                         FE_EQ_NOT_SPATIAL));
             }
 
             if (value instanceof Comparable) {
-                ComparableIndexer comparableIndexer = indexedQueryTemplate.getComparableIndexer();
-                return comparableIndexer.findEqual(field, (Comparable) value);
+                ComparableIndexer comparableIndexer = getIndexedQueryTemplate().getComparableIndexer();
+                return comparableIndexer.findEqual(getField(), (Comparable) value);
             } else {
                 throw new FilterException(errorMessage(value + " is not comparable",
                         FE_EQUAL_NOT_COMPARABLE));
@@ -87,9 +86,11 @@ class EqualsFilter extends BaseFilter {
 
     private Set<NitriteId> matchedSet(NitriteMap<NitriteId, Document> documentMap) {
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
+        Object value = getValue();
+
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = getFieldValue(document, field);
+            Object fieldValue = getFieldValue(document, getField());
             if (deepEquals(fieldValue, value)) {
                 nitriteIdSet.add(entry.getKey());
             }
