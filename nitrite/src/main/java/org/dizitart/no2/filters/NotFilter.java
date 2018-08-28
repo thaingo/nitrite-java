@@ -43,11 +43,8 @@ class NotFilter implements Filter {
 
     @Override
     public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        if (filter instanceof BaseFilter) {
-            filter.setIndexedQueryTemplate(indexedQueryTemplate);
-            filter.setNitriteMapper(nitriteMapper);
-        }
-
+        filter.setIndexedQueryTemplate(indexedQueryTemplate);
+        filter.setNitriteMapper(nitriteMapper);
         return matchedSet(documentMap);
     }
 

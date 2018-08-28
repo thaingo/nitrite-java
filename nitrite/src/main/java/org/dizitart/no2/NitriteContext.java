@@ -108,7 +108,6 @@ public class NitriteContext {
      *
      * @returns a {@link TextIndexer} instance or `null`.
      * @see org.dizitart.no2.filters.Filters#text(String, String)
-     * @see ObjectFilters#text(String, String)
      * @see NitriteBuilder#textIndexer(TextIndexer)
      * */
     private TextIndexer textIndexer;
@@ -119,7 +118,6 @@ public class NitriteContext {
      *
      * @returns a {@link TextTokenizer} instance or `null`.
      * @see org.dizitart.no2.filters.Filters#text(String, String)
-     * @see ObjectFilters#text(String, String)
      * @see NitriteBuilder#textTokenizer(TextTokenizer)
      * */
     private TextTokenizer textTokenizer;

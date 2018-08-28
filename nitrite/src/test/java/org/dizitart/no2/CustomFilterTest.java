@@ -40,7 +40,7 @@ public class CustomFilterTest extends BaseCollectionTest {
         collection.createIndex("firstName", indexOptions(IndexType.NonUnique));
         Cursor cursor = collection.find(new BaseFilter("", "") {
             @Override
-            public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+            public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
                 return getIndexedQueryTemplate().getComparableIndexer().findEqual("firstName", "fn1");
             }
         });

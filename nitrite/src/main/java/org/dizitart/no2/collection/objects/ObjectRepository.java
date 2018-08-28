@@ -254,7 +254,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * Applies a filter on the collection and returns a cursor to the
      * selected objects.
      *
-     * See {@link ObjectFilters} for all available filters.
+     * See {@link org.dizitart.no2.filters.Filters} for all available filters.
      *
      * [icon="{@docRoot}/note.png"]
      * NOTE: If there is an index on the value specified in the filter, this operation
@@ -285,7 +285,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * Applies a filter on the collection and returns a customized cursor to the
      * selected objects.
      *
-     * See {@link ObjectFilters} for all available filters.
+     * See {@link org.dizitart.no2.filters.Filters} for all available filters.
      *
      * [icon="{@docRoot}/note.png"]
      * NOTE: If there is an index on the value specified in the filter, this operation
@@ -296,7 +296,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return a cursor to all selected objects.
      * @throws org.dizitart.no2.exceptions.ValidationException if `filter` is null.
      * @throws org.dizitart.no2.exceptions.ValidationException if `findOptions` is null.
-     * @see ObjectFilters
+     * @see org.dizitart.no2.filters.Filters
      * @see FindOptions#limit(int, int)
      * @see FindOptions#sort(String, SortOrder)
      * @see SortOrder

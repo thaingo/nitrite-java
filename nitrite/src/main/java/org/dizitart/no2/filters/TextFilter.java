@@ -37,7 +37,7 @@ class TextFilter extends StringFilter {
     }
 
     @Override
-    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
         String value = getStringValue();
 
         if (getIndexedQueryTemplate().hasIndex(getField())

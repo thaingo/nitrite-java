@@ -32,7 +32,6 @@ import java.util.Set;
  * @author Anindya Chatterjee
  * @see org.dizitart.no2.NitriteBuilder#textIndexer(TextIndexer)
  * @see org.dizitart.no2.filters.Filters#text(String, String)
- * @see ObjectFilters#text(String, String)
  */
 public interface TextIndexer extends Indexer<String> {
 

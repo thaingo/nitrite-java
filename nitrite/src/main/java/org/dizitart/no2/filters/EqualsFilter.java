@@ -47,7 +47,7 @@ class EqualsFilter extends BaseFilter {
     }
 
     @Override
-    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
         Object value = getValue();
 
         if (getField().equals(DOC_ID)) {

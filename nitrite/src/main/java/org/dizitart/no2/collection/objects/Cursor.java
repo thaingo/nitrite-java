@@ -28,8 +28,8 @@ import org.dizitart.no2.collection.RecordIterable;
  * as a result of a find operation.
  *
  * @author Anindya Chatterjee
- * @see ObjectRepository#find(ObjectFilter)
- * @see ObjectRepository#find(ObjectFilter, FindOptions)
+ * @see ObjectRepository#find(org.dizitart.no2.collection.Filter)
+ * @see ObjectRepository#find(org.dizitart.no2.collection.Filter, FindOptions)
  * @see ObjectRepository#find()
  * @see ObjectRepository#find(FindOptions)
  * @since 1.0

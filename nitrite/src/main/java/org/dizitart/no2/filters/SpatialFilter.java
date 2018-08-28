@@ -24,12 +24,14 @@ import org.locationtech.jts.geom.Geometry;
  * @author Anindya Chatterjee
  */
 public abstract class SpatialFilter extends BaseFilter {
+    private Geometry geometry;
 
     protected SpatialFilter(String field, Geometry geometry) {
         super(field, geometry);
+        this.geometry = geometry;
     }
 
     public Geometry getGeometry() {
-        return (Geometry) super.getValue();
+        return geometry;
     }
 }

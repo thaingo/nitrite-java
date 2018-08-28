@@ -12,8 +12,8 @@ WriteResult remove(Filter filter, RemoveOptions removeOptions)
 [source,java]
 --
 WriteResult remove(T object)
-WriteResult remove(ObjectFilter filter)
-WriteResult remove(ObjectFilter filter, RemoveOptions removeOptions)
+WriteResult remove(Filter filter)
+WriteResult remove(Filter filter, RemoveOptions removeOptions)
 --
 
 If the `filter` is `null`, it will remove all elements in the collection.
@@ -34,7 +34,7 @@ collection.remove(doc);
 repository.remove(eq("firstName", "John"))
 
 // remove all objects
-repository.remove(ObjectFilters.ALL);
+repository.remove(Filters.ALL);
 --
 
 *RemoveOptions*

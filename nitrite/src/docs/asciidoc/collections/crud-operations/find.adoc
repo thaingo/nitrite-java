@@ -15,8 +15,8 @@ Document getById(NitriteId nitriteId);
 --
 Cursor<T> find()
 Cursor<T> find(FindOptions findOptions)
-Cursor<T> find(ObjectFilter filter)
-Cursor<T> find(ObjectFilter filter, FindOptions findOptions)
+Cursor<T> find(Filter filter)
+Cursor<T> find(Filter filter, FindOptions findOptions)
 T getById(NitriteId nitriteId);
 --
 
@@ -62,11 +62,11 @@ Cursor<Employee> cursor = repository.find(limit(0, 1));
 Cursor<Employee> cursor = repository.find(sort("age", SortOrder.Ascending));
 
 // extracts all employee records where value of 'age' field is greater than 30
-Cursor<Employee> cursor = repository.find(ObjectFilters.gt("age", 30));
+Cursor<Employee> cursor = repository.find(Filters.gt("age", 30));
 
 // finds all employee records where 'age' field value is greater than 30
 // then sorts those records in ascending order and takes first 10 records
-Cursor<Employee> cursor = repository.find(ObjectFilters.gt("age", 30),
+Cursor<Employee> cursor = repository.find(Filters.gt("age", 30),
                                         sort("age", SortOrder.Ascending)
                                         .thenLimit(0, 10));
 

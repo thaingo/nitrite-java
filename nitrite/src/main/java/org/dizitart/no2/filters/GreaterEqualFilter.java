@@ -42,7 +42,7 @@ class GreaterEqualFilter extends ComparisonFilter {
     }
 
     @Override
-    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
         Comparable comparable = getComparable();
 
         if (getField().equals(DOC_ID)) {

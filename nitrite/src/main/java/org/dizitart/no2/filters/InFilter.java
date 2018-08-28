@@ -44,7 +44,7 @@ class InFilter extends BaseFilter {
     }
 
     @Override
-    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
         validateInFilterValue(getField(), objectList);
 
         if (isObjectFilter()) {

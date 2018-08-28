@@ -39,6 +39,15 @@ abstract class LogicalFilter implements Filter {
     private IndexedQueryTemplate indexedQueryTemplate;
     private NitriteMapper nitriteMapper;
 
+    @Override
+    public void setIndexedQueryTemplate(IndexedQueryTemplate indexedQueryTemplate) {
+        this.indexedQueryTemplate = indexedQueryTemplate;
+    }
+
+    @Override
+    public void setNitriteMapper(NitriteMapper nitriteMapper) {
+        this.nitriteMapper = nitriteMapper;
+    }
 
     List<Callable<Set<NitriteId>>> createTasks(Filter[] filters,
                                                final NitriteMap<NitriteId, Document> documentMap) {
@@ -56,15 +65,5 @@ abstract class LogicalFilter implements Filter {
             });
         }
         return tasks;
-    }
-
-    @Override
-    public void setIndexedQueryTemplate(IndexedQueryTemplate indexedQueryTemplate) {
-        this.indexedQueryTemplate = indexedQueryTemplate;
-    }
-
-    @Override
-    public void setNitriteMapper(NitriteMapper nitriteMapper) {
-        this.nitriteMapper = nitriteMapper;
     }
 }

@@ -24,6 +24,7 @@ import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.collection.objects.Cursor;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.exceptions.FilterException;
+import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.filters.Filters;
 import org.dizitart.no2.index.annotations.Id;
 import org.dizitart.no2.index.annotations.Index;
@@ -158,7 +159,7 @@ public class SpatialIndexTest {
         assertEquals(cursor1.toList(), Arrays.asList(doc1, doc2));
     }
 
-    @Test
+    @Test(expected = IndexingException.class)
     public void testIndexExists() {
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
@@ -200,7 +201,7 @@ public class SpatialIndexTest {
         assertFalse(repository.hasIndex("geometry"));
     }
 
-    @Test
+    @Test(expected = FilterException.class)
     public void testFindEqual() throws ParseException {
         WKTReader reader = new WKTReader();
         Geometry search = reader.read("POINT(500 505)");
@@ -209,16 +210,6 @@ public class SpatialIndexTest {
         assertEquals(cursor.size(), 2);
         assertEquals(cursor.toList(), Collections.singletonList(object1));
     }
-
-//    @Test
-//    public void testFluent() {
-//        repository.find()
-//                .where("abc").equal(1)
-//                .or()
-//                .where("cde").in(list)
-//                .sort(asc)
-//                .limit(1, 100);
-//    }
 
     @Data
     @Index(value = "geometry", type = IndexType.Spatial)

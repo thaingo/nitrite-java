@@ -41,7 +41,7 @@ class IntersectsFilter extends SpatialFilter {
     }
 
     @Override
-    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
         Geometry geometry = getGeometry();
 
         if (getIndexedQueryTemplate().hasIndex(getField())

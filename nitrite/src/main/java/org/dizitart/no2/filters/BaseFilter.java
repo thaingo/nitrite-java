@@ -83,14 +83,4 @@ public abstract class BaseFilter implements Filter {
         }
         return value;
     }
-
-    @Override
-    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
-        if (isObjectFilter()) {
-            validateSearchTerm(nitriteMapper, field, value);
-        }
-        return applyFilter(documentMap);
-    }
-
-    public abstract Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap);
 }

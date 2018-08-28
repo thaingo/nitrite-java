@@ -30,15 +30,15 @@ import static org.junit.Assert.fail;
  */
 public class DbWriteCloseReadTest {
     private volatile boolean writeCompleted = false;
-    private final DbTestOperations readWriteOperations = new DbTestOperations();
+    private final DbTestOperations operations = new DbTestOperations();
 
     @Test
     public void testWriteCloseRead() throws Exception {
         try {
-            readWriteOperations.createDb();
-            readWriteOperations.writeCollection();
-            readWriteOperations.writeIndex();
-            readWriteOperations.insertInCollection();
+            operations.createDb();
+            operations.writeCollection();
+            operations.writeIndex();
+            operations.insertInCollection();
         } catch (ParseException pe) {
             // ignore
         } finally {
@@ -47,11 +47,11 @@ public class DbWriteCloseReadTest {
 
         try {
             assertTrue(writeCompleted);
-            readWriteOperations.readCollection();
+            operations.readCollection();
         } catch (Exception e) {
             fail("collection read failed - " + e.getMessage());
         } finally {
-            readWriteOperations.deleteDb();
+            operations.deleteDb();
         }
     }
 }

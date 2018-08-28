@@ -44,7 +44,7 @@ class RegexFilter extends StringFilter {
     }
 
     @Override
-    public Set<NitriteId> applyFilter(NitriteMap<NitriteId, Document> documentMap) {
+    public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
         String value = getStringValue();
 
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();

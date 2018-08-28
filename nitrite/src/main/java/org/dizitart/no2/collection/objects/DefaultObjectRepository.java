@@ -321,10 +321,10 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
         }
     }
 
-    private Filter setNitriteMapper(Filter objectFilter) {
-        if (objectFilter != null) {
-            objectFilter.setNitriteMapper(nitriteMapper);
-            return objectFilter;
+    private Filter setNitriteMapper(Filter filter) {
+        if (filter != null) {
+            filter.setNitriteMapper(nitriteMapper);
+            return filter;
         }
         return null;
     }
