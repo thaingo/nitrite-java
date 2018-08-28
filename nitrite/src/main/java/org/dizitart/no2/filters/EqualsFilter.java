@@ -68,8 +68,8 @@ class EqualsFilter extends BaseFilter {
                 && value != null) {
 
             if (getIndexedQueryTemplate().findIndex(getField()).getIndexType() == IndexType.Spatial) {
-                throw new FilterException(errorMessage("eq cannot be used as a spatial filter",
-                        FE_EQ_NOT_SPATIAL));
+                throw new FilterException(errorMessage("eq cannot be used as a spatial filter, " +
+                        "use geoEq instead.", FE_EQ_NOT_SPATIAL));
             }
 
             if (value instanceof Comparable) {

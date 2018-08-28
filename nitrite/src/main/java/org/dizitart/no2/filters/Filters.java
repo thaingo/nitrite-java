@@ -20,8 +20,16 @@ package org.dizitart.no2.filters;
 
 import lombok.experimental.UtilityClass;
 import org.dizitart.no2.collection.Filter;
+import org.dizitart.no2.exceptions.ErrorMessage;
+import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.index.TextIndexer;
+import org.dizitart.no2.spatial.EqualityType;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
+
+import static org.dizitart.no2.exceptions.ErrorCodes.FE_POINT_NULL;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
  * A helper class to create all type of {@link Filter}s.
@@ -285,5 +293,20 @@ public class Filters {
 
     public static Filter intersects(String field, Geometry geometry) {
         return new IntersectsFilter(field, geometry);
+    }
+
+    public static Filter near(String field, Coordinate point, Double distance) {
+        return new NearFilter(field, point, distance);
+    }
+
+    public static Filter near(String field, Point point, Double distance) {
+        if (point == null) {
+            throw new FilterException(errorMessage("point cannot be null", FE_POINT_NULL));
+        }
+        return new NearFilter(field, point, distance);
+    }
+
+    public static Filter geoEq(String field, Geometry geometry, EqualityType equalityType) {
+        return new GeoEqualsFilter(field, geometry, equalityType);
     }
 }
