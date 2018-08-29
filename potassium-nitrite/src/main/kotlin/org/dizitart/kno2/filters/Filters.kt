@@ -104,7 +104,6 @@ inline fun <reified T: Point> String.near(value: T?, distance: Double): Filter =
 inline fun <reified T: Geometry> String.geoEq(value: T?, equalityType: EqualityType): Filter = Filters.geoEq(this, value, equalityType)
 
 
-
 /**
  * Creates an and filter which performs a logical AND operation on two filters and selects
  * the documents that satisfy both filters.
@@ -191,8 +190,9 @@ inline infix fun <reified T: Geometry> KProperty<T?>.within(value: T?): Filter =
 
 inline infix fun <reified T: Geometry> KProperty<T?>.intersects(value: T?): Filter = Filters.intersects(this.name, value)
 
-inline fun <reified T: Coordinate> KProperty<T?>.near(value: T?, distance: Double): Filter = Filters.near(this.name, value, distance)
+inline fun <reified T: Geometry> KProperty<T?>.near(value: Point, distance: Double): Filter = Filters.near(this.name, value, distance)
 
-inline fun <reified T: Point> KProperty<T?>.near(value: T?, distance: Double): Filter = Filters.near(this.name, value, distance)
+inline fun <reified T: Geometry> KProperty<T?>.near(value: Coordinate, distance: Double): Filter = Filters.near(this.name, value, distance)
 
-inline fun <reified T: Geometry> KProperty<T?>.geoEq(value: T?, equalityType: EqualityType): Filter = Filters.geoEq(this.name, value, equalityType)
+inline fun <reified T: Geometry> KProperty<T?>.geoEq(value: T?, equalityType: EqualityType = EqualityType.Exact): Filter
+    = Filters.geoEq(this.name, value, equalityType)

@@ -19,10 +19,18 @@
 package org.dizitart.kno2
 
 import org.dizitart.kno2.filters.*
+import org.dizitart.no2.Document
+import org.dizitart.no2.collection.IndexOptions
 import org.dizitart.no2.collection.IndexType
+import org.dizitart.no2.filters.Filters.geoEq
+import org.dizitart.no2.filters.Filters.near
+import org.dizitart.no2.spatial.EqualityType
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.locationtech.jts.geom.Point
+import org.locationtech.jts.io.WKTReader
+import java.util.*
 
 /**
  *
@@ -218,6 +226,110 @@ class FilterTest : BaseTest() {
 
             val cursor = find()
             assertEquals(cursor.size(), 2)
+        }
+    }
+
+    @Test
+    fun testIntersects() {
+        val reader = WKTReader()
+        val search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))")
+
+        db?.getCollection("test") {
+            val doc1 = documentOf("key" to 1L).put("location", reader.read("POINT(500 505)"))
+            val doc2 = documentOf("key" to 2L).put("location", reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val doc3 = documentOf("key" to 3L).put("location", reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+            insert(doc1, doc2, doc3)
+
+            createIndex("location", IndexOptions.indexOptions(IndexType.Spatial))
+
+            val cursor1 = find("location" intersects search)
+            assertEquals(cursor1.size().toLong(), 2)
+            assertEquals(cursor1.toList(), listOf(doc1, doc2))
+        }
+    }
+
+    @Test
+    fun testGeoWithin() {
+        val reader = WKTReader()
+        val search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))")
+
+        db?.getCollection("test") {
+            val doc1 = documentOf("key" to 1L).put("location", reader.read("POINT(500 505)"))
+            val doc2 = documentOf("key" to 2L).put("location", reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val doc3 = documentOf("key" to 3L).put("location", reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+            insert(doc1, doc2, doc3)
+
+            createIndex("location", IndexOptions.indexOptions(IndexType.Spatial))
+
+            val cursor1 = find("location" within search)
+            assertEquals(cursor1.size().toLong(), 1)
+            assertEquals(cursor1.toList(), listOf(doc1))
+        }
+    }
+
+    @Test
+    fun testNearPoint() {
+        val reader = WKTReader()
+        val search = reader.read("POINT (490 490)") as Point
+
+        db?.getCollection("test") {
+            val doc1 = documentOf("key" to 1L).put("location", reader.read("POINT(500 505)"))
+            val doc2 = documentOf("key" to 2L).put("location", reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val doc3 = documentOf("key" to 3L).put("location", reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+            insert(doc1, doc2, doc3)
+
+            createIndex("location", IndexOptions.indexOptions(IndexType.Spatial))
+
+            val cursor1 = find("location".near(search, 20.0))
+            assertEquals(cursor1.size().toLong(), 1)
+            assertEquals(cursor1.toList(), listOf(doc1))
+        }
+    }
+
+    @Test
+    fun testNearCoordinate() {
+        val reader = WKTReader()
+        val search = reader.read("POINT (490 490)") as Point
+        val coordinate = search.coordinate
+
+        db?.getCollection("test") {
+            val doc1 = documentOf("key" to 1L).put("location", reader.read("POINT(500 505)"))
+            val doc2 = documentOf("key" to 2L).put("location", reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val doc3 = documentOf("key" to 3L).put("location", reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+            insert(doc1, doc2, doc3)
+
+            createIndex("location", IndexOptions.indexOptions(IndexType.Spatial))
+
+            val cursor1 = find("location".near(coordinate, 20.0))
+            assertEquals(cursor1.size().toLong(), 1)
+            assertEquals(cursor1.toList(), listOf(doc1))
+        }
+    }
+
+    @Test
+    fun testEquality() {
+        val reader = WKTReader()
+        val search = reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))")
+
+        db?.getCollection("test") {
+            val doc1 = documentOf("key" to 1L).put("location", reader.read("POINT(500 505)"))
+            val doc2 = documentOf("key" to 2L).put("location", reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val doc3 = documentOf("key" to 3L).put("location", reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+            insert(doc1, doc2, doc3)
+
+            createIndex("location", IndexOptions.indexOptions(IndexType.Spatial))
+
+            var cursor1 = find("location".geoEq(search, EqualityType.Exact))
+            assertEquals(cursor1.size().toLong(), 1)
+            assertEquals(cursor1.toList(), listOf(doc3))
+
+            cursor1 = find("location".geoEq(search, EqualityType.Topological))
+            assertEquals(cursor1.size().toLong(), 1)
+            assertEquals(cursor1.toList(), listOf(doc3))
+
+            cursor1 = find("location".geoEq(search, EqualityType.Normalized))
+            assertEquals(cursor1.size().toLong(), 1)
+            assertEquals(cursor1.toList(), listOf(doc3))
         }
     }
 }

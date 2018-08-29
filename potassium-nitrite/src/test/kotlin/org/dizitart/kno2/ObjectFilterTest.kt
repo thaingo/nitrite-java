@@ -24,10 +24,14 @@ import org.dizitart.no2.filters.Filters.eq
 import org.dizitart.no2.index.annotations.Id
 import org.dizitart.no2.index.annotations.Index
 import org.dizitart.no2.index.annotations.Indices
+import org.dizitart.no2.spatial.EqualityType
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.Point
+import org.locationtech.jts.io.WKTReader
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
@@ -246,6 +250,110 @@ class ObjectFilterTest : BaseTest() {
         }
         latch.await()
     }
+
+    @Test
+    fun testIntersects() {
+        val reader = WKTReader()
+        val search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))")
+
+        db?.getRepository<SpatialData> {
+            val object1 = SpatialData(1L, reader.read("POINT(500 505)"))
+            val object2 = SpatialData(2L, reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val object3 = SpatialData(3L, reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+
+            insert(object1, object2, object3)
+
+            val cursor = find(SpatialData::geometry intersects search)
+            assertEquals(cursor.size().toLong(), 2)
+            assertEquals(cursor.toList(), listOf(object1, object2))
+        }
+    }
+
+    @Test
+    fun testGeoWithin() {
+        val reader = WKTReader()
+        val search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))")
+
+        db?.getRepository<SpatialData> {
+            val object1 = SpatialData(1L, reader.read("POINT(500 505)"))
+            val object2 = SpatialData(2L, reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val object3 = SpatialData(3L, reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+
+            insert(object1, object2, object3)
+
+            val cursor = find(SpatialData::geometry within search)
+            assertEquals(cursor.size().toLong(), 1)
+            assertEquals(cursor.toList(), listOf(object1))
+        }
+    }
+
+    @Test
+    fun testNearPoint() {
+        val reader = WKTReader()
+        val search = reader.read("POINT (490 490)") as Point
+
+        db?.getRepository<SpatialData> {
+            val object1 = SpatialData(1L, reader.read("POINT(500 505)"))
+            val object2 = SpatialData(2L, reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val object3 = SpatialData(3L, reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+
+            insert(object1, object2, object3)
+
+            val cursor = find(SpatialData::geometry.near(search, 20.0))
+            assertEquals(cursor.size().toLong(), 1)
+            assertEquals(cursor.toList(), listOf(object1))
+        }
+    }
+
+
+    @Test
+    fun testNearCoordinate() {
+        val reader = WKTReader()
+        val search = reader.read("POINT (490 490)") as Point
+        val coordinate = search.coordinate
+
+        db?.getRepository<SpatialData> {
+            val object1 = SpatialData(1L, reader.read("POINT(500 505)"))
+            val object2 = SpatialData(2L, reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val object3 = SpatialData(3L, reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+
+            insert(object1, object2, object3)
+
+            val cursor = find(SpatialData::geometry.near(coordinate, 20.0))
+            assertEquals(cursor.size().toLong(), 1)
+            assertEquals(cursor.toList(), listOf(object1))
+        }
+    }
+
+    @Test
+    fun testEquality() {
+        val reader = WKTReader()
+        val search = reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))")
+
+        db?.getRepository<SpatialData> {
+            val object1 = SpatialData(1L, reader.read("POINT(500 505)"))
+            val object2 = SpatialData(2L, reader.read("LINESTRING(550 551, 525 512, 565 566)"))
+            val object3 = SpatialData(3L, reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))"))
+
+            insert(object1, object2, object3)
+
+            var cursor = find(SpatialData::geometry.geoEq(search))
+            assertEquals(cursor.size().toLong(), 1)
+            assertEquals(cursor.toList(), listOf(object3))
+
+            cursor = find(SpatialData::geometry.geoEq(search, EqualityType.Exact))
+            assertEquals(cursor.size().toLong(), 1)
+            assertEquals(cursor.toList(), listOf(object3))
+
+            cursor = find(SpatialData::geometry.geoEq(search, EqualityType.Normalized))
+            assertEquals(cursor.size().toLong(), 1)
+            assertEquals(cursor.toList(), listOf(object3))
+
+            cursor = find(SpatialData::geometry.geoEq(search, EqualityType.Topological))
+            assertEquals(cursor.size().toLong(), 1)
+            assertEquals(cursor.toList(), listOf(object3))
+        }
+    }
 }
 
 @Indices(Index(value = "text", type = IndexType.Fulltext))
@@ -256,5 +364,11 @@ class ListData(val name: String, val score: Int)
 data class SimpleObject(
         @Id val id: UUID,
         val value: Boolean
+)
+
+@Index(value = "geometry", type = IndexType.Spatial)
+data class SpatialData(
+    @Id val id: Long,
+    val geometry: Geometry
 )
 
