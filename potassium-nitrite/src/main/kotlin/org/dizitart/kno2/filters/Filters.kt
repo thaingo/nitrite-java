@@ -20,6 +20,10 @@ package org.dizitart.kno2.filters
 
 import org.dizitart.no2.collection.Filter
 import org.dizitart.no2.filters.Filters
+import org.dizitart.no2.spatial.EqualityType
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.Point
 import kotlin.reflect.KProperty
 
 /**
@@ -87,6 +91,19 @@ infix fun String.text(value: String?): Filter = Filters.text(this, value)
  * for pattern matching strings in documents.
  */
 infix fun String.regex(value: String?): Filter = Filters.regex(this, value)
+
+
+inline infix fun <reified T: Geometry> String.within(value: T?): Filter = Filters.within(this, value)
+
+inline infix fun <reified T: Geometry> String.intersects(value: T?): Filter = Filters.intersects(this, value)
+
+inline fun <reified T: Coordinate> String.near(value: T?, distance: Double): Filter = Filters.near(this, value, distance)
+
+inline fun <reified T: Point> String.near(value: T?, distance: Double): Filter = Filters.near(this, value, distance)
+
+inline fun <reified T: Geometry> String.geoEq(value: T?, equalityType: EqualityType): Filter = Filters.geoEq(this, value, equalityType)
+
+
 
 /**
  * Creates an and filter which performs a logical AND operation on two filters and selects
@@ -169,3 +186,13 @@ infix fun KProperty<String?>.text(value: String?): Filter = Filters.text(this.na
  * for pattern matching strings in objects.
  */
 infix fun KProperty<String?>.regex(value: String?): Filter = Filters.regex(this.name, value)
+
+inline infix fun <reified T: Geometry> KProperty<T?>.within(value: T?): Filter = Filters.within(this.name, value)
+
+inline infix fun <reified T: Geometry> KProperty<T?>.intersects(value: T?): Filter = Filters.intersects(this.name, value)
+
+inline fun <reified T: Coordinate> KProperty<T?>.near(value: T?, distance: Double): Filter = Filters.near(this.name, value, distance)
+
+inline fun <reified T: Point> KProperty<T?>.near(value: T?, distance: Double): Filter = Filters.near(this.name, value, distance)
+
+inline fun <reified T: Geometry> KProperty<T?>.geoEq(value: T?, equalityType: EqualityType): Filter = Filters.geoEq(this.name, value, equalityType)

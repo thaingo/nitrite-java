@@ -54,7 +54,7 @@ public class NitriteMVRTreeMap extends NitriteMVMap<SpatialKey, Geometry> implem
     }
 
     @Override
-    MVMap<SpatialKey, Geometry> getUnderlyingMVMap() {
+    MVMap<SpatialKey, Geometry> getBackingMVMap() {
         return mvMap;
     }
 }

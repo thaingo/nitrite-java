@@ -37,7 +37,7 @@ import static org.dizitart.no2.exceptions.ErrorMessage.REMOVE_ON_DOCUMENT_ITERAT
  */
 class ProjectedDocumentIterable implements RecordIterable<Document> {
     private final Collection<NitriteId> resultSet;
-    private final NitriteMap<NitriteId, Document> underlyingMap;
+    private final NitriteMap<NitriteId, Document> nitriteMap;
     private Document projection;
     private boolean hasMore;
     private int totalCount;
@@ -49,7 +49,7 @@ class ProjectedDocumentIterable implements RecordIterable<Document> {
         } else {
             resultSet = new TreeSet<>();
         }
-        this.underlyingMap = findResult.getUnderlyingMap();
+        this.nitriteMap = findResult.getNitriteMap();
         this.hasMore = findResult.isHasMore();
         this.totalCount = findResult.getTotalCount();
     }
@@ -104,7 +104,7 @@ class ProjectedDocumentIterable implements RecordIterable<Document> {
         private void nextMatch() {
             while (iterator.hasNext()) {
                 NitriteId next = iterator.next();
-                Document document = underlyingMap.get(next);
+                Document document = nitriteMap.get(next);
                 Document projected = project(document);
                 if (projected != null) {
                     nextElement = projected;

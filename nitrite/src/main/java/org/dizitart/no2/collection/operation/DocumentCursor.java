@@ -41,7 +41,7 @@ import static org.dizitart.no2.exceptions.ErrorMessage.REMOVE_ON_DOCUMENT_ITERAT
  */
 class DocumentCursor implements Cursor {
     private final Collection<NitriteId> resultSet;
-    private final NitriteMap<NitriteId, Document> underlyingMap;
+    private final NitriteMap<NitriteId, Document> nitriteMap;
     private boolean hasMore;
     private int totalCount;
     private FindResult findResult;
@@ -52,7 +52,7 @@ class DocumentCursor implements Cursor {
         } else {
             resultSet = new TreeSet<>();
         }
-        this.underlyingMap = findResult.getUnderlyingMap();
+        this.nitriteMap = findResult.getNitriteMap();
         this.hasMore = findResult.isHasMore();
         this.totalCount = findResult.getTotalCount();
         this.findResult = findResult;
@@ -105,7 +105,7 @@ class DocumentCursor implements Cursor {
         @Override
         public Document next() {
             NitriteId next = iterator.next();
-            return underlyingMap.get(next);
+            return nitriteMap.get(next);
         }
 
         @Override

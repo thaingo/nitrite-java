@@ -39,14 +39,14 @@ import static org.dizitart.no2.util.ValidationUtils.validateDocumentIndexField;
  */
 class NitriteComparableIndexer implements ComparableIndexer {
     private IndexStore indexStore;
-    private NitriteMap<NitriteId, Document> underlyingMap;
+    private NitriteMap<NitriteId, Document> nitriteMap;
     private final Object lock = new Object();
 
     NitriteComparableIndexer(
-            NitriteMap<NitriteId, Document> underlyingMap,
+            NitriteMap<NitriteId, Document> nitriteMap,
             IndexStore indexStore) {
         this.indexStore = indexStore;
-        this.underlyingMap = underlyingMap;
+        this.nitriteMap = nitriteMap;
     }
 
     @Override
@@ -149,7 +149,7 @@ class NitriteComparableIndexer implements ComparableIndexer {
         // remove old values
         indexMap.clear();
 
-        for (Map.Entry<NitriteId, Document> entry : underlyingMap.entrySet()) {
+        for (Map.Entry<NitriteId, Document> entry : nitriteMap.entrySet()) {
             // create the document
             Document object = entry.getValue();
 

@@ -46,7 +46,7 @@ import static org.dizitart.no2.util.ValidationUtils.notNull;
  */
 public class CollectionOperation {
     private NitriteContext nitriteContext;
-    private NitriteMap<NitriteId, Document> mapStore;
+    private NitriteMap<NitriteId, Document> nitriteMap;
     private IndexTemplate indexTemplate;
     private ReadWriteOperation readWriteOperation;
     private QueryTemplate queryTemplate;
@@ -56,13 +56,13 @@ public class CollectionOperation {
     /**
      * Instantiates a new Nitrite service.
      *
-     * @param mapStore       the map store
+     * @param nitriteMap       the map store
      * @param nitriteContext the nitrite context
      */
-    public CollectionOperation(NitriteMap<NitriteId, Document> mapStore,
+    public CollectionOperation(NitriteMap<NitriteId, Document> nitriteMap,
                         NitriteContext nitriteContext,
                         EventBus<ChangeInfo, ChangeListener> eventBus) {
-        this.mapStore = mapStore;
+        this.nitriteMap = nitriteMap;
         this.nitriteContext = nitriteContext;
         this.eventBus = eventBus;
         initialize();
@@ -220,8 +220,8 @@ public class CollectionOperation {
      */
     public void dropCollection() {
         indexTemplate.dropAllIndices();
-        nitriteContext.dropCollection(mapStore.getName());
-        mapStore.drop();
+        nitriteContext.dropCollection(nitriteMap.getName());
+        nitriteMap.drop();
     }
 
     // endregion
@@ -288,7 +288,7 @@ public class CollectionOperation {
         TextTokenizer textTokenizer = getTextTokenizer();
 
         if (textIndexer == null) {
-            textIndexer = new NitriteTextIndexer(mapStore, textTokenizer, indexStore);
+            textIndexer = new NitriteTextIndexer(nitriteMap, textTokenizer, indexStore);
         }
         return textIndexer;
     }
@@ -302,16 +302,16 @@ public class CollectionOperation {
     }
 
     private void initialize() {
-        this.indexStore = new NitriteIndexStore(mapStore);
+        this.indexStore = new NitriteIndexStore(nitriteMap);
         TextIndexer textIndexer = getTextIndexer();
-        ComparableIndexer comparableIndexer = new NitriteComparableIndexer(mapStore, indexStore);
-        SpatialIndexer spatialIndexer = new NitriteSpatialIndexer(mapStore, indexStore);
+        ComparableIndexer comparableIndexer = new NitriteComparableIndexer(nitriteMap, indexStore);
+        SpatialIndexer spatialIndexer = new NitriteSpatialIndexer(nitriteMap, indexStore);
         NitriteMapper nitriteMapper = nitriteContext.getNitriteMapper();
         this.indexTemplate = new IndexTemplate(nitriteMapper, indexStore, comparableIndexer, textIndexer, spatialIndexer);
 
         IndexedQueryTemplate indexedQueryTemplate
             = new NitriteIndexedQueryTemplate(indexTemplate, comparableIndexer, textIndexer, spatialIndexer);
-        this.queryTemplate = new QueryTemplate(indexedQueryTemplate, mapStore);
-        this.readWriteOperation = new ReadWriteOperation(indexTemplate, queryTemplate, mapStore, eventBus);
+        this.queryTemplate = new QueryTemplate(indexedQueryTemplate, nitriteMap);
+        this.readWriteOperation = new ReadWriteOperation(indexTemplate, queryTemplate, nitriteMap, eventBus);
     }
 }

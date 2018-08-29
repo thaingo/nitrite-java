@@ -37,7 +37,7 @@ import static org.dizitart.no2.util.EqualsUtils.deepEquals;
  */
 class JoinedDocumentIterable implements RecordIterable<Document> {
     private final Collection<NitriteId> resultSet;
-    private final NitriteMap<NitriteId, Document> underlyingMap;
+    private final NitriteMap<NitriteId, Document> nitriteMap;
     private boolean hasMore;
     private int totalCount;
     private Cursor foreignCursor;
@@ -51,7 +51,7 @@ class JoinedDocumentIterable implements RecordIterable<Document> {
         } else {
             resultSet = new TreeSet<>();
         }
-        this.underlyingMap = findResult.getUnderlyingMap();
+        this.nitriteMap = findResult.getNitriteMap();
         this.hasMore = findResult.isHasMore();
         this.totalCount = findResult.getTotalCount();
     }
@@ -97,7 +97,7 @@ class JoinedDocumentIterable implements RecordIterable<Document> {
         @Override
         public Document next() {
             NitriteId next = iterator.next();
-            Document document = underlyingMap.get(next);
+            Document document = nitriteMap.get(next);
             return join(document, foreignCursor, lookup);
         }
 

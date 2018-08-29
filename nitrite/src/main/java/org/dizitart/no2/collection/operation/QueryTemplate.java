@@ -40,26 +40,26 @@ import static org.dizitart.no2.util.ValidationUtils.validateLimit;
  */
 class QueryTemplate {
     private IndexedQueryTemplate indexedQueryTemplate;
-    private NitriteMap<NitriteId, Document> underlyingMap;
+    private NitriteMap<NitriteId, Document> nitriteMap;
 
     QueryTemplate(IndexedQueryTemplate indexedQueryTemplate,
-                  NitriteMap<NitriteId, Document> mapStore) {
+                  NitriteMap<NitriteId, Document> nitriteMap) {
         notNull(indexedQueryTemplate, errorMessage("indexedQueryTemplate can not be null",
             VE_INDEXED_QUERY_TEMPLATE_NULL));
         this.indexedQueryTemplate = indexedQueryTemplate;
-        this.underlyingMap = mapStore;
+        this.nitriteMap = nitriteMap;
     }
 
     Document getById(NitriteId nitriteId) {
-        return underlyingMap.get(nitriteId);
+        return nitriteMap.get(nitriteId);
     }
 
     Cursor find() {
         FindResult findResult = new FindResult();
         findResult.setHasMore(false);
-        findResult.setTotalCount(underlyingMap.size());
-        findResult.setIdSet(underlyingMap.keySet());
-        findResult.setUnderlyingMap(underlyingMap);
+        findResult.setTotalCount(nitriteMap.size());
+        findResult.setIdSet(nitriteMap.keySet());
+        findResult.setNitriteMap(nitriteMap);
 
         return new DocumentCursor(findResult);
     }
@@ -72,7 +72,7 @@ class QueryTemplate {
         Set<NitriteId> result;
 
         try {
-            result = filter.apply(underlyingMap);
+            result = filter.apply(nitriteMap);
         } catch (FilterException fe) {
             throw fe;
         } catch (Throwable t) {
@@ -80,7 +80,7 @@ class QueryTemplate {
         }
 
         FindResult findResult = new FindResult();
-        findResult.setUnderlyingMap(underlyingMap);
+        findResult.setNitriteMap(nitriteMap);
         if (result != null) {
             findResult.setHasMore(false);
             findResult.setTotalCount(result.size());
@@ -92,7 +92,7 @@ class QueryTemplate {
 
     Cursor find(FindOptions findOptions) {
         FindResult findResult = new FindResult();
-        findResult.setUnderlyingMap(underlyingMap);
+        findResult.setNitriteMap(nitriteMap);
         setUnfilteredResultSet(findOptions, findResult);
 
         return new DocumentCursor(findResult);
@@ -104,31 +104,31 @@ class QueryTemplate {
         }
         filter.setIndexedQueryTemplate(indexedQueryTemplate);
         FindResult findResult = new FindResult();
-        findResult.setUnderlyingMap(underlyingMap);
+        findResult.setNitriteMap(nitriteMap);
         setFilteredResultSet(filter, findOptions, findResult);
 
         return new DocumentCursor(findResult);
     }
 
     private void setUnfilteredResultSet(FindOptions findOptions, FindResult findResult) {
-        validateLimit(findOptions, underlyingMap.sizeAsLong());
+        validateLimit(findOptions, nitriteMap.sizeAsLong());
 
         Set<NitriteId> resultSet;
         if (isNullOrEmpty(findOptions.getField())) {
-            resultSet = limitIdSet(underlyingMap.keySet(), findOptions);
+            resultSet = limitIdSet(nitriteMap.keySet(), findOptions);
         } else {
-            resultSet = sortIdSet(underlyingMap.keySet(), findOptions);
+            resultSet = sortIdSet(nitriteMap.keySet(), findOptions);
         }
 
         findResult.setIdSet(resultSet);
-        findResult.setTotalCount(underlyingMap.size());
-        findResult.setHasMore(underlyingMap.keySet().size() > (findOptions.getSize() + findOptions.getOffset()));
+        findResult.setTotalCount(nitriteMap.size());
+        findResult.setHasMore(nitriteMap.keySet().size() > (findOptions.getSize() + findOptions.getOffset()));
     }
 
     private void setFilteredResultSet(Filter filter, FindOptions findOptions, FindResult findResult) {
         Set<NitriteId> nitriteIdSet;
         try {
-            nitriteIdSet = filter.apply(underlyingMap);
+            nitriteIdSet = filter.apply(nitriteMap);
         } catch (FilterException fe) {
             throw fe;
         } catch (Throwable t) {
@@ -157,7 +157,7 @@ class QueryTemplate {
         Set<NitriteId> nullValueIds = new HashSet<>();
 
         for (NitriteId id : nitriteIdSet) {
-            Document document = underlyingMap.get(id);
+            Document document = nitriteMap.get(id);
             Object value = getFieldValue(document, sortField);
 
             if (value != null) {

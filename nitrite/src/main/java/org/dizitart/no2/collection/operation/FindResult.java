@@ -33,5 +33,5 @@ class FindResult {
     private boolean hasMore;
     private int totalCount;
     private Collection<NitriteId> idSet;
-    private NitriteMap<NitriteId, Document> underlyingMap;
+    private NitriteMap<NitriteId, Document> nitriteMap;
 }

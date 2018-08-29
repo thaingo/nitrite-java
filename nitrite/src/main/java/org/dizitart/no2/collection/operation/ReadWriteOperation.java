@@ -47,7 +47,7 @@ import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 class ReadWriteOperation {
     private final IndexTemplate indexTemplate;
     private final QueryTemplate queryTemplate;
-    private final NitriteMap<NitriteId, Document> underlyingMap;
+    private final NitriteMap<NitriteId, Document> nitriteMap;
     private final EventBus<ChangeInfo, ChangeListener> eventBus;
     private final String name;
 
@@ -55,13 +55,13 @@ class ReadWriteOperation {
 
     ReadWriteOperation(IndexTemplate indexTemplate,
                        QueryTemplate queryTemplate,
-                       NitriteMap<NitriteId, Document> mapStore,
+                       NitriteMap<NitriteId, Document> nitriteMap,
                        EventBus<ChangeInfo, ChangeListener> eventBus) {
         this.indexTemplate = indexTemplate;
         this.queryTemplate = queryTemplate;
-        this.underlyingMap = mapStore;
+        this.nitriteMap = nitriteMap;
         this.eventBus = eventBus;
-        this.name = underlyingMap.getName();
+        this.name = this.nitriteMap.getName();
     }
 
     WriteResultImpl insert(Document... documents) {
@@ -86,12 +86,12 @@ class ReadWriteOperation {
             }
 
             synchronized (lock) {
-                Document already = underlyingMap.putIfAbsent(nitriteId, document);
+                Document already = nitriteMap.putIfAbsent(nitriteId, document);
                 log.debug("Inserting document " + document + " in " + name);
 
                 if (already != null) {
                     // rollback changes
-                    underlyingMap.put(nitriteId, already);
+                    nitriteMap.put(nitriteId, already);
                     log.debug("Another document already exists with id " + nitriteId);
                     throw new UniqueConstraintException(errorMessage("id constraint violation, " +
                             "entry with same id already exists in " + name, UCE_CONSTRAINT_VIOLATED));
@@ -101,7 +101,7 @@ class ReadWriteOperation {
                     } catch (UniqueConstraintException uce) {
                         log.error("Unique constraint violated for the document "
                                 + document + " in " + name, uce);
-                        underlyingMap.remove(nitriteId);
+                        nitriteMap.remove(nitriteId);
                         throw uce;
                     }
                 }
@@ -182,7 +182,7 @@ class ReadWriteOperation {
                             document.putAll(update);
                         }
 
-                        underlyingMap.put(nitriteId, document);
+                        nitriteMap.put(nitriteId, document);
                         log.debug("Document " + document + " updated in " + name);
 
                         // if 'update' only contains id value, affected count = 0
@@ -232,7 +232,7 @@ class ReadWriteOperation {
                 NitriteId nitriteId = document.getId();
                 indexTemplate.removeIndexEntry(document, nitriteId);
 
-                Document removed = underlyingMap.remove(nitriteId);
+                Document removed = nitriteMap.remove(nitriteId);
                 int rev = removed.getRevision();
                 removed.put(DOC_REVISION, rev + 1);
                 removed.put(DOC_MODIFIED, System.currentTimeMillis());

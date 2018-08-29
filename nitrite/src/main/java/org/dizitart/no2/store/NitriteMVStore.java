@@ -102,14 +102,14 @@ public final class NitriteMVStore implements NitriteStore {
     @Override
     public <Key, Value> void removeMap(NitriteMap<Key, Value> map) {
         NitriteMVMap<Key, Value> nitriteMVMap = (NitriteMVMap<Key, Value>) map;
-        MVMap<Key, Value> mvMap = nitriteMVMap.getUnderlyingMVMap();
+        MVMap<Key, Value> mvMap = nitriteMVMap.getBackingMVMap();
         mvStore.removeMap(mvMap);
     }
 
     @Override
     public void removeRTreeMap(NitriteRTreeMap map) {
         NitriteMVRTreeMap nitriteMVRTreeMap = (NitriteMVRTreeMap) map;
-        MVMap<SpatialKey, Geometry> mvMap = nitriteMVRTreeMap.getUnderlyingMVMap();
+        MVMap<SpatialKey, Geometry> mvMap = nitriteMVRTreeMap.getBackingMVMap();
         mvStore.removeMap(mvMap);
     }
 

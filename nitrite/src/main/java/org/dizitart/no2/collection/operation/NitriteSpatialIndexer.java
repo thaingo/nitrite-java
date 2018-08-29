@@ -43,12 +43,12 @@ import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
  */
 class NitriteSpatialIndexer implements SpatialIndexer {
     private IndexStore indexStore;
-    private NitriteMap<NitriteId, Document> underlyingMap;
+    private NitriteMap<NitriteId, Document> nitriteMap;
     private final Object lock = new Object();
 
-    NitriteSpatialIndexer(NitriteMap<NitriteId, Document> underlyingMap,
+    NitriteSpatialIndexer(NitriteMap<NitriteId, Document> nitriteMap,
                           IndexStore indexStore) {
-        this.underlyingMap = underlyingMap;
+        this.nitriteMap = nitriteMap;
         this.indexStore = indexStore;
     }
 
@@ -93,7 +93,7 @@ class NitriteSpatialIndexer implements SpatialIndexer {
         NitriteRTreeMap indexMap = indexStore.getSpatialIndexMap(field);
         indexMap.clear();
 
-        for (Map.Entry<NitriteId, Document> entry : underlyingMap.entrySet()) {
+        for (Map.Entry<NitriteId, Document> entry : nitriteMap.entrySet()) {
             // create the document
             Document object = entry.getValue();
 
@@ -118,29 +118,26 @@ class NitriteSpatialIndexer implements SpatialIndexer {
         Set<NitriteId> resultSet = new LinkedHashSet<>();
 
         NitriteRTreeMap indexMap = indexStore.getSpatialIndexMap(field);
-        SpatialKey spatialKey = getKey(0L, geometry);
 
         for (Map.Entry<SpatialKey, Geometry> geometryEntry : indexMap.entrySet()) {
+            Geometry geom = geometryEntry.getValue();
             SpatialKey key = geometryEntry.getKey();
-            if (key.equalsIgnoringId(spatialKey)) {
-                Geometry geom = geometryEntry.getValue();
 
-                boolean equal = false;
-                switch (equalityType) {
-                    case Exact:
-                        equal = geom.equalsExact(geometry);
-                        break;
-                    case Normalized:
-                        equal = geom.norm().equalsNorm(geometry.norm());
-                        break;
-                    case Topological:
-                        equal = geom.equalsTopo(geometry);
-                        break;
-                }
+            boolean equal = false;
+            switch (equalityType) {
+                case Exact:
+                    equal = geom.equalsExact(geometry);
+                    break;
+                case Normalized:
+                    equal = geom.norm().equalsNorm(geometry.norm());
+                    break;
+                case Topological:
+                    equal = geom.equalsTopo(geometry);
+                    break;
+            }
 
-                if (equal) {
-                    resultSet.add(NitriteId.createId(key.getId()));
-                }
+            if (equal) {
+                resultSet.add(NitriteId.createId(key.getId()));
             }
         }
 

@@ -165,7 +165,7 @@ class NitriteMVMap<Key, Value> implements NitriteMap<Key, Value> {
         }
     }
 
-    MVMap<Key, Value> getUnderlyingMVMap() {
+    MVMap<Key, Value> getBackingMVMap() {
         return mvMap;
     }
 

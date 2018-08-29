@@ -20,7 +20,6 @@ package org.dizitart.no2.filters;
 
 import lombok.experimental.UtilityClass;
 import org.dizitart.no2.collection.Filter;
-import org.dizitart.no2.exceptions.ErrorMessage;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.index.TextIndexer;
 import org.dizitart.no2.spatial.EqualityType;

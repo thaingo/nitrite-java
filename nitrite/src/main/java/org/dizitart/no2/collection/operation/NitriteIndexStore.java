@@ -45,12 +45,12 @@ import static org.dizitart.no2.util.IndexUtils.internalName;
  * @author Anindya Chatterjee.
  */
 class NitriteIndexStore implements IndexStore {
-    private final NitriteMap<NitriteId, Document> underlyingMap;
+    private final NitriteMap<NitriteId, Document> nitriteMap;
     private final NitriteStore mvStore;
 
-    NitriteIndexStore(NitriteMap<NitriteId, Document> underlyingMap) {
-        this.underlyingMap = underlyingMap;
-        this.mvStore = underlyingMap.getStore();
+    NitriteIndexStore(NitriteMap<NitriteId, Document> nitriteMap) {
+        this.nitriteMap = nitriteMap;
+        this.mvStore = nitriteMap.getStore();
     }
 
     @Override
@@ -134,7 +134,7 @@ class NitriteIndexStore implements IndexStore {
 
     @Override
     public Index createIndex(String field, IndexType indexType) {
-        Index index = new Index(indexType, field, underlyingMap.getName());
+        Index index = new Index(indexType, field, nitriteMap.getName());
 
         IndexMeta indexMeta = new IndexMeta();
         indexMeta.index = index;
@@ -147,7 +147,7 @@ class NitriteIndexStore implements IndexStore {
     }
 
     private String getName() {
-        return INDEX_META_PREFIX + INTERNAL_NAME_SEPARATOR + underlyingMap.getName();
+        return INDEX_META_PREFIX + INTERNAL_NAME_SEPARATOR + nitriteMap.getName();
     }
 
     private NitriteMap<String, IndexMeta> getIndexMetaMap() {

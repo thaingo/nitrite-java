@@ -43,16 +43,16 @@ import static org.dizitart.no2.util.ValidationUtils.notNull;
 class NitriteTextIndexer implements TextIndexer {
     private TextTokenizer tokenizerService;
     private IndexStore indexStore;
-    private NitriteMap<NitriteId, Document> underlyingMap;
+    private NitriteMap<NitriteId, Document> nitriteMap;
     private final Object lock = new Object();
 
     NitriteTextIndexer(
-            NitriteMap<NitriteId, Document> underlyingMap,
+            NitriteMap<NitriteId, Document> nitriteMap,
             TextTokenizer textTokenizer,
             IndexStore indexStore) {
         this.tokenizerService = textTokenizer;
         this.indexStore = indexStore;
-        this.underlyingMap = underlyingMap;
+        this.nitriteMap = nitriteMap;
     }
 
     @Override
@@ -103,7 +103,7 @@ class NitriteTextIndexer implements TextIndexer {
 
     @Override
     public void rebuildIndex(String field, boolean unique) {
-        for (Map.Entry<NitriteId, Document> entry : underlyingMap.entrySet()) {
+        for (Map.Entry<NitriteId, Document> entry : nitriteMap.entrySet()) {
             // create the document
             Document object = entry.getValue();
 
