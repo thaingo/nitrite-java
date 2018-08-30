@@ -19,16 +19,10 @@
 package org.dizitart.no2.filters;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dizitart.no2.Document;
-import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.index.IndexedQueryTemplate;
-import org.dizitart.no2.mapper.NitriteMapper;
-import org.dizitart.no2.store.NitriteMap;
+import org.dizitart.no2.common.mapper.NitriteMapper;
 
-import java.util.Set;
-
-import static org.dizitart.no2.util.ValidationUtils.validateSearchTerm;
+import static org.dizitart.no2.common.util.ValidationUtils.validateSearchTerm;
 
 /**
  * An abstract implementation of {@link Filter}.

@@ -21,6 +21,7 @@ package org.dizitart.no2.collection;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.dizitart.no2.filters.Filter;
 
 /**
  * Settings to control remove operation in {@link NitriteCollection}.

@@ -22,6 +22,7 @@ import org.dizitart.no2.collection.Cursor;
 import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.collection.NitriteCollection;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.services.LuceneService;
 import org.junit.After;
 import org.junit.Rule;
@@ -40,7 +41,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.common.ExecutorServiceManager.shutdownExecutors;
-import static org.dizitart.no2.filters.Filters.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -104,7 +104,7 @@ public class MultiThreadedTest {
         Nitrite db = builder.openOrCreate();
 
         collection = db.getCollection("test");
-        collection.remove(ALL);
+        collection.remove(Filter.ALL);
         collection.createIndex("unixTime", IndexOptions.indexOptions(IndexType.Unique));
         db.commit();
 
@@ -123,12 +123,12 @@ public class MultiThreadedTest {
                         }
 
                         long unixTime = (long) document.get("unixTime");
-                        Cursor cursor = collection.find(eq("unixTime", unixTime));
+                        Cursor cursor = collection.find(Filter.eq("unixTime", unixTime));
                         assertTrue(cursor.size() >= 0);
 
                         if (collection.hasIndex("text") && !collection.isIndexing("text")) {
                             String textData = (String) document.get("text");
-                            cursor = collection.find(text("text", textData));
+                            cursor = collection.find(Filter.text("text", textData));
                             assertTrue(cursor.size() >= 0);
                         }
 
@@ -153,7 +153,7 @@ public class MultiThreadedTest {
         Cursor cursor = collection.find();
         assertEquals(cursor.size(), docCounter.get());
 
-        cursor = collection.find(gt("unixTime", 1));
+        cursor = collection.find(Filter.gt("unixTime", 1));
         assertEquals(cursor.size(), docCounter.get());
 
         db.close();

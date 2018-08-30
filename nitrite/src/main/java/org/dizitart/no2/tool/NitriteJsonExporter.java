@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.dizitart.no2.common.Constants.*;
-import static org.dizitart.no2.util.ObjectUtils.*;
+import static org.dizitart.no2.common.util.ObjectUtils.*;
 
 /**
  * @author Anindya Chatterjee

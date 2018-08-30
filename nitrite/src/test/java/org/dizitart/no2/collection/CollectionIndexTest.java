@@ -31,8 +31,8 @@ import java.util.concurrent.Callable;
 import static org.awaitility.Awaitility.await;
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.collection.IndexOptions.indexOptions;
-import static org.dizitart.no2.filters.Filters.eq;
-import static org.dizitart.no2.filters.Filters.text;
+import static org.dizitart.no2.filters.Filter.eq;
+import static org.dizitart.no2.filters.Filter.text;
 import static org.junit.Assert.*;
 
 /**

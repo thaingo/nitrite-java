@@ -18,7 +18,7 @@
 
 package org.dizitart.no2;
 
-import org.dizitart.no2.util.ReflectionUtils;
+import org.dizitart.no2.common.util.ReflectionUtils;
 import org.junit.Test;
 
 import java.lang.reflect.Field;

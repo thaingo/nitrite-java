@@ -17,7 +17,7 @@
  */
 
 /**
- * Collection api for nitrite databases
+ * Public api for {@link org.dizitart.no2.collection.NitriteCollection}
  *
  * @since 4.0.0
  * @author Anindya Chatterjee.

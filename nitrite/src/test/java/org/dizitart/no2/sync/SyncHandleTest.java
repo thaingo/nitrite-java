@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 import static org.dizitart.no2.Document.createDocument;
-import static org.dizitart.no2.filters.Filters.eq;
+import static org.dizitart.no2.filters.Filter.eq;
 import static org.dizitart.no2.sync.TimeSpan.timeSpan;
 import static org.junit.Assert.*;
 

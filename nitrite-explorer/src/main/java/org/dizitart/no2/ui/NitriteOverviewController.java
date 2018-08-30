@@ -33,10 +33,10 @@ import javafx.scene.layout.GridPane;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteBuilder;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Filter;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.store.NitriteMap;
-import org.dizitart.no2.util.StringUtils;
+import org.dizitart.no2.common.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;

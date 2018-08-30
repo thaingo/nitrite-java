@@ -22,17 +22,17 @@ import lombok.Getter;
 import lombok.Setter;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.collection.NitriteCollection;
-import org.dizitart.no2.event.ChangeInfo;
-import org.dizitart.no2.event.ChangeListener;
-import org.dizitart.no2.event.ChangeType;
-import org.dizitart.no2.event.ChangedItem;
+import org.dizitart.no2.common.event.ChangeInfo;
+import org.dizitart.no2.common.event.ChangeListener;
+import org.dizitart.no2.common.event.ChangeType;
+import org.dizitart.no2.common.event.ChangedItem;
 
 import java.util.List;
 
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.common.Constants.*;
-import static org.dizitart.no2.util.Iterables.toList;
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.Iterables.toList;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 
 /**
  * @author Anindya Chatterjee

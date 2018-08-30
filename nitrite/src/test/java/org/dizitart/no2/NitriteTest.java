@@ -38,7 +38,7 @@ import java.util.Set;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.common.Constants.INTERNAL_NAME_SEPARATOR;
-import static org.dizitart.no2.filters.Filters.ALL;
+import static org.dizitart.no2.filters.Filter.ALL;
 import static org.junit.Assert.*;
 
 public class NitriteTest {

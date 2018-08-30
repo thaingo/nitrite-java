@@ -41,7 +41,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 
 public class LuceneService implements TextIndexer {
     private static final String CONTENT_ID = "content_id";

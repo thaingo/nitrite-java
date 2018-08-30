@@ -28,7 +28,7 @@ import org.dizitart.no2.NitriteId;
  *
  * [[app-listing]]
  * [source,java]
- * . Example of {@link Cursor}
+ * .Example of {@link Cursor}
  * --
  *  // create/open a database
  *  Nitrite db = Nitrite.builder()

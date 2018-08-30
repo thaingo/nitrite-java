@@ -20,6 +20,7 @@ package org.dizitart.no2.collection;
 
 import lombok.Getter;
 import lombok.experimental.NonFinal;
+import org.dizitart.no2.filters.Filter;
 
 /**
  * Represents the options to specify during a find operation on a collection.

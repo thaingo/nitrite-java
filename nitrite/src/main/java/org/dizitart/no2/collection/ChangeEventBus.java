@@ -19,9 +19,9 @@
 package org.dizitart.no2.collection;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dizitart.no2.event.ChangeInfo;
-import org.dizitart.no2.event.ChangeListener;
-import org.dizitart.no2.event.NitriteEventBus;
+import org.dizitart.no2.common.event.ChangeInfo;
+import org.dizitart.no2.common.event.ChangeListener;
+import org.dizitart.no2.common.event.NitriteEventBus;
 
 /**
  * @author Anindya Chatterjee.

@@ -23,11 +23,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.TextIndexer;
 import org.dizitart.no2.index.fulltext.TextTokenizer;
-import org.dizitart.no2.mapper.JacksonMapper;
-import org.dizitart.no2.mapper.NitriteMapper;
-import org.dizitart.no2.util.StringUtils;
+import org.dizitart.no2.common.mapper.JacksonMapper;
+import org.dizitart.no2.common.mapper.NitriteMapper;
+import org.dizitart.no2.common.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -36,7 +37,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static org.dizitart.no2.common.ExecutorServiceManager.shutdownExecutors;
-import static org.dizitart.no2.util.ObjectUtils.isRepository;
+import static org.dizitart.no2.common.util.ObjectUtils.isRepository;
 
 /**
  * Represents a readonly view of all contextual information of a nitrite database.
@@ -107,7 +108,7 @@ public class NitriteContext {
      * is used.
      *
      * @returns a {@link TextIndexer} instance or `null`.
-     * @see org.dizitart.no2.filters.Filters#text(String, String)
+     * @see Filter#text(String, String)
      * @see NitriteBuilder#textIndexer(TextIndexer)
      * */
     private TextIndexer textIndexer;
@@ -117,7 +118,7 @@ public class NitriteContext {
      * `null` if the default {@link TextTokenizer} implementation is used.
      *
      * @returns a {@link TextTokenizer} instance or `null`.
-     * @see org.dizitart.no2.filters.Filters#text(String, String)
+     * @see Filter#text(String, String)
      * @see NitriteBuilder#textTokenizer(TextTokenizer)
      * */
     private TextTokenizer textTokenizer;

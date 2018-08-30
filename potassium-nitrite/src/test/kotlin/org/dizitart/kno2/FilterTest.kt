@@ -19,18 +19,14 @@
 package org.dizitart.kno2
 
 import org.dizitart.kno2.filters.*
-import org.dizitart.no2.Document
 import org.dizitart.no2.collection.IndexOptions
 import org.dizitart.no2.collection.IndexType
-import org.dizitart.no2.filters.Filters.geoEq
-import org.dizitart.no2.filters.Filters.near
 import org.dizitart.no2.spatial.EqualityType
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.WKTReader
-import java.util.*
 
 /**
  *

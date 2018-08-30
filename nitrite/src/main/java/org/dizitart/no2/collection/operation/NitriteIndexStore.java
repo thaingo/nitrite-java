@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.dizitart.no2.common.Constants.INDEX_META_PREFIX;
 import static org.dizitart.no2.common.Constants.INTERNAL_NAME_SEPARATOR;
-import static org.dizitart.no2.util.IndexUtils.internalName;
+import static org.dizitart.no2.common.util.IndexUtils.internalName;
 
 /**
  * @author Anindya Chatterjee.

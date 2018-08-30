@@ -21,10 +21,11 @@ package org.dizitart.no2.collection;
 
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.event.ChangeAware;
-import org.dizitart.no2.event.ChangeType;
+import org.dizitart.no2.common.event.ChangeAware;
+import org.dizitart.no2.common.event.ChangeType;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
+import org.dizitart.no2.filters.Filter;
 
 /**
  * Represents a named document collection stored in nitrite database.
@@ -49,8 +50,8 @@ import org.dizitart.no2.exceptions.UniqueConstraintException;
  * @see ChangeAware
  * @see Document
  * @see NitriteId
- * @see org.dizitart.no2.event.ChangeListener
- * @see org.dizitart.no2.event.EventBus
+ * @see org.dizitart.no2.common.event.ChangeListener
+ * @see org.dizitart.no2.common.event.EventBus
  * @author Anindya Chatterjee
  * @since 1.0
  */
@@ -66,7 +67,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * index will also be updated.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#INSERT}.
      *
@@ -94,7 +95,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * If the `filter` is `null`, it will update all documents in the collection.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#UPDATE}.
      *
@@ -103,7 +104,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` document is `null`.
      */
-    WriteResult update(Filter filter, Document update);
+    WriteResult update(org.dizitart.no2.filters.Filter filter, Document update);
 
     /**
      * Updates documents in the collection. Update operation can be customized
@@ -113,7 +114,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * `justOnce` is set to `true` in `updateOptions`.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#UPDATE} or {@link ChangeType#INSERT}.
      *
@@ -125,7 +126,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @throws org.dizitart.no2.exceptions.ValidationException if `updateOptions` is `null`.
      * @see UpdateOptions
      */
-    WriteResult update(Filter filter, Document update, UpdateOptions updateOptions);
+    WriteResult update(org.dizitart.no2.filters.Filter filter, Document update, UpdateOptions updateOptions);
 
     /**
      * Removes matching elements from the collection.
@@ -133,14 +134,14 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * If the `filter` is `null`, it will remove all objects from the collection.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#REMOVE}.
      *
      * @param filter the filter to apply to select elements from collection.
      * @return the result of the remove operation.
      */
-    WriteResult remove(Filter filter);
+    WriteResult remove(org.dizitart.no2.filters.Filter filter);
 
     /**
      * Removes document from a collection. Remove operation can be customized by
@@ -150,7 +151,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * `justOnce` is set to `true` in `removeOptions`.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#REMOVE}.
      *
@@ -158,7 +159,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @param removeOptions the remove options to customize the operations.
      * @return the result of the remove operation.
      */
-    WriteResult remove(Filter filter, RemoveOptions removeOptions);
+    WriteResult remove(org.dizitart.no2.filters.Filter filter, RemoveOptions removeOptions);
 
     /**
      * Returns a cursor to all documents in the collection.
@@ -183,7 +184,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @see org.dizitart.no2.filters.Filters
      * @see Cursor#project(Document)
      */
-    Cursor find(Filter filter);
+    Cursor find(org.dizitart.no2.filters.Filter filter);
 
     /**
      * Returns a customized cursor to all documents in the collection.

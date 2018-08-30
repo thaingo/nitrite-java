@@ -23,6 +23,7 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.ValidationException;
+import org.dizitart.no2.filters.Filter;
 import org.junit.Test;
 
 import java.util.Date;
@@ -30,7 +31,6 @@ import java.util.Date;
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.collection.FindOptions.limit;
 import static org.dizitart.no2.collection.FindOptions.sort;
-import static org.dizitart.no2.filters.Filters.*;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -40,13 +40,13 @@ public class CollectionFindNegativeTest extends BaseCollectionTest {
     @Test(expected = FilterException.class)
     public void testFindFilterInvalidAccessor() {
         insert();
-        collection.find(eq("lastName.name", "ln2"));
+        collection.find(Filter.eq("lastName.name", "ln2"));
     }
 
     @Test(expected = FilterException.class)
     public void testFindFilterInvalidIndex() {
         insert();
-        collection.find(eq("data.9", 4));
+        collection.find(Filter.eq("data.9", 4));
     }
 
     @Test(expected = ValidationException.class)
@@ -76,20 +76,20 @@ public class CollectionFindNegativeTest extends BaseCollectionTest {
     @Test(expected = FilterException.class)
     public void testFindTextFilterNonIndexed() {
         insert();
-        collection.find(text("body", "Lorem"));
+        collection.find(Filter.text("body", "Lorem"));
     }
 
     @Test(expected = FilterException.class)
     public void testFindWithRegexInvalidValue() {
         insert();
-        Cursor cursor = collection.find(regex("birthDay", "hello"));
+        Cursor cursor = collection.find(Filter.regex("birthDay", "hello"));
         assertEquals(cursor.size(), 1);
     }
 
     @Test(expected = ValidationException.class)
     public void testInvalidProjection() {
         insert();
-        Cursor cursor = collection.find(lte("birthDay", new Date()),
+        Cursor cursor = collection.find(Filter.lte("birthDay", new Date()),
                 sort("firstName", SortOrder.Ascending).thenLimit(0, 3));
 
         Document projection = createDocument("firstName", null)

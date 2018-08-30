@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.dizitart.no2.Document;
-import org.dizitart.no2.event.ChangeType;
+import org.dizitart.no2.common.event.ChangeType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.dizitart.no2.event.ChangeType.REMOVE;
-import static org.dizitart.no2.event.ChangeType.UPDATE;
+import static org.dizitart.no2.common.event.ChangeType.REMOVE;
+import static org.dizitart.no2.common.event.ChangeType.UPDATE;
 
 /**
  * Represents a cumulative changes (add, update, delete) in a collection.

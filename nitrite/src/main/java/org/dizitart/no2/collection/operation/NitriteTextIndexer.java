@@ -33,9 +33,9 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.util.IndexUtils.sortByScore;
-import static org.dizitart.no2.util.ValidationUtils.notNull;
+import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
+import static org.dizitart.no2.common.util.IndexUtils.sortByScore;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 
 /**
  * @author Anindya Chatterjee.

@@ -25,7 +25,7 @@ import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.ValidationException;
 import org.junit.Test;
 
-import static org.dizitart.no2.filters.Filters.gt;
+import static org.dizitart.no2.filters.Filter.gt;
 import static org.junit.Assert.assertEquals;
 
 /**

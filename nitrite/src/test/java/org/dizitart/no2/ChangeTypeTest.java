@@ -18,7 +18,7 @@
 
 package org.dizitart.no2;
 
-import org.dizitart.no2.event.ChangeType;
+import org.dizitart.no2.common.event.ChangeType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

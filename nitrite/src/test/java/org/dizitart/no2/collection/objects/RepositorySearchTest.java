@@ -18,7 +18,7 @@
 
 package org.dizitart.no2.collection.objects;
 
-import org.dizitart.no2.collection.Filter;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.collection.FindOptions;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.collection.SortOrder;
@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.dizitart.no2.collection.FindOptions.sort;
-import static org.dizitart.no2.filters.Filters.*;
+import static org.dizitart.no2.filters.Filter.*;
 import static org.junit.Assert.*;
 
 /**

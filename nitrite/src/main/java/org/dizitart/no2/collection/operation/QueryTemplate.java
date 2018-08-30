@@ -23,6 +23,7 @@ import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.*;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.exceptions.InvalidOperationException;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.IndexedQueryTemplate;
 import org.dizitart.no2.store.NitriteMap;
 
@@ -30,10 +31,10 @@ import java.util.*;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.VE_INDEXED_QUERY_TEMPLATE_NULL;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
-import static org.dizitart.no2.util.ValidationUtils.notNull;
-import static org.dizitart.no2.util.ValidationUtils.validateLimit;
+import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
+import static org.dizitart.no2.common.util.ValidationUtils.validateLimit;
 
 /**
  * @author Anindya Chatterjee.
@@ -64,7 +65,7 @@ class QueryTemplate {
         return new DocumentCursor(findResult);
     }
 
-    Cursor find(Filter filter) {
+    Cursor find(org.dizitart.no2.filters.Filter filter) {
         if (filter == null) {
             return find();
         }
@@ -98,7 +99,7 @@ class QueryTemplate {
         return new DocumentCursor(findResult);
     }
 
-    Cursor find(Filter filter, FindOptions findOptions) {
+    Cursor find(org.dizitart.no2.filters.Filter filter, FindOptions findOptions) {
         if (filter == null) {
             return find(findOptions);
         }

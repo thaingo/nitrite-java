@@ -21,10 +21,11 @@ package org.dizitart.no2.collection.objects;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.*;
-import org.dizitart.no2.event.ChangeAware;
-import org.dizitart.no2.event.ChangeType;
+import org.dizitart.no2.common.event.ChangeAware;
+import org.dizitart.no2.common.event.ChangeType;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.annotations.Id;
 
 /**
@@ -67,8 +68,8 @@ import org.dizitart.no2.index.annotations.Id;
  * @see ChangeAware
  * @see Document
  * @see NitriteId
- * @see org.dizitart.no2.event.ChangeListener
- * @see org.dizitart.no2.event.EventBus
+ * @see org.dizitart.no2.common.event.ChangeListener
+ * @see org.dizitart.no2.common.event.EventBus
  * @see NitriteCollection
  */
 public interface ObjectRepository<T> extends PersistentCollection<T> {
@@ -84,7 +85,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * index will also be updated.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#INSERT}.
      *
@@ -121,7 +122,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * ====
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#UPDATE}.
      *
@@ -130,7 +131,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      */
-    WriteResult update(Filter filter, T update);
+    WriteResult update(org.dizitart.no2.filters.Filter filter, T update);
 
     /**
      * Updates objects in the repository. Update operation can be customized
@@ -147,7 +148,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * ====
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#UPDATE} or {@link ChangeType#INSERT}.
      *
@@ -158,7 +159,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      * @throws org.dizitart.no2.exceptions.ValidationException if `updateOptions` is `null`.
      */
-    WriteResult update(Filter filter, T update, boolean upsert);
+    WriteResult update(org.dizitart.no2.filters.Filter filter, T update, boolean upsert);
 
     /**
      * Updates objects in the repository by setting the field specified in `document`.
@@ -172,7 +173,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * ====
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#UPDATE}.
      *
@@ -181,7 +182,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      */
-    WriteResult update(Filter filter, Document update);
+    WriteResult update(org.dizitart.no2.filters.Filter filter, Document update);
 
     /**
      * Updates objects in the repository by setting the field specified in `document`.
@@ -198,7 +199,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * ====
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#UPDATE}.
      *
@@ -208,7 +209,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      */
-    WriteResult update(Filter filter, Document update, boolean justOnce);
+    WriteResult update(org.dizitart.no2.filters.Filter filter, Document update, boolean justOnce);
 
     /**
      * Removes matching elements from the collection.
@@ -216,14 +217,14 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * If the `filter` is `null`, it will remove all objects from the collection.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#REMOVE}.
      *
      * @param filter the filter to apply to select elements from collection.
      * @return the result of the remove operation.
      */
-    WriteResult remove(Filter filter);
+    WriteResult remove(org.dizitart.no2.filters.Filter filter);
 
     /**
      * Removes objects from the collection. Remove operation can be customized by
@@ -233,7 +234,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * `justOnce` is set to `true` in `removeOptions`.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#REMOVE}.
      *
@@ -241,7 +242,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @param removeOptions the remove options to customize the operations.
      * @return the result of the remove operation.
      */
-    WriteResult remove(Filter filter, RemoveOptions removeOptions);
+    WriteResult remove(org.dizitart.no2.filters.Filter filter, RemoveOptions removeOptions);
 
     /**
      * Returns a cursor to all objects in the collection.
@@ -266,7 +267,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @see org.dizitart.no2.filters.Filters
      * @see Cursor#project(Class)
      */
-    Cursor<T> find(Filter filter);
+    Cursor<T> find(org.dizitart.no2.filters.Filter filter);
 
     /**
      * Returns a customized cursor to all objects in the collection.

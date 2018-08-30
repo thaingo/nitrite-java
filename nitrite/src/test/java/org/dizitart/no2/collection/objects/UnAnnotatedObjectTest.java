@@ -23,10 +23,10 @@ import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.collection.SortOrder;
 import org.dizitart.no2.collection.objects.data.ClassA;
 import org.dizitart.no2.collection.objects.data.ClassC;
+import org.dizitart.no2.filters.Filter;
 import org.junit.Test;
 
 import static org.dizitart.no2.collection.FindOptions.sort;
-import static org.dizitart.no2.filters.Filters.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -46,7 +46,7 @@ public class UnAnnotatedObjectTest extends BaseObjectRepositoryTest {
         indexOptions.setIndexType(IndexType.Unique);
         aObjectRepository.createIndex("b.number", indexOptions);
 
-        cursor = aObjectRepository.find(not(eq("b.number", 160)),
+        cursor = aObjectRepository.find(Filter.not(Filter.eq("b.number", 160)),
                 sort("b.number", SortOrder.Ascending).thenLimit(0, 10));
 
         System.out.println("Available - " + cursor.hasMore());
@@ -57,7 +57,7 @@ public class UnAnnotatedObjectTest extends BaseObjectRepositoryTest {
             System.out.println(classA);
         }
 
-        cursor = aObjectRepository.find(not(eq("b.number", 160)),
+        cursor = aObjectRepository.find(Filter.not(Filter.eq("b.number", 160)),
                 sort("b.number", SortOrder.Descending).thenLimit(2, 7));
 
         System.out.println("Available - " + cursor.hasMore());
@@ -68,7 +68,7 @@ public class UnAnnotatedObjectTest extends BaseObjectRepositoryTest {
             System.out.println(classA);
         }
 
-        cursor = cObjectRepository.find(gt("id", 900),
+        cursor = cObjectRepository.find(Filter.gt("id", 900),
                 sort("id", SortOrder.Descending).thenLimit(2, 7));
         System.out.println("Available - " + cursor.hasMore());
         System.out.println("Total Size - " + cursor.totalCount());

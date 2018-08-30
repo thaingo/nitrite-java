@@ -21,7 +21,7 @@ package org.dizitart.no2.collection.objects;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.exceptions.InvalidOperationException;
-import org.dizitart.no2.mapper.NitriteMapper;
+import org.dizitart.no2.common.mapper.NitriteMapper;
 
 import javax.validation.constraints.NotNull;
 import java.util.Iterator;

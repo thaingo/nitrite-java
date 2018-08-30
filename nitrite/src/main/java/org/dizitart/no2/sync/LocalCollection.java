@@ -25,7 +25,7 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.Cursor;
 import org.dizitart.no2.collection.NitriteCollection;
-import org.dizitart.no2.filters.Filters;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.meta.Attributes;
 import org.dizitart.no2.sync.types.ChangeFeed;
 
@@ -33,9 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.dizitart.no2.common.Constants.*;
-import static org.dizitart.no2.filters.Filters.*;
-import static org.dizitart.no2.util.DocumentUtils.createUniqueFilter;
-import static org.dizitart.no2.util.DocumentUtils.isRecent;
+import static org.dizitart.no2.common.util.DocumentUtils.createUniqueFilter;
+import static org.dizitart.no2.common.util.DocumentUtils.isRecent;
 
 /**
  * @author Anindya Chatterjee.
@@ -70,7 +69,7 @@ class LocalCollection {
     }
 
     public void clear() {
-        collection.remove(ALL);
+        collection.remove(Filter.ALL);
     }
 
     public void insert(Document[] documents) {
@@ -121,10 +120,10 @@ class LocalCollection {
                 // local document not found
                 // check if it has been deleted recently
                 Cursor removeLogs = changeLogRepository.find(
-                        and(
-                                eq(COLLECTION, getName()),
-                                eq(DELETED_ID, document.getId().getIdValue()),
-                                gt(DELETE_TIME, document.getLastModifiedTime())
+                        Filter.and(
+                                Filter.eq(COLLECTION, getName()),
+                                Filter.eq(DELETED_ID, document.getId().getIdValue()),
+                                Filter.gt(DELETE_TIME, document.getLastModifiedTime())
                         )
                 );
                 if (removeLogs == null || removeLogs.size() == 0) {
@@ -147,10 +146,10 @@ class LocalCollection {
     @SuppressWarnings("unchecked")
     private List<Document> removedSince(long lastSequence, long newSequence) {
         Iterable<Document> removeLogs = changeLogRepository.find(
-                and(
-                        eq(COLLECTION, getName()),
-                        gte(DELETE_TIME, lastSequence),
-                        lte(DELETE_TIME, newSequence)
+                Filter.and(
+                        Filter.eq(COLLECTION, getName()),
+                        Filter.gte(DELETE_TIME, lastSequence),
+                        Filter.lte(DELETE_TIME, newSequence)
                 )
         );
 
@@ -168,9 +167,9 @@ class LocalCollection {
 
     private List<Document> modifiedSince(long lastSequence, long newSequence) {
         Iterable<Document> findResult = collection.find(
-                Filters.and(
-                        Filters.gte(DOC_MODIFIED, lastSequence),
-                        Filters.lte(DOC_MODIFIED, newSequence)
+                Filter.and(
+                        Filter.gte(DOC_MODIFIED, lastSequence),
+                        Filter.lte(DOC_MODIFIED, newSequence)
                 ));
 
         List<Document> result = new ArrayList<>();

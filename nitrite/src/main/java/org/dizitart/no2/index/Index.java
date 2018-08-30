@@ -29,9 +29,9 @@ import java.io.Serializable;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.util.IndexUtils.internalName;
-import static org.dizitart.no2.util.ValidationUtils.notEmpty;
-import static org.dizitart.no2.util.ValidationUtils.notNull;
+import static org.dizitart.no2.common.util.IndexUtils.internalName;
+import static org.dizitart.no2.common.util.ValidationUtils.notEmpty;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 
 /**
  * Represents a nitrite database index.

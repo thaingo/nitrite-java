@@ -19,7 +19,8 @@
 package org.dizitart.no2.collection;
 
 import io.reactivex.Observable;
-import org.dizitart.no2.util.Iterables;
+import org.dizitart.no2.filters.Filter;
+import org.dizitart.no2.common.util.Iterables;
 
 import java.util.List;
 

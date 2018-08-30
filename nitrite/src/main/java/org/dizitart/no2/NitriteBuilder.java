@@ -25,13 +25,14 @@ import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.SecurityException;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.TextIndexer;
 import org.dizitart.no2.index.fulltext.EnglishTextTokenizer;
 import org.dizitart.no2.index.fulltext.TextTokenizer;
-import org.dizitart.no2.mapper.NitriteMapper;
+import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.store.NitriteMVStore;
 import org.dizitart.no2.store.NitriteStore;
-import org.dizitart.no2.util.StringUtils;
+import org.dizitart.no2.common.util.StringUtils;
 import org.h2.mvstore.MVStore;
 
 import java.io.File;
@@ -40,14 +41,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.dizitart.no2.common.Security.createSecurely;
-import static org.dizitart.no2.common.Security.openSecurely;
+import static org.dizitart.no2.Security.createSecurely;
+import static org.dizitart.no2.Security.openSecurely;
 import static org.dizitart.no2.exceptions.ErrorCodes.NIOE_DIR_DOES_NOT_EXISTS;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
 import static org.dizitart.no2.tool.Recovery.recover;
-import static org.dizitart.no2.util.ObjectUtils.*;
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
-import static org.dizitart.no2.util.ValidationUtils.isValidCollectionName;
+import static org.dizitart.no2.common.util.ObjectUtils.*;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.ValidationUtils.isValidCollectionName;
 
 /**
  * A builder utility to create a {@link Nitrite} database instance.
@@ -243,7 +244,7 @@ public class NitriteBuilder {
      * @param textIndexer the {@link TextIndexer} implementation.
      * @return the {@link NitriteBuilder} instance.
      * @see TextIndexer
-     * @see org.dizitart.no2.filters.Filters#text(String, String)
+     * @see Filter#text(String, String)
      * @see NitriteCollection#createIndex(String, IndexOptions)
      */
     public NitriteBuilder textIndexer(TextIndexer textIndexer) {
@@ -284,12 +285,12 @@ public class NitriteBuilder {
 
     /**
      * Sets a custom {@link NitriteMapper} implementation. If not set, a default
-     * jackson based mapper {@link org.dizitart.no2.mapper.JacksonMapper} will
+     * jackson based mapper {@link org.dizitart.no2.common.mapper.JacksonMapper} will
      * be used.
      *
      * @param nitriteMapper a {@link NitriteMapper} implementation
      * @return the {@link NitriteBuilder} instance.
-     * @see org.dizitart.no2.mapper.JacksonMapper
+     * @see org.dizitart.no2.common.mapper.JacksonMapper
      * */
     public NitriteBuilder nitriteMapper(NitriteMapper nitriteMapper) {
         this.nitriteMapper = nitriteMapper;
@@ -307,20 +308,20 @@ public class NitriteBuilder {
     }
 
     /**
-     * Registers a jackson {@link Module} to the {@link org.dizitart.no2.mapper.JacksonFacade}.
+     * Registers a jackson {@link Module} to the {@link org.dizitart.no2.common.mapper.JacksonFacade}.
      *
      * [icon="{@docRoot}/note.png"]
      * [NOTE]
      * --
      * This is only useful when the default {@link NitriteMapper} viz.
-     * {@link org.dizitart.no2.mapper.JacksonMapper} is used.
+     * {@link org.dizitart.no2.common.mapper.JacksonMapper} is used.
      *
      * --
      *
      * @param module jackson module to register
      * @return the {@link NitriteBuilder} instance.
-     * @see org.dizitart.no2.mapper.JacksonFacade
-     * @see org.dizitart.no2.mapper.JacksonMapper
+     * @see org.dizitart.no2.common.mapper.JacksonFacade
+     * @see org.dizitart.no2.common.mapper.JacksonMapper
      * @see NitriteMapper
      * */
     public NitriteBuilder registerModule(Module module) {

@@ -18,13 +18,16 @@
 
 package org.dizitart.no2.collection;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.TestObserver;
 import org.dizitart.no2.BaseCollectionTest;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.exceptions.IndexingException;
-import org.dizitart.no2.filters.Filters;
-import org.dizitart.no2.mapper.JacksonFacade;
-import org.dizitart.no2.mapper.MapperFacade;
+import org.dizitart.no2.common.mapper.JacksonFacade;
+import org.dizitart.no2.common.mapper.MapperFacade;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,8 +43,8 @@ import static org.dizitart.no2.collection.FindOptions.limit;
 import static org.dizitart.no2.collection.FindOptions.sort;
 import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.dizitart.no2.common.Constants.DOC_REVISION;
-import static org.dizitart.no2.filters.Filters.*;
-import static org.dizitart.no2.util.Iterables.isSorted;
+import static org.dizitart.no2.filters.Filter.*;
+import static org.dizitart.no2.common.util.Iterables.isSorted;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
@@ -552,12 +555,12 @@ public class CollectionFindTest extends BaseCollectionTest {
 
     @Test
     public void testFilterAll() {
-        Cursor cursor = collection.find(Filters.ALL);
+        Cursor cursor = collection.find(ALL);
         assertNotNull(cursor);
         assertEquals(cursor.size(), 0);
 
         insert();
-        cursor = collection.find(Filters.ALL);
+        cursor = collection.find(ALL);
         assertNotNull(cursor);
         assertEquals(cursor.size(), 3);
     }
@@ -568,7 +571,7 @@ public class CollectionFindTest extends BaseCollectionTest {
         coll.createIndex("id", IndexOptions.indexOptions(IndexType.Unique));
         coll.createIndex("group", IndexOptions.indexOptions(IndexType.NonUnique));
 
-        coll.remove(Filters.ALL);
+        coll.remove(ALL);
 
         Document doc = new Document().put("id", "test-1").put("group", "groupA");
         assertEquals(1, coll.insert(doc).getAffectedCount());
@@ -576,12 +579,12 @@ public class CollectionFindTest extends BaseCollectionTest {
         doc = new Document().put("id", "test-2").put("group", "groupA").put("startTime", DateTime.now());
         assertEquals(1, coll.insert(doc).getAffectedCount());
 
-        Cursor cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
+        Cursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
         assertEquals(2, cursor.size());
         assertNull(cursor.toList().get(1).get("startTime"));
         assertNotNull(cursor.toList().get(0).get("startTime"));
 
-        cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending));
+        cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending));
         assertEquals(2, cursor.size());
         assertNull(cursor.toList().get(0).get("startTime"));
         assertNotNull(cursor.toList().get(1).get("startTime"));
@@ -591,7 +594,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     public void testIssue93() {
         NitriteCollection coll = db.getCollection("orderByOnNullableColumn2");
 
-        coll.remove(Filters.ALL);
+        coll.remove(ALL);
 
         Document doc = new Document().put("id", "test-2").put("group", "groupA");
         assertEquals(1, coll.insert(doc).getAffectedCount());
@@ -599,7 +602,7 @@ public class CollectionFindTest extends BaseCollectionTest {
         doc = new Document().put("id", "test-1").put("group", "groupA");
         assertEquals(1, coll.insert(doc).getAffectedCount());
 
-        Cursor cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
+        Cursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
         assertEquals(2, cursor.size());
     }
 
@@ -607,7 +610,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     public void testNullOrderWithAllNull() {
         NitriteCollection coll = db.getCollection("test");
 
-        coll.remove(Filters.ALL);
+        coll.remove(ALL);
 
         Document doc = new Document().put("id", "test-2").put("group", "groupA");
         assertEquals(1, coll.insert(doc).getAffectedCount());
@@ -615,35 +618,35 @@ public class CollectionFindTest extends BaseCollectionTest {
         doc = new Document().put("id", "test-1").put("group", "groupA");
         assertEquals(1, coll.insert(doc).getAffectedCount());
 
-        Cursor cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
+        Cursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
         assertEquals(2, cursor.size());
 
-        Cursor cursor2 = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Default));
+        Cursor cursor2 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Default));
         assertEquals(2, cursor2.size());
 
         assertThat(cursor.toList(), is(cursor2.toList()));
 
-        Cursor cursor3 = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.First));
+        Cursor cursor3 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.First));
         assertEquals(2, cursor3.size());
 
         assertThat(cursor.toList(), is(cursor3.toList()));
 
-        Cursor cursor4 = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Last));
+        Cursor cursor4 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Last));
         assertEquals(2, cursor4.size());
 
         assertThat(cursor.toList(), is(cursor4.toList()));
 
-        Cursor cursor5 = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Last));
+        Cursor cursor5 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Last));
         assertEquals(2, cursor5.size());
 
         assertThat(cursor.toList(), is(cursor5.toList()));
 
-        Cursor cursor6 = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.First));
+        Cursor cursor6 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.First));
         assertEquals(2, cursor6.size());
 
         assertThat(cursor.toList(), is(cursor6.toList()));
 
-        Cursor cursor7 = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Default));
+        Cursor cursor7 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Default));
         assertEquals(2, cursor7.size());
 
         assertThat(cursor.toList(), is(cursor7.toList()));
@@ -658,7 +661,7 @@ public class CollectionFindTest extends BaseCollectionTest {
             // ignore
         }
 
-        coll.remove(Filters.ALL);
+        coll.remove(ALL);
 
         Document doc1 = new Document().put("id", "test-1").put("group", "groupA");
         assertEquals(1, coll.insert(doc1).getAffectedCount());
@@ -669,32 +672,63 @@ public class CollectionFindTest extends BaseCollectionTest {
         Document doc3 = new Document().put("id", "test-3").put("group", "groupA").put("startTime", DateTime.now().plusMinutes(1));
         assertEquals(1, coll.insert(doc3).getAffectedCount());
 
-        Cursor cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
+        Cursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
         assertEquals(3, cursor.size());
         assertThat(Arrays.asList(doc3, doc2, doc1), is(cursor.toList()));
 
-        cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.First));
+        cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.First));
         assertEquals(3, cursor.size());
         assertThat(Arrays.asList(doc1, doc3, doc2), is(cursor.toList()));
 
-        cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Default));
+        cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Default));
         assertEquals(3, cursor.size());
         assertThat(Arrays.asList(doc3, doc2, doc1), is(cursor.toList()));
 
-        cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Last));
+        cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Last));
         assertEquals(3, cursor.size());
         assertThat(Arrays.asList(doc3, doc2, doc1), is(cursor.toList()));
 
-        cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.First));
+        cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.First));
         assertEquals(3, cursor.size());
         assertThat(Arrays.asList(doc1, doc2, doc3), is(cursor.toList()));
 
-        cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Default));
+        cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Default));
         assertEquals(3, cursor.size());
         assertThat(Arrays.asList(doc1, doc2, doc3), is(cursor.toList()));
 
-        cursor = coll.find(Filters.eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Last));
+        cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Last));
         assertEquals(3, cursor.size());
         assertThat(Arrays.asList(doc2, doc3, doc1), is(cursor.toList()));
+    }
+
+    @Test
+    public void testObservable() {
+        insert();
+
+        Observable<Document> documentObservable = collection.find().toObservable();
+        TestObserver<Document> observer = new TestObserver<>(new Observer<Document>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                assertNotNull(d);
+            }
+
+            @Override
+            public void onNext(Document keyValuePairs) {
+                assertNotNull(keyValuePairs);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                fail(e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("Completed");
+            }
+        });
+        documentObservable.subscribeWith(observer);
+
+        observer.assertSubscribed();
     }
 }

@@ -26,7 +26,7 @@ import org.dizitart.no2.sync.types.UserAccount;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.util.ResponseUtils.errorResponse;
+import static org.dizitart.no2.common.util.ResponseUtils.errorResponse;
 
 /**
  * Represents a template for DataGate users operations.

@@ -20,8 +20,8 @@ package org.dizitart.no2.collection;
 
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.event.ChangeAware;
-import org.dizitart.no2.event.ChangeType;
+import org.dizitart.no2.common.event.ChangeAware;
+import org.dizitart.no2.common.event.ChangeType;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
@@ -128,7 +128,7 @@ public interface PersistentCollection<T> extends ChangeAware, MetadataAware {
      * index will also be updated.
      * <p>
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#INSERT}.
      *
@@ -149,7 +149,7 @@ public interface PersistentCollection<T> extends ChangeAware, MetadataAware {
      * Updates `element` in the collection. Specified `element` must have an id.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#UPDATE}.
      *
@@ -166,7 +166,7 @@ public interface PersistentCollection<T> extends ChangeAware, MetadataAware {
      * is set to `true`.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#UPDATE} or {@link ChangeType#INSERT}.
      *
@@ -183,7 +183,7 @@ public interface PersistentCollection<T> extends ChangeAware, MetadataAware {
      * Deletes the `element` from the collection. The `element` must have an id.
      *
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#REMOVE}.
      *
@@ -211,7 +211,7 @@ public interface PersistentCollection<T> extends ChangeAware, MetadataAware {
      * a {@link IllegalStateException}.
      * <p>
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#DROP}.
      */
@@ -239,7 +239,7 @@ public interface PersistentCollection<T> extends ChangeAware, MetadataAware {
      * Any access to a closed collection would result into a {@link IllegalStateException}.
      * <p>
      * [icon="{@docRoot}/note.png"]
-     * NOTE: This operations will notify all {@link org.dizitart.no2.event.ChangeListener}
+     * NOTE: This operations will notify all {@link org.dizitart.no2.common.event.ChangeListener}
      * instances registered to this collection with change type
      * {@link ChangeType#CLOSE}.
      */

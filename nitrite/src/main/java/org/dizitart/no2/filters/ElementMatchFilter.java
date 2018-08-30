@@ -21,10 +21,9 @@ package org.dizitart.no2.filters;
 import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Filter;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.index.IndexedQueryTemplate;
-import org.dizitart.no2.mapper.NitriteMapper;
+import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.lang.reflect.Array;
@@ -34,9 +33,9 @@ import java.util.regex.Pattern;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.util.EqualsUtils.deepEquals;
-import static org.dizitart.no2.util.NumberUtils.compare;
+import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
+import static org.dizitart.no2.common.util.EqualsUtils.deepEquals;
+import static org.dizitart.no2.common.util.NumberUtils.compare;
 
 /**
  * @author Anindya Chatterjee.

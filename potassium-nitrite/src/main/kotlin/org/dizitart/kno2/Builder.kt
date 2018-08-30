@@ -23,7 +23,7 @@ import org.dizitart.no2.Nitrite
 import org.dizitart.no2.NitriteBuilder
 import org.dizitart.no2.index.TextIndexer
 import org.dizitart.no2.index.fulltext.TextTokenizer
-import org.dizitart.no2.mapper.NitriteMapper
+import org.dizitart.no2.common.mapper.NitriteMapper
 import java.io.File
 
 /**

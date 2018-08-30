@@ -36,7 +36,7 @@ import static org.dizitart.no2.common.Constants.*;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.DOC_GET_TYPE_NULL;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.util.ValidationUtils.notNull;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 
 /**
  * Represents a type-safe container of nitrite document. It is a collection

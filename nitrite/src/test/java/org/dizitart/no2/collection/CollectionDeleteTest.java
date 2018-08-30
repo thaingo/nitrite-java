@@ -19,9 +19,9 @@
 package org.dizitart.no2.collection;
 
 import org.dizitart.no2.BaseCollectionTest;
+import org.dizitart.no2.filters.Filter;
 import org.junit.Test;
 
-import static org.dizitart.no2.filters.Filters.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -31,7 +31,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
     public void testDelete() {
         insert();
 
-        WriteResult writeResult = collection.remove(not(eq("lastName", null)));
+        WriteResult writeResult = collection.remove(Filter.not(Filter.eq("lastName", null)));
         assertEquals(writeResult.getAffectedCount(), 3);
 
         Cursor cursor = collection.find();
@@ -45,7 +45,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
         RemoveOptions removeOptions = new RemoveOptions();
         removeOptions.setJustOne(true);
 
-        WriteResult writeResult = collection.remove(not(eq("lastName", null)), removeOptions);
+        WriteResult writeResult = collection.remove(Filter.not(Filter.eq("lastName", null)), removeOptions);
         assertEquals(writeResult.getAffectedCount(), 1);
 
         Cursor cursor = collection.find();
@@ -59,7 +59,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
         Cursor cursor = collection.find();
         assertEquals(cursor.size(), 3);
 
-        WriteResult writeResult = collection.remove(eq("lastName", "a"));
+        WriteResult writeResult = collection.remove(Filter.eq("lastName", "a"));
         assertEquals(writeResult.getAffectedCount(), 0);
     }
 
@@ -68,7 +68,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
         Cursor cursor = collection.find();
         assertEquals(cursor.size(), 0);
 
-        WriteResult writeResult = collection.remove(not(eq("lastName", null)));
+        WriteResult writeResult = collection.remove(Filter.not(Filter.eq("lastName", null)));
         assertEquals(writeResult.getAffectedCount(), 0);
     }
 
@@ -90,7 +90,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
             assertTrue(uniqueError);
         }
 
-        collection.remove(ALL);
+        collection.remove(Filter.ALL);
 
         cursor = collection.find();
         assertEquals(cursor.size(), 0);
@@ -121,8 +121,8 @@ public class CollectionDeleteTest extends BaseCollectionTest {
         assertEquals(writeResult.getAffectedCount(), 1);
         assertEquals(collection.size(), 1);
 
-        assertEquals(collection.find(eq("firstName", "fn1")).size(), 0);
-        assertEquals(collection.find(eq("firstName", "fn2")).size(), 0);
-        assertEquals(collection.find(eq("firstName", "fn3")).size(), 1);
+        assertEquals(collection.find(Filter.eq("firstName", "fn1")).size(), 0);
+        assertEquals(collection.find(Filter.eq("firstName", "fn2")).size(), 0);
+        assertEquals(collection.find(Filter.eq("firstName", "fn3")).size(), 1);
     }
 }

@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.FE_REGEX_NO_STRING_VALUE;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
+import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
 
 /**
  * @author Anindya Chatterjee.

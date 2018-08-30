@@ -27,7 +27,7 @@ import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.index.Index;
 import org.dizitart.no2.index.SpatialIndexer;
 import org.dizitart.no2.index.TextIndexer;
-import org.dizitart.no2.mapper.NitriteMapper;
+import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.store.IndexStore;
 import org.locationtech.jts.geom.Geometry;
 
@@ -40,9 +40,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.util.DocumentUtils.getFields;
-import static org.dizitart.no2.util.ValidationUtils.validateDocumentIndexField;
+import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
+import static org.dizitart.no2.common.util.DocumentUtils.getFields;
+import static org.dizitart.no2.common.util.ValidationUtils.validateDocumentIndexField;
 
 /**
  * @author Anindya Chatterjee.

@@ -24,7 +24,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.collection.NitriteCollection;
-import org.dizitart.no2.event.EventBus;
+import org.dizitart.no2.common.event.EventBus;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.meta.Attributes;
 import org.dizitart.no2.sync.types.ChangeFeed;
 import org.dizitart.no2.sync.types.FeedOptions;
@@ -33,8 +34,7 @@ import java.util.List;
 
 import static org.dizitart.no2.collection.FindOptions.limit;
 import static org.dizitart.no2.common.Constants.*;
-import static org.dizitart.no2.filters.Filters.*;
-import static org.dizitart.no2.util.Iterables.toList;
+import static org.dizitart.no2.common.util.Iterables.toList;
 
 /**
  * @author Anindya Chatterjee.
@@ -224,9 +224,9 @@ class SyncService {
 
     private void clearRemoveLogSince(long upto) {
         changeLogRepository.remove(
-                and(
-                        eq(COLLECTION, localCollection.getName()),
-                        lte(DELETE_TIME, upto)
+                Filter.and(
+                        Filter.eq(COLLECTION, localCollection.getName()),
+                        Filter.lte(DELETE_TIME, upto)
                 )
         );
     }

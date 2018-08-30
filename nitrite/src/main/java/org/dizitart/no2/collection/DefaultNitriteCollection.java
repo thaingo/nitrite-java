@@ -22,13 +22,14 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteContext;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.operation.CollectionOperation;
-import org.dizitart.no2.event.ChangeInfo;
-import org.dizitart.no2.event.ChangeListener;
-import org.dizitart.no2.event.ChangeType;
-import org.dizitart.no2.event.EventBus;
+import org.dizitart.no2.common.event.ChangeInfo;
+import org.dizitart.no2.common.event.ChangeListener;
+import org.dizitart.no2.common.event.ChangeType;
+import org.dizitart.no2.common.event.EventBus;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.NotIdentifiableException;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.Index;
 import org.dizitart.no2.meta.Attributes;
 import org.dizitart.no2.store.NitriteMap;
@@ -39,8 +40,8 @@ import java.util.Collection;
 import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.util.DocumentUtils.createUniqueFilter;
-import static org.dizitart.no2.util.ValidationUtils.notNull;
+import static org.dizitart.no2.common.util.DocumentUtils.createUniqueFilter;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 
 /**
  * The default implementation of {@link NitriteCollection}.
@@ -174,7 +175,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public Cursor find(Filter filter) {
+    public Cursor find(org.dizitart.no2.filters.Filter filter) {
         checkOpened();
         try {
             return collectionOperation.find(filter);
@@ -196,7 +197,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public Cursor find(Filter filter, FindOptions findOptions) {
+    public Cursor find(org.dizitart.no2.filters.Filter filter, FindOptions findOptions) {
         checkOpened();
         try {
             return collectionOperation.find(filter, findOptions);
@@ -307,7 +308,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public WriteResult update(Filter filter, Document update) {
+    public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update) {
         checkOpened();
         try {
             return update(filter, update, new UpdateOptions());
@@ -318,7 +319,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public WriteResult update(Filter filter, Document update, UpdateOptions updateOptions) {
+    public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update, UpdateOptions updateOptions) {
         checkOpened();
         try {
             return collectionOperation.update(filter, update, updateOptions);
@@ -345,7 +346,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public WriteResult remove(Filter filter) {
+    public WriteResult remove(org.dizitart.no2.filters.Filter filter) {
         checkOpened();
         try {
             return remove(filter, new RemoveOptions());

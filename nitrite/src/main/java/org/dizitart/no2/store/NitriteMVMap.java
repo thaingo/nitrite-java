@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.dizitart.no2.common.Constants.META_MAP_NAME;
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 
 /**
  * A {@link MVMap} backed {@link NitriteMap} implementation.

@@ -23,11 +23,12 @@ import org.dizitart.no2.NitriteContext;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.*;
 import org.dizitart.no2.common.KeyValuePair;
-import org.dizitart.no2.event.ChangeListener;
+import org.dizitart.no2.common.event.ChangeListener;
 import org.dizitart.no2.exceptions.NotIdentifiableException;
 import org.dizitart.no2.exceptions.ValidationException;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.Index;
-import org.dizitart.no2.mapper.NitriteMapper;
+import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.meta.Attributes;
 
 import java.lang.reflect.Field;
@@ -39,8 +40,8 @@ import static org.dizitart.no2.collection.UpdateOptions.updateOptions;
 import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.util.ObjectUtils.*;
-import static org.dizitart.no2.util.ValidationUtils.notNull;
+import static org.dizitart.no2.common.util.ObjectUtils.*;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 
 /**
  * A default implementation of {@link ObjectRepository}.
@@ -131,12 +132,12 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public WriteResult update(Filter filter, T update) {
+    public WriteResult update(org.dizitart.no2.filters.Filter filter, T update) {
         return update(filter, update, false);
     }
 
     @Override
-    public WriteResult update(Filter filter, T update, boolean upsert) {
+    public WriteResult update(org.dizitart.no2.filters.Filter filter, T update, boolean upsert) {
         validateCollection();
         notNull(update, errorMessage("update can not be null", VE_OBJ_UPDATE_NULL_OBJECT));
 
@@ -146,12 +147,12 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public WriteResult update(Filter filter, Document update) {
+    public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update) {
         return update(filter, update, false);
     }
 
     @Override
-    public WriteResult update(Filter filter, Document update, boolean justOnce) {
+    public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update, boolean justOnce) {
         validateCollection();
         notNull(update, errorMessage("update can not be null", VE_OBJ_UPDATE_NULL_DOCUMENT));
 
@@ -169,13 +170,13 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public WriteResult remove(Filter filter) {
+    public WriteResult remove(org.dizitart.no2.filters.Filter filter) {
         validateCollection();
         return remove(setNitriteMapper(filter), new RemoveOptions());
     }
 
     @Override
-    public WriteResult remove(Filter filter, RemoveOptions removeOptions) {
+    public WriteResult remove(org.dizitart.no2.filters.Filter filter, RemoveOptions removeOptions) {
         validateCollection();
         return collection.remove(setNitriteMapper(filter), removeOptions);
     }
@@ -187,7 +188,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public Cursor<T> find(Filter filter) {
+    public Cursor<T> find(org.dizitart.no2.filters.Filter filter) {
         validateCollection();
         return new ObjectCursor<>(nitriteMapper,
                 collection.find(setNitriteMapper(filter)), type);
@@ -201,7 +202,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public Cursor<T> find(Filter filter, FindOptions findOptions) {
+    public Cursor<T> find(org.dizitart.no2.filters.Filter filter, FindOptions findOptions) {
         validateCollection();
         return new ObjectCursor<>(nitriteMapper,
                 collection.find(setNitriteMapper(filter), findOptions), type);
@@ -321,7 +322,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
         }
     }
 
-    private Filter setNitriteMapper(Filter filter) {
+    private org.dizitart.no2.filters.Filter setNitriteMapper(Filter filter) {
         if (filter != null) {
             filter.setNitriteMapper(nitriteMapper);
             return filter;

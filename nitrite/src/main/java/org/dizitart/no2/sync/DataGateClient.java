@@ -31,7 +31,7 @@ import java.net.Proxy;
 import java.util.concurrent.TimeUnit;
 
 import static org.dizitart.no2.sync.types.UserAgent.USER_AGENT;
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 
 /**
  * Represents a DataGate server client for synchronous access.

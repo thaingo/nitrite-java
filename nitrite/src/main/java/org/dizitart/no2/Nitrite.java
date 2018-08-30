@@ -35,9 +35,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.dizitart.no2.common.Security.validateUserPassword;
-import static org.dizitart.no2.util.ObjectUtils.*;
-import static org.dizitart.no2.util.ValidationUtils.validateCollectionName;
+import static org.dizitart.no2.Security.validateUserPassword;
+import static org.dizitart.no2.common.util.ObjectUtils.*;
+import static org.dizitart.no2.common.util.ValidationUtils.validateCollectionName;
 
 
 /**
@@ -244,8 +244,7 @@ public class Nitrite implements Closeable {
     }
 
     /**
-     * Checks whether a particular {@link ObjectRepository} and key combination
-     * exists in the store.
+     * Checks whether a particular keyed-{@link ObjectRepository} exists in the store.
      *
      * @param <T>  the type parameter
      * @param key  the key that will be appended to the repositories name

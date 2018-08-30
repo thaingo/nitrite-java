@@ -22,7 +22,7 @@ import org.dizitart.no2.BaseCollectionTest;
 import org.dizitart.no2.exceptions.FilterException;
 import org.junit.Test;
 
-import static org.dizitart.no2.filters.Filters.text;
+import static org.dizitart.no2.filters.Filter.text;
 import static org.junit.Assert.assertEquals;
 
 /**

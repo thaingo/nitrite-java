@@ -28,10 +28,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.collection.objects.ObjectRepository;
-import org.dizitart.no2.event.ChangeInfo;
-import org.dizitart.no2.event.ChangeListener;
-import org.dizitart.no2.filters.Filters;
-import org.dizitart.no2.util.Iterables;
+import org.dizitart.no2.common.event.ChangeInfo;
+import org.dizitart.no2.common.event.ChangeListener;
+import org.dizitart.no2.filters.Filter;
+import org.dizitart.no2.common.util.Iterables;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        ListView userList = (ListView) findViewById(R.id.userlist);
+        progressBar = findViewById(R.id.progressBar);
+        ListView userList = findViewById(R.id.userlist);
         adapter = new UserAdapter(this);
         userList.setAdapter(adapter);
 
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void flushUsers() {
-        repository.remove(Filters.ALL);
+        repository.remove(Filter.ALL);
     }
 
     @Override

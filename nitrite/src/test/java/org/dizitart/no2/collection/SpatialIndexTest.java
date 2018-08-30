@@ -25,6 +25,7 @@ import org.dizitart.no2.collection.objects.Cursor;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.exceptions.IndexingException;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.annotations.Id;
 import org.dizitart.no2.index.annotations.Index;
 import org.dizitart.no2.spatial.EqualityType;
@@ -48,7 +49,6 @@ import java.util.Collections;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.Document.createDocument;
-import static org.dizitart.no2.filters.Filters.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -124,12 +124,12 @@ public class SpatialIndexTest {
         WKTReader reader = new WKTReader();
         Geometry search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))");
 
-        Cursor<SpatialData> cursor = repository.find(intersects("geometry", search));
+        Cursor<SpatialData> cursor = repository.find(Filter.intersects("geometry", search));
         assertEquals(cursor.size(), 2);
         assertEquals(cursor.toList(), Arrays.asList(object1, object2));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(intersects("location", search));
+        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.intersects("location", search));
         assertEquals(cursor1.size(), 2);
         assertEquals(cursor1.toList(), Arrays.asList(doc1, doc2));
     }
@@ -139,12 +139,12 @@ public class SpatialIndexTest {
         WKTReader reader = new WKTReader();
         Geometry search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))");
 
-        Cursor<SpatialData> cursor = repository.find(within("geometry", search));
+        Cursor<SpatialData> cursor = repository.find(Filter.within("geometry", search));
         assertEquals(cursor.size(), 1);
         assertEquals(cursor.toList(), Collections.singletonList(object1));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(within("location", search));
+        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.within("location", search));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc1));
     }
@@ -154,12 +154,12 @@ public class SpatialIndexTest {
         WKTReader reader = new WKTReader();
         Point search = (Point) reader.read("POINT (490 490)");
 
-        Cursor<SpatialData> cursor = repository.find(near("geometry", search, 20.0));
+        Cursor<SpatialData> cursor = repository.find(Filter.near("geometry", search, 20.0));
         assertEquals(cursor.size(), 1);
         assertEquals(cursor.toList(), Collections.singletonList(object1));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(near("location", search, 20.0));
+        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.near("location", search, 20.0));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc1));
     }
@@ -170,12 +170,12 @@ public class SpatialIndexTest {
         Point search = (Point) reader.read("POINT (490 490)");
         Coordinate coordinate = search.getCoordinate();
 
-        Cursor<SpatialData> cursor = repository.find(near("geometry", coordinate, 20.0));
+        Cursor<SpatialData> cursor = repository.find(Filter.near("geometry", coordinate, 20.0));
         assertEquals(cursor.size(), 1);
         assertEquals(cursor.toList(), Collections.singletonList(object1));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(near("location", coordinate, 20.0));
+        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.near("location", coordinate, 20.0));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc1));
     }
@@ -185,28 +185,28 @@ public class SpatialIndexTest {
         WKTReader reader = new WKTReader();
         Geometry search = reader.read("POLYGON ((550 521, 580 540, 570 564, 512 566, 550 521))");
 
-        Cursor<SpatialData> cursor = repository.find(geoEq("geometry", search, EqualityType.Exact));
+        Cursor<SpatialData> cursor = repository.find(Filter.geoEq("geometry", search, EqualityType.Exact));
         assertEquals(cursor.size(), 1);
         assertEquals(cursor.toList(), Collections.singletonList(object3));
 
-        cursor = repository.find(geoEq("geometry", search, EqualityType.Topological));
+        cursor = repository.find(Filter.geoEq("geometry", search, EqualityType.Topological));
         assertEquals(cursor.size(), 1);
         assertEquals(cursor.toList(), Collections.singletonList(object3));
 
-        cursor = repository.find(geoEq("geometry", search, EqualityType.Normalized));
+        cursor = repository.find(Filter.geoEq("geometry", search, EqualityType.Normalized));
         assertEquals(cursor.size(), 1);
         assertEquals(cursor.toList(), Collections.singletonList(object3));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(geoEq("location", search, EqualityType.Exact));
+        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.geoEq("location", search, EqualityType.Exact));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc3));
 
-        cursor1 = collection.find(geoEq("location", search, EqualityType.Topological));
+        cursor1 = collection.find(Filter.geoEq("location", search, EqualityType.Topological));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc3));
 
-        cursor1 = collection.find(geoEq("location", search, EqualityType.Normalized));
+        cursor1 = collection.find(Filter.geoEq("location", search, EqualityType.Normalized));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc3));
     }
@@ -216,7 +216,7 @@ public class SpatialIndexTest {
         WKTReader reader = new WKTReader();
         Geometry search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))");
 
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(intersects("location", search));
+        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.intersects("location", search));
         assertEquals(cursor1.size(), 2);
         assertEquals(cursor1.toList(), Arrays.asList(doc1, doc2));
     }
@@ -231,7 +231,7 @@ public class SpatialIndexTest {
     public void testRemoveIndexEntry() throws ParseException {
         WKTReader reader = new WKTReader();
         Geometry search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))");
-        WriteResult result = repository.remove(within("geometry", search));
+        WriteResult result = repository.remove(Filter.within("geometry", search));
         assertEquals(result.getAffectedCount(), 1);
     }
 
@@ -252,7 +252,7 @@ public class SpatialIndexTest {
         repository.dropIndex("geometry");
         WKTReader reader = new WKTReader();
         Geometry search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))");
-        Cursor<SpatialData> cursor = repository.find(within("geometry", search));
+        Cursor<SpatialData> cursor = repository.find(Filter.within("geometry", search));
         assertEquals(cursor.size(), 1);
     }
 
@@ -268,7 +268,7 @@ public class SpatialIndexTest {
         WKTReader reader = new WKTReader();
         Geometry search = reader.read("POINT(500 505)");
 
-        Cursor<SpatialData> cursor = repository.find(eq("geometry", search));
+        Cursor<SpatialData> cursor = repository.find(Filter.eq("geometry", search));
         assertEquals(cursor.size(), 2);
         assertEquals(cursor.toList(), Collections.singletonList(object1));
     }

@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
-import static org.dizitart.no2.filters.Filters.ALL;
+import static org.dizitart.no2.filters.Filter.ALL;
 import static org.junit.Assert.assertEquals;
 
 /**

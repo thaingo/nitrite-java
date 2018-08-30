@@ -88,8 +88,7 @@ the specified filter.
 [NOTE]
 ====
 
-All filters for NitriteCollection find() operations are listed in
-`org.dizitart.no2.filters.Filters`.
+All filters for find() operations are listed in `org.dizitart.no2.filters.Filter`.
 
 ====
 

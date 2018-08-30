@@ -22,13 +22,14 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteContext;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.*;
-import org.dizitart.no2.event.ChangeInfo;
-import org.dizitart.no2.event.ChangeListener;
-import org.dizitart.no2.event.EventBus;
+import org.dizitart.no2.common.event.ChangeInfo;
+import org.dizitart.no2.common.event.ChangeListener;
+import org.dizitart.no2.common.event.EventBus;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.*;
 import org.dizitart.no2.index.fulltext.EnglishTextTokenizer;
 import org.dizitart.no2.index.fulltext.TextTokenizer;
-import org.dizitart.no2.mapper.NitriteMapper;
+import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.store.IndexStore;
 import org.dizitart.no2.store.NitriteMap;
 
@@ -36,12 +37,12 @@ import java.util.Collection;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.util.ValidationUtils.notNull;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 
 /**
  * A service class for Nitrite database operations.
  *
- * @since 1.0
+ * @since 4.0.0
  * @author Anindya Chatterjee
  */
 public class CollectionOperation {
@@ -54,9 +55,9 @@ public class CollectionOperation {
     private EventBus<ChangeInfo, ChangeListener> eventBus;
 
     /**
-     * Instantiates a new Nitrite service.
+     * Instantiates a new CollectionOperation.
      *
-     * @param nitriteMap       the map store
+     * @param nitriteMap     the map store
      * @param nitriteContext the nitrite context
      */
     public CollectionOperation(NitriteMap<NitriteId, Document> nitriteMap,
@@ -198,7 +199,7 @@ public class CollectionOperation {
      * @param updateOptions the update options
      * @return the write result
      */
-    public WriteResultImpl update(Filter filter, Document update, UpdateOptions updateOptions) {
+    public WriteResultImpl update(org.dizitart.no2.filters.Filter filter, Document update, UpdateOptions updateOptions) {
         notNull(update, errorMessage("update document can not be null", VE_UPDATE_NULL_DOCUMENT));
         notNull(updateOptions, errorMessage("updateOptions can not be null", VE_UPDATE_NULL_UPDATE_OPTIONS));
         return readWriteOperation.update(filter, update, updateOptions);
@@ -211,7 +212,7 @@ public class CollectionOperation {
      * @param removeOptions the remove options
      * @return the write result
      */
-    public WriteResultImpl remove(Filter filter, RemoveOptions removeOptions) {
+    public WriteResultImpl remove(org.dizitart.no2.filters.Filter filter, RemoveOptions removeOptions) {
         return readWriteOperation.remove(filter, removeOptions);
     }
 
@@ -234,7 +235,7 @@ public class CollectionOperation {
      * @param filter the filter
      * @return the result set
      */
-    public Cursor find(Filter filter) {
+    public Cursor find(org.dizitart.no2.filters.Filter filter) {
         return queryTemplate.find(filter);
     }
 

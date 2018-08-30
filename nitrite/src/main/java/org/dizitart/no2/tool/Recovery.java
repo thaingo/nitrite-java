@@ -38,8 +38,8 @@ import java.util.TreeMap;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.util.ValidationUtils.notEmpty;
-import static org.dizitart.no2.util.ValidationUtils.notNull;
+import static org.dizitart.no2.common.util.ValidationUtils.notEmpty;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 import static org.h2.mvstore.Chunk.fromString;
 
 /**

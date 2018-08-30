@@ -25,7 +25,7 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.Cursor;
-import org.dizitart.no2.collection.Filter;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.store.NitriteMap;
 import org.dizitart.no2.store.NitriteStore;
@@ -37,8 +37,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.dizitart.no2.common.Constants.*;
-import static org.dizitart.no2.filters.Filters.*;
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.filters.Filter.*;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 
 
 /**

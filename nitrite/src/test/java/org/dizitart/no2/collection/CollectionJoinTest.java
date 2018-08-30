@@ -27,7 +27,7 @@ import org.junit.Test;
 import java.util.Collection;
 
 import static org.dizitart.no2.Document.createDocument;
-import static org.dizitart.no2.filters.Filters.ALL;
+import static org.dizitart.no2.filters.Filter.ALL;
 import static org.junit.Assert.*;
 
 /**

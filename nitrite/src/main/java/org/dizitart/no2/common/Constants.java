@@ -204,12 +204,12 @@ public class Constants {
     /**
      * The constant HASH_ITERATIONS.
      */
-    static final int HASH_ITERATIONS = 10000;
+    public static final int HASH_ITERATIONS = 10000;
 
     /**
      * The constant HASH_KEY_LENGTH.
      */
-    static final int HASH_KEY_LENGTH = 256;
+    public static final int HASH_KEY_LENGTH = 256;
 
     /**
      * The constant GEOMETRY_ID

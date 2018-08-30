@@ -35,7 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.junit.Assert.*;
 
 /**

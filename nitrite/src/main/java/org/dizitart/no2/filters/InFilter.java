@@ -30,8 +30,8 @@ import java.util.*;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.FE_IN_SEARCH_TERM_NOT_COMPARABLE;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.util.ValidationUtils.validateInFilterValue;
+import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
+import static org.dizitart.no2.common.util.ValidationUtils.validateInFilterValue;
 
 @Getter
 @ToString

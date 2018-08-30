@@ -24,7 +24,7 @@ import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.WriteResult;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.index.annotations.Id;
-import org.dizitart.no2.util.Iterables;
+import org.dizitart.no2.common.util.Iterables;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -21,13 +21,13 @@ package org.dizitart.no2.collection;
 import org.dizitart.no2.BaseCollectionTest;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.exceptions.InvalidOperationException;
-import org.dizitart.no2.filters.Filters;
+import org.dizitart.no2.filters.Filter;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static org.dizitart.no2.Document.createDocument;
-import static org.dizitart.no2.filters.Filters.eq;
-import static org.dizitart.no2.filters.Filters.not;
+import static org.dizitart.no2.filters.Filter.eq;
+import static org.dizitart.no2.filters.Filter.not;
 import static org.junit.Assert.*;
 
 public class CollectionUpdateTest extends BaseCollectionTest {
@@ -192,7 +192,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
     @Test
     public void updateAfterAttributeRemoval() {
         NitriteCollection coll = db.getCollection("test_updateAfterAttributeRemoval");
-        coll.remove(Filters.ALL);
+        coll.remove(Filter.ALL);
 
         Document doc = new Document().put("id", "test-1").put("group", "groupA");
         assertEquals(1, coll.insert(doc).getAffectedCount());
@@ -207,7 +207,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
 //        clonedDoc1.remove("group");
         assertEquals(1, coll.update(clonedDoc1).getAffectedCount());
 
-        Document savedDoc2 = coll.find(Filters.ALL).firstOrDefault();
+        Document savedDoc2 = coll.find(Filter.ALL).firstOrDefault();
         assertNotNull(savedDoc2);
         assertNull(savedDoc2.get("group"));
     }

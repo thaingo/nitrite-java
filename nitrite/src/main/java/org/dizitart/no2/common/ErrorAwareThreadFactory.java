@@ -40,6 +40,7 @@ public abstract class ErrorAwareThreadFactory implements ThreadFactory {
      */
     public abstract Thread createThread(Runnable runnable);
 
+
     @Override
     public Thread newThread(@NotNull Runnable r) {
         Thread thread = createThread(r);

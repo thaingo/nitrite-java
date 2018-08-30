@@ -19,7 +19,7 @@
 package org.dizitart.no2.sync;
 
 import org.dizitart.no2.common.ExecutorServiceManager;
-import org.dizitart.no2.event.NitriteEventBus;
+import org.dizitart.no2.common.event.NitriteEventBus;
 
 import java.util.concurrent.ExecutorService;
 

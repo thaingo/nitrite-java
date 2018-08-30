@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.dizitart.no2.datagate.Constants.*;
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 
 /**
  * @author Anindya Chatterjee.

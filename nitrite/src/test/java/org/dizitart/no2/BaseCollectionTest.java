@@ -36,7 +36,7 @@ import java.util.Locale;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.Document.createDocument;
-import static org.dizitart.no2.filters.Filters.ALL;
+import static org.dizitart.no2.filters.Filter.ALL;
 
 @Slf4j
 @RunWith(value = Parameterized.class)

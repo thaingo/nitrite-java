@@ -42,7 +42,7 @@ dependencies {
     compile "org.jasypt:jasypt:$jasyptVersion"
     compile "com.squareup.okhttp3:okhttp:$okhttpVersion"
     compile "uk.co.jemos.podam:podam:$podamVersion"
-    compile "io.reactivex.rxjava2:rxjava:$rxjavaVersion"
+    compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     compile "org.locationtech.jts:jts-core:$jtsVersion"
 
     testCompile "junit:junit:$junitVersion"

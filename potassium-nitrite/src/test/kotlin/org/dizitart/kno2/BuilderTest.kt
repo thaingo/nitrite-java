@@ -21,7 +21,7 @@ package org.dizitart.kno2
 import org.dizitart.no2.exceptions.SecurityException
 import org.dizitart.no2.index.fulltext.EnglishTextTokenizer
 import org.dizitart.no2.index.fulltext.UniversalTextTokenizer
-import org.dizitart.no2.mapper.AbstractMapper
+import org.dizitart.no2.common.mapper.AbstractMapper
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.File

@@ -22,11 +22,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.dizitart.no2.Document;
+import org.dizitart.no2.filters.Filter;
 
 /**
  * Settings to control update operation in {@link NitriteCollection}.
  *
- * @see NitriteCollection#update(Filter, Document, UpdateOptions)
+ * @see NitriteCollection#update(org.dizitart.no2.filters.Filter, Document, UpdateOptions)
  * @author Anindya Chatterjee
  * @since 1.0
  */

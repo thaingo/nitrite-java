@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.collection.Cursor;
 import org.dizitart.no2.collection.NitriteCollection;
-import org.dizitart.no2.filters.Filters;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.meta.Attributes;
 import org.dizitart.no2.sync.types.ChangeFeed;
 import org.dizitart.no2.sync.types.FeedOptions;
@@ -34,9 +34,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.collection.FindOptions.limit;
 import static org.dizitart.no2.common.Constants.*;
-import static org.dizitart.no2.filters.Filters.*;
-import static org.dizitart.no2.util.DocumentUtils.isRecent;
-import static org.dizitart.no2.util.Iterables.toList;
+import static org.dizitart.no2.common.util.DocumentUtils.isRecent;
+import static org.dizitart.no2.common.util.Iterables.toList;
 
 
 /**
@@ -91,7 +90,7 @@ class MockSyncTemplate implements SyncTemplate {
 
     @Override
     public void clear() {
-        remoteCollection.remove(ALL);
+        remoteCollection.remove(Filter.ALL);
     }
 
     @Override
@@ -147,10 +146,10 @@ class MockSyncTemplate implements SyncTemplate {
                 remoteCollection.update(existing);
             } else if (existing == null) {
                 Cursor removeLogs = removeLogRepository.find(
-                        and(
-                                eq(COLLECTION, remoteCollection.getName()),
-                                eq(DELETED_ID, document.getId().getIdValue()),
-                                gt(DELETE_TIME, document.getLastModifiedTime())
+                        Filter.and(
+                                Filter.eq(COLLECTION, remoteCollection.getName()),
+                                Filter.eq(DELETED_ID, document.getId().getIdValue()),
+                                Filter.gt(DELETE_TIME, document.getLastModifiedTime())
                         )
                 );
                 if (removeLogs == null || removeLogs.size() == 0) {
@@ -183,10 +182,10 @@ class MockSyncTemplate implements SyncTemplate {
         List<Document> documentList = new ArrayList<>();
         if (removeLogRepository != null) {
             Iterable<Document> removeLogs = removeLogRepository.find(
-                    and(
-                            eq(COLLECTION, remoteCollection.getName()),
-                            gte(DELETE_TIME, fromTimestamp),
-                            lte(DELETE_TIME, toTimestamp)
+                    Filter.and(
+                            Filter.eq(COLLECTION, remoteCollection.getName()),
+                            Filter.gte(DELETE_TIME, fromTimestamp),
+                            Filter.lte(DELETE_TIME, toTimestamp)
                     )
             );
 
@@ -207,9 +206,9 @@ class MockSyncTemplate implements SyncTemplate {
 
     private List<Document> modifiedItems(long lastSequence, long newSequence) {
         Iterable<Document> findResult = remoteCollection.find(
-                Filters.and(
-                        Filters.gte(DOC_SYNCED, lastSequence),
-                        Filters.lte(DOC_SYNCED, newSequence))
+                Filter.and(
+                        Filter.gte(DOC_SYNCED, lastSequence),
+                        Filter.lte(DOC_SYNCED, newSequence))
                 );
         List<Document> result = new ArrayList<>();
         for (Document document : findResult) {

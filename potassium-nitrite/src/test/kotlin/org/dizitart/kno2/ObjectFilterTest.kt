@@ -20,7 +20,7 @@ package org.dizitart.kno2
 
 import org.dizitart.kno2.filters.*
 import org.dizitart.no2.collection.IndexType
-import org.dizitart.no2.filters.Filters.eq
+import org.dizitart.no2.filters.Filter.eq
 import org.dizitart.no2.index.annotations.Id
 import org.dizitart.no2.index.annotations.Index
 import org.dizitart.no2.index.annotations.Indices

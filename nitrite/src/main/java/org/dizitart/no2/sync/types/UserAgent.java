@@ -21,7 +21,7 @@ package org.dizitart.no2.sync.types;
 import lombok.Getter;
 import lombok.Setter;
 
-import static org.dizitart.no2.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 
 /**
  * Represents the usr agent of the DataGate client.

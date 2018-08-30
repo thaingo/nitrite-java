@@ -22,14 +22,15 @@ import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.FindOptions;
 import org.dizitart.no2.collection.Lookup;
 import org.dizitart.no2.collection.RecordIterable;
+import org.dizitart.no2.filters.Filter;
 
 /**
  * A collection of {@link NitriteId}s of the database records,
  * as a result of a find operation.
  *
  * @author Anindya Chatterjee
- * @see ObjectRepository#find(org.dizitart.no2.collection.Filter)
- * @see ObjectRepository#find(org.dizitart.no2.collection.Filter, FindOptions)
+ * @see ObjectRepository#find(Filter)
+ * @see ObjectRepository#find(Filter, FindOptions)
  * @see ObjectRepository#find()
  * @see ObjectRepository#find(FindOptions)
  * @since 1.0
