@@ -69,7 +69,7 @@ public class UserAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new Viewholder();
             convertView = mInflator.inflate(R.layout.row_user, container, false);
-            holder.username = (TextView) convertView.findViewById(R.id.username);
+            holder.username = convertView.findViewById(R.id.username);
             convertView.setTag(holder);
 
         } else {

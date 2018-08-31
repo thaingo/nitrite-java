@@ -28,10 +28,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.collection.objects.ObjectRepository;
-import org.dizitart.no2.common.event.ChangeInfo;
 import org.dizitart.no2.common.event.ChangeListener;
-import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.common.util.Iterables;
+import org.dizitart.no2.filters.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,13 +61,10 @@ public class MainActivity extends AppCompatActivity {
                     .openOrCreate("test-user", "test-password");
             repository = db.getRepository(User.class);
 
-            listener = new ChangeListener() {
-                @Override
-                public void onChange(ChangeInfo changeInfo) {
-                    Iterable<User> users = repository.find().project(User.class);
-                    adapter.setUsers(Iterables.toList(users));
-                    adapter.notifyDataSetChanged();
-                }
+            listener = changeInfo -> {
+                Iterable<User> users = repository.find().project(User.class);
+                adapter.setUsers(Iterables.toList(users));
+                adapter.notifyDataSetChanged();
             };
 
             repository.register(listener);
