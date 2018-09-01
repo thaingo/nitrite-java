@@ -545,10 +545,24 @@ implementation can be set via NitriteBuilder.</p>
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>As of 3.1.0, a jackson module can be easily registered with the default jackson mapper using
+the builder.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for registering jackson module</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Nitrite db = Nitrite.builder()
+            .registerModule(<span class="keyword">new</span> Jdk8Module())        <span class="comment">// register jdk8 module</span>
+            .registerModule(<span class="keyword">new</span> JavaTimeModule())    <span class="comment">// register java.time module</span>
+            .filePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/tmp/test.db</span><span class="delimiter">&quot;</span></span>)
+            .openOrCreate(<span class="string"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>);</code></pre>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-29 08:06:04 +05:30
+Last updated 2018-08-05 23:35:05 +05:30
 </div>
 </div>
 </body>

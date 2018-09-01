@@ -532,7 +532,11 @@ be opened.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">ObjectRepository&lt;Employee&gt; repository = db.getRepository(Employee.class);</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// creates an object repository of type Employee</span>
+ObjectRepository&lt;Employee&gt; repository = db.getRepository(Employee.class);
+
+<span class="comment">// creates an object repository of type Employee with a specified key</span>
+ObjectRepository&lt;Employee&gt; repository = db.getRepository(<span class="string"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>, Employee.class);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -542,7 +546,7 @@ one will be created; otherwise the existing one will be opened.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-29 08:06:04 +05:30
+Last updated 2018-08-04 10:56:55 +05:30
 </div>
 </div>
 </body>

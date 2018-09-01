@@ -538,7 +538,22 @@ maintains an unique index on that field to identify the objects.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Id field of an object does not have any relation with the <code>_id</code> field of the underlying Document.
+<div class="paragraph">
+<p>Id field of an object does not have any direct relation with the <code>_id</code> field of the underlying Document.</p>
+</div>
+<div class="paragraph">
+<p>But one can retrieve the corresponding NitriteId for an object like this</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">MyType</span> {
+
+    <span class="annotation">@Id</span>
+    <span class="directive">private</span> NitriteId idField;
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+}</code></pre>
+</div>
+</div>
 </td>
 </tr>
 </table>
@@ -619,7 +634,7 @@ An insert operation raises an <strong>INSERT</strong> event.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-29 08:06:03 +05:30
+Last updated 2018-08-22 00:28:52 +05:30
 </div>
 </div>
 </body>
