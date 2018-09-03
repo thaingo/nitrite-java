@@ -22,27 +22,30 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.common.ExecutorServiceManager;
+import org.dizitart.no2.common.KeyValuePair;
+import org.dizitart.no2.common.mapper.NitriteMapper;
+import org.dizitart.no2.common.util.StringUtils;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.index.Index;
 import org.dizitart.no2.index.SpatialIndexer;
 import org.dizitart.no2.index.TextIndexer;
-import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.store.IndexStore;
 import org.locationtech.jts.geom.Geometry;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.dizitart.no2.common.Constants.FIELD_SEPARATOR;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
+import static org.dizitart.no2.common.util.ValidationUtils.validateDocumentIndexField;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.common.util.DocumentUtils.getFields;
-import static org.dizitart.no2.common.util.ValidationUtils.validateDocumentIndexField;
 
 /**
  * @author Anindya Chatterjee.
@@ -100,7 +103,7 @@ class IndexTemplate {
         for (String field : fields) {
             Index index = indexStore.findIndex(field);
             if (index != null) {
-                Object fieldValue = getFieldValue(document, field);
+                Object fieldValue = document.getFieldValue(field);
 
                 if (fieldValue == null) continue;
                 validateDocumentIndexField(fieldValue, field);
@@ -139,7 +142,7 @@ class IndexTemplate {
         for (String field : fields) {
             Index index = indexStore.findIndex(field);
             if (index != null) {
-                Object fieldValue = getFieldValue(document, field);
+                Object fieldValue = document.getFieldValue(field);
 
                 if (fieldValue == null) continue;
                 validateDocumentIndexField(fieldValue, field);
@@ -177,8 +180,8 @@ class IndexTemplate {
         for (String field : fields) {
             Index index = indexStore.findIndex(field);
             if (index != null) {
-                Object newValue = getFieldValue(newDocument, field);
-                Object oldValue = getFieldValue(oldDocument, field);
+                Object newValue = newDocument.getFieldValue(field);
+                Object oldValue = oldDocument.getFieldValue(field);
 
                 if (newValue == null) continue;
                 if (newValue instanceof Comparable && oldValue instanceof Comparable) {
@@ -337,10 +340,38 @@ class IndexTemplate {
     private Geometry parseGeometry(Object fieldValue) {
         Geometry geometry = null;
         if (fieldValue instanceof String) {
-            geometry = nitriteMapper.fromString((String) fieldValue, Geometry.class);
+            geometry = nitriteMapper.convertValue(fieldValue, Geometry.class);
         } else if (fieldValue instanceof Geometry) {
             geometry = (Geometry) fieldValue;
         }
         return geometry;
     }
+
+    private Set<String> getFields(Document document) {
+        return getFieldsInternal(document, "");
+    }
+
+    private Set<String> getFieldsInternal(Document document, String prefix) {
+        Set<String> fields = new TreeSet<>();
+        if (document == null) return fields;
+
+        for (KeyValuePair entry : document) {
+            Object value = entry.getValue();
+            if (value instanceof Document) {
+                if (isNullOrEmpty(prefix)) {
+                    fields.addAll(getFieldsInternal((Document) value, entry.getKey()));
+                } else {
+                    fields.addAll(getFieldsInternal((Document) value, prefix + FIELD_SEPARATOR + entry.getKey()));
+                }
+            } else if (!(value instanceof Iterable)) {
+                if (StringUtils.isNullOrEmpty(prefix)) {
+                    fields.add(entry.getKey());
+                } else {
+                    fields.add(prefix + FIELD_SEPARATOR + entry.getKey());
+                }
+            }
+        }
+        return fields;
+    }
+
 }

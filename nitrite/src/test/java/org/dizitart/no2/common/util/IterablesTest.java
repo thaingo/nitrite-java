@@ -23,7 +23,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.dizitart.no2.common.util.Iterables.firstOrDefault;
+import static org.dizitart.no2.common.util.Iterables.firstOrNull;
 import static org.dizitart.no2.common.util.Iterables.toArray;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNull;
@@ -34,8 +34,8 @@ import static org.junit.Assert.assertNull;
 public class IterablesTest {
     @Test
     public void testFirstOrDefault() {
-        assertNull(firstOrDefault(new ArrayList<>()));
-        assertNull(firstOrDefault(null));
+        assertNull(firstOrNull(new ArrayList<>()));
+        assertNull(firstOrNull(null));
     }
 
     @Test

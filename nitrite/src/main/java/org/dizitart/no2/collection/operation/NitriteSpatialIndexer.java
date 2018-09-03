@@ -30,11 +30,13 @@ import org.h2.mvstore.rtree.SpatialKey;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.IE_REBUILD_INDEX_NON_SPATIAL;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
 
 /**
  *
@@ -98,7 +100,7 @@ class NitriteSpatialIndexer implements SpatialIndexer {
             Document object = entry.getValue();
 
             // retrieved the value from document
-            Object fieldValue = getFieldValue(object, field);
+            Object fieldValue = object.getFieldValue(field);
 
             if (fieldValue == null) continue;
 

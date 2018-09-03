@@ -79,7 +79,7 @@ public class SimpleSyncTest extends BaseSyncTest {
 
 
         Document document = primary.find(eq("field", "one"))
-                .firstOrDefault();
+                .firstOrNull();
         document.put("field", "two");
         primary.update(document);
         await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
@@ -90,7 +90,7 @@ public class SimpleSyncTest extends BaseSyncTest {
         });
 
         Document document1 = secondary.find(eq("field", "two"))
-                .firstOrDefault();
+                .firstOrNull();
         assertEquals(document.get("field"), document1.get("field"));
         assertEquals(document.get(DOC_ID), document1.get(DOC_ID));
         assertEquals(primary.find().size(), 1);
@@ -104,7 +104,7 @@ public class SimpleSyncTest extends BaseSyncTest {
             }
         });
 
-        document1 = secondary.find().firstOrDefault();
+        document1 = secondary.find().firstOrNull();
         assertNull(document1);
 
         doc = createDocument("field", "one");
@@ -120,7 +120,7 @@ public class SimpleSyncTest extends BaseSyncTest {
         assertEquals(primary.find().size(), 1);
 
         document = secondary.find(eq("field", "one"))
-                .firstOrDefault();
+                .firstOrNull();
         document.put("field", "two");
         secondary.update(document);
         await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
@@ -131,7 +131,7 @@ public class SimpleSyncTest extends BaseSyncTest {
         });
 
         document1 = primary.find(eq("field", "two"))
-                .firstOrDefault();
+                .firstOrNull();
         assertEquals(document.get("field"), document1.get("field"));
         assertEquals(document.get(DOC_ID), document1.get(DOC_ID));
         assertEquals(primary.find().size(), 1);
@@ -145,7 +145,7 @@ public class SimpleSyncTest extends BaseSyncTest {
             }
         });
 
-        document1 = primary.find().firstOrDefault();
+        document1 = primary.find().firstOrNull();
         assertNull(document1);
     }
 
@@ -185,10 +185,10 @@ public class SimpleSyncTest extends BaseSyncTest {
             }
         });
 
-        assertNotNull(primary.find(eq("first-key", "first-value")).firstOrDefault());
-        assertNotNull(primary.find(eq("second-key", "second-value")).firstOrDefault());
+        assertNotNull(primary.find(eq("first-key", "first-value")).firstOrNull());
+        assertNotNull(primary.find(eq("second-key", "second-value")).firstOrNull());
 
-        assertNull(secondary.find(eq("no-key", "no-value")).firstOrDefault());
+        assertNull(secondary.find(eq("no-key", "no-value")).firstOrNull());
 
         doc1.put("first-key", "new-value");
         secondary.update(doc1);
@@ -244,10 +244,10 @@ public class SimpleSyncTest extends BaseSyncTest {
             }
         });
 
-        assertNotNull(secondary.find(eq("first-key", "first-value")).firstOrDefault());
-        assertNotNull(secondary.find(eq("second-key", "second-value")).firstOrDefault());
+        assertNotNull(secondary.find(eq("first-key", "first-value")).firstOrNull());
+        assertNotNull(secondary.find(eq("second-key", "second-value")).firstOrNull());
 
-        assertNull(primary.find(eq("no-key", "no-value")).firstOrDefault());
+        assertNull(primary.find(eq("no-key", "no-value")).firstOrNull());
 
         doc1.put("first-key", "new-value");
         primary.update(doc1);
@@ -303,10 +303,10 @@ public class SimpleSyncTest extends BaseSyncTest {
             }
         });
 
-        assertNotNull(secondary.find(eq("first-key", "first-value")).firstOrDefault());
-        assertNotNull(secondary.find(eq("second-key", "second-value")).firstOrDefault());
+        assertNotNull(secondary.find(eq("first-key", "first-value")).firstOrNull());
+        assertNotNull(secondary.find(eq("second-key", "second-value")).firstOrNull());
 
-        assertNotNull(primary.find(eq("no-key", "no-value")).firstOrDefault());
+        assertNotNull(primary.find(eq("no-key", "no-value")).firstOrNull());
 
         doc1.put("first-key", "new-value");
         primary.update(doc1);
@@ -344,8 +344,8 @@ public class SimpleSyncTest extends BaseSyncTest {
 
         assertEquals(primary.find().size(), 1);
         assertEquals(secondary.find().size(), 1);
-        assertEquals(secondary.find().firstOrDefault(), doc0);
-        assertEquals(primary.find().firstOrDefault(), doc0);
+        assertEquals(secondary.find().firstOrNull(), doc0);
+        assertEquals(primary.find().firstOrNull(), doc0);
     }
 
     @Test

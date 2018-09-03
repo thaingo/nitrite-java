@@ -20,18 +20,18 @@ package org.dizitart.no2.common.mapper;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
-import org.dizitart.no2.exceptions.ObjectMappingException;
 import org.dizitart.no2.common.serialization.GeometryModule;
 import org.dizitart.no2.common.serialization.NitriteIdModule;
+import org.dizitart.no2.exceptions.ObjectMappingException;
 
 import java.io.IOException;
 import java.util.*;
 
-import static org.dizitart.no2.exceptions.ErrorCodes.*;
+import static org.dizitart.no2.exceptions.ErrorCodes.OME_CYCLE_DETECTED;
+import static org.dizitart.no2.exceptions.ErrorCodes.OME_NO_DEFAULT_CTOR;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
@@ -66,6 +66,11 @@ public class JacksonMapper extends AbstractMapper {
         this.objectMapper = createObjectMapper();
     }
 
+    /**
+     * Creates an {@link ObjectMapper} to use for the serialization.
+     *
+     * @return the object mapper
+     */
     protected ObjectMapper createObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(
@@ -123,7 +128,7 @@ public class JacksonMapper extends AbstractMapper {
     }
 
     @Override
-    public Object asValue(Object object) {
+    public Object convertValue(Object object) {
         JsonNode node = objectMapper.convertValue(object, JsonNode.class);
         if (node == null) {
             return null;
@@ -148,24 +153,8 @@ public class JacksonMapper extends AbstractMapper {
     }
 
     @Override
-    public String asString(Object object) {
-        try {
-            return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to convert object to string", e);
-            throw new ObjectMappingException(errorMessage(e.getMessage(), OME_AS_STRING_FAILED));
-        }
-    }
-
-    @Override
-    public <T> T fromString(String value, Class<T> type) {
-        try {
-            String jsonString = "\"" + value + "\"";
-            return objectMapper.readValue(jsonString, type);
-        } catch (IOException e) {
-            log.error("Failed to convert string to object", e);
-            throw new ObjectMappingException(errorMessage(e.getMessage(), OME_FROM_STRING_FAILED));
-        }
+    public <T> T convertValue(Object object, Class<T> type) {
+        return objectMapper.convertValue(object, type);
     }
 
     @Override

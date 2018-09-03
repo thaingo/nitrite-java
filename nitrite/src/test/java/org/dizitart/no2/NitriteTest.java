@@ -22,6 +22,7 @@ import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.objects.ObjectRepository;
+import org.dizitart.no2.exceptions.ValidationException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -272,5 +273,10 @@ public class NitriteTest {
         ObjectRepository<NitriteTest> repository2 = db.getRepository(NitriteTest.class);
         assertNotNull(repository2);
         assertEquals(repository2.getType(), NitriteTest.class);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testGetRepositoryInvalid() {
+        db.getRepository(null);
     }
 }

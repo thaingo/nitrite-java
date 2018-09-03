@@ -31,11 +31,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.common.util.IndexUtils.sortByScore;
-import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 
 /**
  * @author Anindya Chatterjee.
@@ -108,7 +106,7 @@ class NitriteTextIndexer implements TextIndexer {
             Document object = entry.getValue();
 
             // retrieve the value from document
-            Object fieldValue = getFieldValue(object, field);
+            Object fieldValue = object.getFieldValue(field);
 
             if (fieldValue == null) continue;
             if (!(fieldValue instanceof String)) {
@@ -254,5 +252,17 @@ class NitriteTextIndexer implements TextIndexer {
 
         Map<NitriteId, Integer> sortedScoreMap = sortByScore(scoreMap);
         return sortedScoreMap.keySet();
+    }
+
+    private <K, V extends Comparable<V>> Map<K, V> sortByScore(Map<K, V> unsortedMap) {
+        List<Map.Entry<K, V>> list = new LinkedList<>(unsortedMap.entrySet());
+        Collections.sort(list, (e1, e2) -> (e2.getValue()).compareTo(e1.getValue()));
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
     }
 }

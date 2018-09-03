@@ -21,17 +21,20 @@ package org.dizitart.no2.collection.objects;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.collection.Lookup;
 import org.dizitart.no2.collection.RecordIterable;
-import org.dizitart.no2.exceptions.InvalidOperationException;
+import org.dizitart.no2.common.KeyValuePair;
 import org.dizitart.no2.common.mapper.NitriteMapper;
+import org.dizitart.no2.exceptions.InvalidOperationException;
+import org.dizitart.no2.exceptions.ValidationException;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
+import java.util.Map;
 
-import static org.dizitart.no2.exceptions.ErrorCodes.VE_PROJECT_NULL_PROJECTION;
-import static org.dizitart.no2.exceptions.ErrorMessage.OBJ_REMOVE_ON_OBJECT_ITERATOR_NOT_SUPPORTED;
-import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.common.util.DocumentUtils.emptyDocument;
+import static org.dizitart.no2.common.util.DocumentUtils.dummyDocument;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
+import static org.dizitart.no2.exceptions.ErrorCodes.VE_PROJECT_NULL_PROJECTION;
+import static org.dizitart.no2.exceptions.ErrorMessage.*;
 
 /**
  * @author Anindya Chatterjee
@@ -81,6 +84,38 @@ class ObjectCursor<T> implements Cursor<T> {
     @Override
     public Iterator<T> iterator() {
         return new ObjectCursorIterator(cursor.iterator());
+    }
+
+    private <D> Document emptyDocument(NitriteMapper nitriteMapper, Class<D> type) {
+        if (type.isPrimitive()) {
+            throw new ValidationException(CAN_NOT_PROJECT_TO_PRIMITIVE);
+        } else if (type.isInterface()) {
+            throw new ValidationException(CAN_NOT_PROJECT_TO_INTERFACE);
+        } else if (type.isArray()) {
+            throw new ValidationException(CAN_NOT_PROJECT_TO_ARRAY);
+        } else if (Modifier.isAbstract(type.getModifiers())) {
+            throw new ValidationException(CAN_NOT_PROJECT_TO_ABSTRACT);
+        }
+
+        Document dummyDoc = dummyDocument(nitriteMapper, type);
+        Document filtered = removeValues(dummyDoc);
+        if (filtered == null) {
+            throw new ValidationException(CAN_NOT_PROJECT_TO_EMPTY_TYPE);
+        } else {
+            return filtered;
+        }
+    }
+
+    private Document removeValues(Document dummyDoc) {
+        if (dummyDoc == null) return null;
+        for (KeyValuePair entry : dummyDoc) {
+            if (entry.getValue() instanceof Map) {
+                dummyDoc.put(entry.getKey(), removeValues((Document) entry.getValue()));
+            } else {
+                dummyDoc.put(entry.getKey(), null);
+            }
+        }
+        return dummyDoc;
     }
 
     private class ObjectCursorIterator implements Iterator<T> {

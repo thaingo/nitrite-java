@@ -46,6 +46,6 @@ public class CustomFilterTest extends BaseCollectionTest {
         });
 
         assertEquals(cursor.size(), 1);
-        assertEquals(cursor.firstOrDefault().get("firstName"), "fn1");
+        assertEquals(cursor.firstOrNull().get("firstName"), "fn1");
     }
 }

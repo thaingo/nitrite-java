@@ -16,7 +16,7 @@
  *
  */
 
-package org.dizitart.no2.common.util;
+package org.dizitart.no2.sync;
 
 import lombok.experimental.UtilityClass;
 import okhttp3.Response;
@@ -28,15 +28,9 @@ import okhttp3.Response;
  * @author Anindya Chatterjee
  */
 @UtilityClass
-public class ResponseUtils {
+class OkHttpUtil {
 
-    /**
-     * Creates string representation of an error response.
-     *
-     * @param response the response
-     * @return the string representation.
-     */
-    public static String errorResponse(Response response) {
+    static String errorResponse(Response response) {
         if (response != null) {
             return response.protocol().toString().toUpperCase() + " "
                     + response.code() + " "

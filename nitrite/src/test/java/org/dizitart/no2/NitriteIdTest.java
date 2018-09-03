@@ -18,14 +18,8 @@
 
 package org.dizitart.no2;
 
-import org.dizitart.no2.common.util.ReflectionUtils;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
-import java.util.List;
-
-import static org.dizitart.no2.common.Constants.ID_PREFIX;
-import static org.dizitart.no2.common.Constants.ID_SUFFIX;
 import static org.junit.Assert.*;
 
 public class NitriteIdTest {
@@ -35,44 +29,6 @@ public class NitriteIdTest {
         NitriteId one = NitriteId.createId(Long.MAX_VALUE);
         NitriteId two = NitriteId.createId(Long.MIN_VALUE);
         assertEquals(one.compareTo(two), 1);
-    }
-
-    @Test
-    public void testGetNoArg() throws IllegalAccessException {
-        NitriteId nitriteId = NitriteId.newId();
-        assertNotNull(nitriteId);
-        assertNotNull(nitriteId.toString());
-        List<Field> fields = ReflectionUtils.getFieldsUpto(NitriteId.class, Object.class);
-        for (Field f : fields) {
-            if (f.getName().equals("identifier")) {
-                f.setAccessible(true);
-                Long.parseLong(f.get(nitriteId).toString());
-                System.out.println("found id = " + Long.parseLong(f.get(nitriteId).toString()));
-            }
-        }
-
-        assertNotNull(nitriteId.getIdValue());
-        assertEquals(ID_PREFIX + nitriteId.getIdValue().toString() + ID_SUFFIX,
-                nitriteId.toString());
-    }
-
-    @Test
-    public void testGet() throws IllegalAccessException {
-        NitriteId nitriteId = NitriteId.createId(1L);
-        assertNotNull(nitriteId);
-        assertNotNull(nitriteId.toString());
-
-        List<Field> fields = ReflectionUtils.getFieldsUpto(NitriteId.class, Object.class);
-        for (Field f : fields) {
-            if (f.getName().equals("objectId")) {
-                f.setAccessible(true);
-                assertNotNull(f.get(nitriteId).toString());
-                System.out.println("found id = " + f.get(nitriteId).toString());
-            }
-        }
-
-        assertNotNull(nitriteId.getIdValue());
-        assertEquals(nitriteId.toString(), ID_PREFIX + 1 + ID_SUFFIX);
     }
 
     @Test

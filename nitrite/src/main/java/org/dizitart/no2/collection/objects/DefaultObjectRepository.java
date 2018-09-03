@@ -40,7 +40,6 @@ import static org.dizitart.no2.collection.UpdateOptions.updateOptions;
 import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.common.util.ObjectUtils.*;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 
 /**
@@ -54,6 +53,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     private Class<T> type;
     private NitriteMapper nitriteMapper;
     private Field idField;
+    private RepositoryDelegate repositoryDelegate;
 
     DefaultObjectRepository(Class<T> type, NitriteCollection collection,
                             NitriteContext nitriteContext) {
@@ -128,7 +128,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
         if (idField == null) {
             throw new NotIdentifiableException(OBJ_UPDATE_FAILED_AS_NO_ID_FOUND);
         }
-        return update(createUniqueFilter(element, idField), element, upsert);
+        return update(repositoryDelegate.createUniqueFilter(element, idField), element, upsert);
     }
 
     @Override
@@ -166,7 +166,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
         if (idField == null) {
             throw new NotIdentifiableException(OBJ_REMOVE_FAILED_AS_NO_ID_FOUND);
         }
-        return remove(createUniqueFilter(element, idField));
+        return remove(repositoryDelegate.createUniqueFilter(element, idField));
     }
 
     @Override
@@ -288,7 +288,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     private Document asDocument(T object, boolean update) {
-        return toDocument(object, nitriteMapper, idField, update);
+        return repositoryDelegate.toDocument(object, nitriteMapper, idField, update);
     }
 
     private Document[] asDocuments(T[] others) {
@@ -301,20 +301,21 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     private void initRepository(NitriteContext nitriteContext) {
+        repositoryDelegate = new RepositoryDelegate();
         nitriteMapper = nitriteContext.getNitriteMapper();
         createIndexes();
     }
 
     private void createIndexes() {
         validateCollection();
-        Set<org.dizitart.no2.index.annotations.Index> indexes = extractIndices(nitriteMapper, type);
+        Set<org.dizitart.no2.index.annotations.Index> indexes = repositoryDelegate.extractIndices(nitriteMapper, type);
         for (org.dizitart.no2.index.annotations.Index idx : indexes) {
             if (!collection.hasIndex(idx.value())) {
                 collection.createIndex(idx.value(), indexOptions(idx.type(), false));
             }
         }
 
-        idField = getIdField(nitriteMapper, type);
+        idField = repositoryDelegate.getIdField(nitriteMapper, type);
         if (idField != null) {
             if (!collection.hasIndex(idField.getName())) {
                 collection.createIndex(idField.getName(), indexOptions(IndexType.Unique));
@@ -344,7 +345,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
                 Object value = keyValuePair.getValue();
                 Object serializedValue;
                 if (nitriteMapper.isValueType(value)) {
-                    serializedValue = nitriteMapper.asValue(value);
+                    serializedValue = nitriteMapper.convertValue(value);
                 } else {
                     serializedValue = nitriteMapper.asDocument(value);
                 }

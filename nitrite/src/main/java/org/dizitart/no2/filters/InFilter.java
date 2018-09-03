@@ -22,16 +22,16 @@ import lombok.Getter;
 import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
+import org.dizitart.no2.common.util.ValidationUtils;
 import org.dizitart.no2.exceptions.FilterException;
+import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.util.*;
 
-import static org.dizitart.no2.exceptions.ErrorCodes.FE_IN_SEARCH_TERM_NOT_COMPARABLE;
+import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.common.util.ValidationUtils.validateInFilterValue;
 
 @Getter
 @ToString
@@ -56,7 +56,7 @@ class InFilter extends BaseFilter {
                 }
 
                 if (getNitriteMapper().isValueType(objectList.get(i))) {
-                    Comparable comparable = (Comparable) getNitriteMapper().asValue(objectList.get(i));
+                    Comparable comparable = (Comparable) getNitriteMapper().convertValue(objectList.get(i));
                     objectList.set(i, comparable);
                 }
             }
@@ -75,7 +75,7 @@ class InFilter extends BaseFilter {
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = getFieldValue(document, getField());
+            Object fieldValue = document.getFieldValue(getField());
 
             if (fieldValue instanceof Comparable) {
                 Comparable comparable = (Comparable) fieldValue;
@@ -85,5 +85,14 @@ class InFilter extends BaseFilter {
             }
         }
         return nitriteIdSet;
+    }
+
+    private void validateInFilterValue(String field, List<Comparable> values) {
+        ValidationUtils.notNull(field, errorMessage("field can not be null", VE_IN_FILTER_NULL_FIELD));
+        ValidationUtils.notEmpty(field, errorMessage("field can not be empty", VE_IN_FILTER_EMPTY_FIELD));
+        ValidationUtils.notNull(values, errorMessage("values can not be null", VE_IN_FILTER_NULL_VALUES));
+        if (values.size() == 0) {
+            throw new ValidationException(errorMessage("values can not be empty", VE_IN_FILTER_EMPTY_VALUES));
+        }
     }
 }

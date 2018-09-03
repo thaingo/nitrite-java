@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.common.util.ResponseUtils.errorResponse;
+import static org.dizitart.no2.sync.OkHttpUtil.errorResponse;
 
 /**
  * Represents a template for DataGate sync operations.

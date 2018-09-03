@@ -19,10 +19,14 @@
 package org.dizitart.no2.filters;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dizitart.no2.index.IndexedQueryTemplate;
 import org.dizitart.no2.common.mapper.NitriteMapper;
+import org.dizitart.no2.exceptions.ValidationException;
+import org.dizitart.no2.index.IndexedQueryTemplate;
 
-import static org.dizitart.no2.common.util.ValidationUtils.validateSearchTerm;
+import static org.dizitart.no2.common.util.ValidationUtils.notEmpty;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
+import static org.dizitart.no2.exceptions.ErrorCodes.*;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
  * An abstract implementation of {@link Filter}.
@@ -72,9 +76,21 @@ public abstract class BaseFilter implements Filter {
         if (isObjectFilter()) {
             validateSearchTerm(getNitriteMapper(), field, value);
             if (getNitriteMapper().isValueType(value)) {
-                value = getNitriteMapper().asValue(value);
+                value = getNitriteMapper().convertValue(value);
             }
         }
         return value;
+    }
+
+    private void validateSearchTerm(NitriteMapper nitriteMapper, String field, Object value) {
+        notNull(field, errorMessage("field can not be null", VE_SEARCH_TERM_NULL_FIELD));
+        notEmpty(field, errorMessage("field can not be empty", VE_SEARCH_TERM_EMPTY_FIELD));
+
+        if (value != null) {
+            if (!nitriteMapper.isValueType(value) && !(value instanceof Comparable)) {
+                throw new ValidationException(errorMessage("search term is not comparable " + value,
+                        FE_SEARCH_TERM_NOT_COMPARABLE));
+            }
+        }
     }
 }

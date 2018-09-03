@@ -43,7 +43,7 @@ public class Iterables {
      * @param iterable the iterable
      * @return the first element or `null`.
      */
-    public static <T> T firstOrDefault(Iterable<T> iterable) {
+    public static <T> T firstOrNull(Iterable<T> iterable) {
         if (iterable == null) return null;
 
         Iterator<T> iterator = iterable.iterator();
@@ -88,37 +88,6 @@ public class Iterables {
             }
             return list.toArray(dummy);
         }
-    }
-
-    /**
-     * Determines whether the supplied `iterable` is sorted.
-     *
-     * @param <T>       the type parameter
-     * @param iterable  the iterable
-     * @param ascending a boolean value indicating whether to sort in ascending order
-     * @return the boolean value indicating if `iterable` is sorted or not.
-     */
-    public static <T extends Comparable<? super T>> boolean
-    isSorted(Iterable<T> iterable, boolean ascending) {
-        Iterator<T> iterator = iterable.iterator();
-        if (!iterator.hasNext()) {
-            return true;
-        }
-        T t = iterator.next();
-        while (iterator.hasNext()) {
-            T t2 = iterator.next();
-            if (ascending) {
-                if (t.compareTo(t2) > 0) {
-                    return false;
-                }
-            } else {
-                if (t.compareTo(t2) < 0) {
-                    return false;
-                }
-            }
-            t = t2;
-        }
-        return true;
     }
 
     @SuppressWarnings("unchecked")

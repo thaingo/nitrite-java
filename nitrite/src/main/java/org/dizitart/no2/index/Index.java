@@ -25,13 +25,13 @@ import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.collection.NitriteCollection;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.common.util.IndexUtils.internalName;
 import static org.dizitart.no2.common.util.ValidationUtils.notEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
+import static org.dizitart.no2.exceptions.ErrorCodes.*;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
  * Represents a nitrite database index.
@@ -93,7 +93,9 @@ public class Index implements Comparable<Index>, Serializable {
     }
 
     @Override
-    public int compareTo(Index other) {
-        return internalName(this).compareTo(internalName(other));
+    public int compareTo(@NotNull Index other) {
+        String string = collectionName + field + indexType;
+        String otherString = other.collectionName + other.field + other.indexType;
+        return string.compareTo(otherString);
     }
 }

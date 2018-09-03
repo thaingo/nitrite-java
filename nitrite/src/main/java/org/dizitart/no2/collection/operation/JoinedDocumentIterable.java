@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
 import java.util.*;
 
 import static org.dizitart.no2.exceptions.ErrorMessage.REMOVE_ON_DOCUMENT_ITERATOR_NOT_SUPPORTED;
-import static org.dizitart.no2.common.util.EqualsUtils.deepEquals;
+import static org.dizitart.no2.common.util.ObjectUtils.deepEquals;
 
 /**
  * @author Anindya Chatterjee.

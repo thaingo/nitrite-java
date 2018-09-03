@@ -182,10 +182,10 @@ public class SyncHandleTest extends BaseSyncTest {
 
         await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find().size() == 3 && primary.find().size() == 3);
 
-        assertNotNull(secondary.find(eq("first-key", "first-value")).firstOrDefault());
-        assertNotNull(secondary.find(eq("second-key", "second-value")).firstOrDefault());
+        assertNotNull(secondary.find(eq("first-key", "first-value")).firstOrNull());
+        assertNotNull(secondary.find(eq("second-key", "second-value")).firstOrNull());
 
-        assertNotNull(primary.find(eq("no-key", "no-value")).firstOrDefault());
+        assertNotNull(primary.find(eq("no-key", "no-value")).firstOrNull());
 
         doc1.put("first-key", "new-value");
         primary.update(doc1);
@@ -209,10 +209,10 @@ public class SyncHandleTest extends BaseSyncTest {
         // remove in secondary does not trigger remove in primary as sync is off
         assertEquals(primary.find().size(), 2);
         assertEquals(secondary.find().size(), 1);
-        assertEquals(secondary.find().firstOrDefault(), doc0);
+        assertEquals(secondary.find().firstOrNull(), doc0);
         // doc2 still should be in primary
         assertEquals(primary.find(eq("second-key", "second-value"))
-                .firstOrDefault(), doc2);
+                .firstOrNull(), doc2);
     }
 
     @Test

@@ -20,21 +20,23 @@ package org.dizitart.no2.collection.operation;
 
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.*;
+import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.FindOptions;
+import org.dizitart.no2.collection.NullOrder;
+import org.dizitart.no2.collection.SortOrder;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.exceptions.InvalidOperationException;
+import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.IndexedQueryTemplate;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.util.*;
 
-import static org.dizitart.no2.exceptions.ErrorCodes.VE_INDEXED_QUERY_TEMPLATE_NULL;
-import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
-import static org.dizitart.no2.common.util.ValidationUtils.validateLimit;
+import static org.dizitart.no2.exceptions.ErrorCodes.VE_INDEXED_QUERY_TEMPLATE_NULL;
+import static org.dizitart.no2.exceptions.ErrorMessage.*;
 
 /**
  * @author Anindya Chatterjee.
@@ -159,7 +161,7 @@ class QueryTemplate {
 
         for (NitriteId id : nitriteIdSet) {
             Document document = nitriteMap.get(id);
-            Object value = getFieldValue(document, sortField);
+            Object value = document.getFieldValue(sortField);
 
             if (value != null) {
                 if (value.getClass().isArray() || value instanceof Iterable) {
@@ -226,5 +228,19 @@ class QueryTemplate {
             finalList.addAll(list);
         }
         return finalList;
+    }
+
+    private void validateLimit(FindOptions findOptions, long totalSize) {
+        if (findOptions.getSize() < 0) {
+            throw new ValidationException(PAGINATION_SIZE_CAN_NOT_BE_NEGATIVE);
+        }
+
+        if (findOptions.getOffset() < 0) {
+            throw new ValidationException(PAGINATION_OFFSET_CAN_NOT_BE_NEGATIVE);
+        }
+
+        if (totalSize < findOptions.getOffset()) {
+            throw new ValidationException(PAGINATION_OFFSET_GREATER_THAN_SIZE);
+        }
     }
 }

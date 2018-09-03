@@ -44,7 +44,7 @@ import static org.dizitart.no2.collection.FindOptions.sort;
 import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.dizitart.no2.common.Constants.DOC_REVISION;
 import static org.dizitart.no2.filters.Filter.*;
-import static org.dizitart.no2.common.util.Iterables.isSorted;
+import static org.dizitart.no2.common.util.TestUtil.isSorted;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
@@ -258,7 +258,7 @@ public class CollectionFindTest extends BaseCollectionTest {
         Document document = collection.getById(id);
         assertNull(document);
 
-        document = collection.find().firstOrDefault();
+        document = collection.find().firstOrNull();
 
         assertEquals(document.get(DOC_ID), document.getId().getIdValue());
         assertEquals(document.get("firstName"), "fn1");
@@ -548,7 +548,7 @@ public class CollectionFindTest extends BaseCollectionTest {
                         lte(DOC_REVISION, 1482225343162L),
                         not(eq(DOC_REVISION, null))
                 )
-        ).firstOrDefault();
+        ).firstOrNull();
 
         assertNull(projection);
     }

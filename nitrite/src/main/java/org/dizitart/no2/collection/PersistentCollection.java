@@ -28,6 +28,7 @@ import org.dizitart.no2.exceptions.UniqueConstraintException;
 import org.dizitart.no2.index.Index;
 import org.dizitart.no2.meta.MetadataAware;
 
+import java.io.Closeable;
 import java.util.Collection;
 
 /**
@@ -39,7 +40,7 @@ import java.util.Collection;
  * @see NitriteCollection
  * @see org.dizitart.no2.collection.objects.ObjectRepository
  */
-public interface PersistentCollection<T> extends ChangeAware, MetadataAware {
+public interface PersistentCollection<T> extends ChangeAware, MetadataAware, Closeable {
 
     /**
      * Creates an index on `value`, if not already exists.

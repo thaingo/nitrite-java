@@ -28,11 +28,10 @@ import org.dizitart.no2.store.NitriteMap;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 import static org.dizitart.no2.common.util.ValidationUtils.validateDocumentIndexField;
+import static org.dizitart.no2.exceptions.ErrorCodes.*;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
  * @author Anindya Chatterjee
@@ -154,7 +153,7 @@ class NitriteComparableIndexer implements ComparableIndexer {
             Document object = entry.getValue();
 
             // retrieved the value from document
-            Object fieldValue = getFieldValue(object, field);
+            Object fieldValue = object.getFieldValue(field);
 
             if (fieldValue == null) continue;
             validateDocumentIndexField(fieldValue, field);

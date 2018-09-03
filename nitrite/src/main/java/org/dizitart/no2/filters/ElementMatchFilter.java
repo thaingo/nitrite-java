@@ -21,9 +21,9 @@ package org.dizitart.no2.filters;
 import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
+import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.index.IndexedQueryTemplate;
-import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.lang.reflect.Array;
@@ -31,11 +31,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.dizitart.no2.common.util.ObjectUtils.deepEquals;
+import static org.dizitart.no2.common.util.NumberUtils.compare;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.common.util.EqualsUtils.deepEquals;
-import static org.dizitart.no2.common.util.NumberUtils.compare;
 
 /**
  * @author Anindya Chatterjee.
@@ -69,7 +68,7 @@ class ElementMatchFilter implements Filter {
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = getFieldValue(document, field);
+            Object fieldValue = document.getFieldValue(field);
 
             if (fieldValue == null) {
                 continue;
@@ -161,7 +160,7 @@ class ElementMatchFilter implements Filter {
         Object value = ((EqualsFilter) filter).getValue();
         if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = getFieldValue(document, ((EqualsFilter) filter).getField());
+            Object docValue = document.getFieldValue(((EqualsFilter) filter).getField());
             return deepEquals(value, docValue);
         } else {
             return deepEquals(item, value);
@@ -179,7 +178,7 @@ class ElementMatchFilter implements Filter {
             return arg.compareTo(comparable) > 0;
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = getFieldValue(document, ((GreaterThanFilter) filter).getField());
+            Object docValue = document.getFieldValue(((GreaterThanFilter) filter).getField());
             if (docValue instanceof Comparable) {
                 Comparable arg = (Comparable) docValue;
                 return arg.compareTo(comparable) > 0;
@@ -206,7 +205,7 @@ class ElementMatchFilter implements Filter {
             return arg.compareTo(comparable) >= 0;
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = getFieldValue(document, ((GreaterEqualFilter) filter).getField());
+            Object docValue = document.getFieldValue(((GreaterEqualFilter) filter).getField());
             if (docValue instanceof Comparable) {
                 Comparable arg = (Comparable) docValue;
                 return arg.compareTo(comparable) >= 0;
@@ -233,7 +232,7 @@ class ElementMatchFilter implements Filter {
             return arg.compareTo(comparable) <= 0;
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = getFieldValue(document, ((LesserEqualFilter) filter).getField());
+            Object docValue = document.getFieldValue(((LesserEqualFilter) filter).getField());
             if (docValue instanceof Comparable) {
                 Comparable arg = (Comparable) docValue;
                 return arg.compareTo(comparable) <= 0;
@@ -260,7 +259,7 @@ class ElementMatchFilter implements Filter {
             return arg.compareTo(comparable) < 0;
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = getFieldValue(document, ((LesserThanFilter) filter).getField());
+            Object docValue = document.getFieldValue(((LesserThanFilter) filter).getField());
             if (docValue instanceof Comparable) {
                 Comparable arg = (Comparable) docValue;
                 return arg.compareTo(comparable) < 0;
@@ -281,7 +280,7 @@ class ElementMatchFilter implements Filter {
         if (values != null) {
             if (item instanceof Document) {
                 Document document = (Document) item;
-                Object docValue = getFieldValue(document, ((InFilter) filter).getField());
+                Object docValue = document.getFieldValue(((InFilter) filter).getField());
                 if (docValue instanceof Comparable) {
                     return values.contains(docValue);
                 }
@@ -300,7 +299,7 @@ class ElementMatchFilter implements Filter {
             return matcher.find();
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = getFieldValue(document, ((RegexFilter) filter).getField());
+            Object docValue = document.getFieldValue(((RegexFilter) filter).getField());
             if (docValue instanceof String) {
                 Pattern pattern = Pattern.compile(value);
                 Matcher matcher = pattern.matcher((String) docValue);

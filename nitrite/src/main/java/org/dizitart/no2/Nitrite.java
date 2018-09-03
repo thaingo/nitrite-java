@@ -25,9 +25,11 @@ import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.collection.objects.RepositoryFactory;
 import org.dizitart.no2.common.Constants;
+import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.store.NitriteMap;
 import org.dizitart.no2.store.NitriteStore;
 
+import javax.validation.constraints.NotNull;
 import java.io.Closeable;
 import java.nio.channels.NonWritableChannelException;
 import java.util.HashMap;
@@ -36,8 +38,13 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.dizitart.no2.Security.validateUserPassword;
+import static org.dizitart.no2.common.Constants.KEY_OBJ_SEPARATOR;
+import static org.dizitart.no2.common.Constants.RESERVED_NAMES;
 import static org.dizitart.no2.common.util.ObjectUtils.*;
-import static org.dizitart.no2.common.util.ValidationUtils.validateCollectionName;
+import static org.dizitart.no2.common.util.ValidationUtils.notEmpty;
+import static org.dizitart.no2.common.util.ValidationUtils.notNull;
+import static org.dizitart.no2.exceptions.ErrorCodes.*;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 
 /**
@@ -109,7 +116,7 @@ public class Nitrite implements Closeable {
      * @return the collection
      * @see NitriteCollection
      */
-    public NitriteCollection getCollection(String name) {
+    public NitriteCollection getCollection(@NotNull String name) {
         validateCollectionName(name);
         if (store != null) {
             NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
@@ -135,7 +142,7 @@ public class Nitrite implements Closeable {
      * @return the repository containing objects of type {@link T}.
      * @see ObjectRepository
      */
-    public <T> ObjectRepository<T> getRepository(Class<T> type) {
+    public <T> ObjectRepository<T> getRepository(@NotNull Class<T> type) {
         if (store != null) {
             String name = findRepositoryName(type);
             NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
@@ -163,7 +170,7 @@ public class Nitrite implements Closeable {
      * @return the repository containing objects of type {@link T}.
      * @see ObjectRepository
      */
-    public <T> ObjectRepository<T> getRepository(String key, Class<T> type) {
+    public <T> ObjectRepository<T> getRepository(@NotNull String key, @NotNull Class<T> type) {
         if (store != null) {
             String name = findRepositoryName(key, type);
             NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
@@ -403,6 +410,30 @@ public class Nitrite implements Closeable {
                 }
             }
             repositories.clear();
+        }
+    }
+
+    private <T> String findRepositoryName(String key, Class<T> type) {
+        notNull(key, errorMessage("key can not be null", VE_OBJ_STORE_NULL_KEY));
+        notEmpty(key, errorMessage("key can not be empty", VE_OBJ_STORE_EMPTY_KEY));
+        notNull(type, errorMessage("type can not be null", VE_OBJ_STORE_NULL_TYPE));
+        return type.getName() + KEY_OBJ_SEPARATOR + key;
+    }
+
+    private <T> String findRepositoryName(Class<T> type) {
+        notNull(type, errorMessage("type can not be null", VE_OBJ_STORE_NULL_TYPE));
+        return type.getName();
+    }
+
+    private void validateCollectionName(String name) {
+        notNull(name, errorMessage("name can not be null", VE_COLLECTION_NULL_NAME));
+        notEmpty(name, errorMessage("name can not be empty", VE_COLLECTION_EMPTY_NAME));
+
+        for (String reservedName : RESERVED_NAMES) {
+            if (name.contains(reservedName)) {
+                throw new ValidationException(errorMessage(
+                        "name can not contains " + reservedName, VE_COLLECTION_NAME_RESERVED));
+            }
         }
     }
 }

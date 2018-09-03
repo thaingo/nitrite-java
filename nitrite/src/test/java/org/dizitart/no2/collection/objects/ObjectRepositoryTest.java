@@ -213,9 +213,9 @@ public class ObjectRepositoryTest {
         repository.insert(object2);
 
         assertEquals(repository.find(eq("id", new Date(1482773634L)))
-                .firstOrDefault(), object1);
+                .firstOrNull(), object1);
         assertEquals(repository.find(eq("id", new Date(1482773720L)))
-                .firstOrDefault(), object2);
+                .firstOrNull(), object2);
     }
 
     @Test

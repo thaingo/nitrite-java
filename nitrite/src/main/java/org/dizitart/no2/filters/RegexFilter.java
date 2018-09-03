@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 
 import static org.dizitart.no2.exceptions.ErrorCodes.FE_REGEX_NO_STRING_VALUE;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
 
 /**
  * @author Anindya Chatterjee.
@@ -52,7 +51,7 @@ class RegexFilter extends StringFilter {
 
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = getFieldValue(document, getField());
+            Object fieldValue = document.getFieldValue(getField());
             if (fieldValue != null) {
                 if (fieldValue instanceof String) {
                     Matcher matcher = pattern.matcher((String) fieldValue);

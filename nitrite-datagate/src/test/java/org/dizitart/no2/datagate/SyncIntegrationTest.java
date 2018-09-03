@@ -252,7 +252,7 @@ public class SyncIntegrationTest {
             }
 
             log.info("****************** Removing data from secondary **********************");
-            secondary.remove(secondary.find().firstOrDefault());
+            secondary.remove(secondary.find().firstOrNull());
             latch.countDown();
         });
 
@@ -361,7 +361,7 @@ public class SyncIntegrationTest {
             }
 
             secondaryEmployeeRepository.remove(eq("empId", secondaryEmployeeRepository.find()
-                    .firstOrDefault().getEmpId()));
+                    .firstOrNull().getEmpId()));
             latch.countDown();
         });
 

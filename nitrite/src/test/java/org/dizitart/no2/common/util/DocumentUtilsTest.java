@@ -20,16 +20,22 @@ package org.dizitart.no2.common.util;
 
 import org.dizitart.no2.Document;
 import org.dizitart.no2.common.mapper.JacksonFacade;
+import org.dizitart.no2.common.mapper.JacksonMapper;
 import org.dizitart.no2.common.mapper.MapperFacade;
+import org.dizitart.no2.common.mapper.NitriteMapper;
+import org.dizitart.no2.filters.BaseFilter;
+import org.dizitart.no2.filters.Filter;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Set;
-
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.common.util.DocumentUtils.getFields;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.dizitart.no2.Document.createDocument;
+import static org.dizitart.no2.common.Constants.DOC_REVISION;
+import static org.dizitart.no2.common.util.DocumentUtils.createUniqueFilter;
+import static org.dizitart.no2.common.util.DocumentUtils.dummyDocument;
+import static org.dizitart.no2.common.util.DocumentUtils.isRecent;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class DocumentUtilsTest {
     private Document doc;
@@ -54,35 +60,39 @@ public class DocumentUtilsTest {
     }
 
     @Test
-    public void testGetValue() {
-    	MapperFacade nitriteMapper = new JacksonFacade();
-        assertEquals(getFieldValue(doc, ""), null);
-        assertEquals(getFieldValue(doc, "score"), 1034);
-        assertEquals(getFieldValue(doc, "location.state"), "NY");
-        assertEquals(getFieldValue(doc, "location.address"), nitriteMapper.parse("{" +
-                "            line1: '40', " +
-                "            line2: 'ABC Street', " +
-                "            house: ['1', '2', '3'] " +
-                "       },"));
-        assertEquals(getFieldValue(doc, "location.address.line1"), "40");
-        assertEquals(getFieldValue(doc, "location.category"), null);
+    public void testIsRecent() throws InterruptedException {
+        Document first = createDocument("key1", "value1");
+        Thread.sleep(500);
+        Document second = createDocument("key1", "value2");
+        assertTrue(isRecent(second, first));
+        second = first.clone();
+        second.put(DOC_REVISION, 1);
 
-        assertEquals(getFieldValue(doc, "category"), doc.get("category"));
-        assertEquals(getFieldValue(doc, "category.2"), "grocery");
-        assertEquals(getFieldValue(doc, "location.address.house.2"), "3");
-
-        assertNotEquals(getFieldValue(doc, "location.address.test"), nitriteMapper.parse("{" +
-                "            line1: '40', " +
-                "            line2: 'ABC Street'" +
-                "       },"));
-        assertNotEquals(getFieldValue(doc, "location.address.test"), "a");
+        first.put("key2", "value3");
+        first.put(DOC_REVISION, 2);
+        assertTrue(isRecent(first, second));
     }
 
     @Test
-    public void testIndexableFields() {
-        Set<String> result = getFields(doc);
-        for (String string : result) {
-            System.out.println(string);
-        }
+    public void testCreateUniqueFilter() {
+        doc.getId();
+        Filter filter = createUniqueFilter(doc);
+        assertNotNull(filter);
+        assertTrue(filter instanceof BaseFilter);
+    }
+
+    @Test
+    public void testDummyDocument() {
+        NitriteMapper nitriteMapper = new JacksonMapper();
+        Document document = dummyDocument(nitriteMapper, DummyTest.class);
+        assertTrue(document.containsKey("first"));
+        assertTrue(document.containsKey("second"));
+        assertNull(document.get("first"));
+        assertNull(document.get("second"));
+    }
+
+    private class DummyTest {
+        private String first;
+        private Double second;
     }
 }

@@ -70,7 +70,7 @@ class DocumentTest : BaseTest() {
         db?.getCollection("test") {
             insert(doc)
             val cursor = find("a" eq 1)
-            assertEquals(cursor.firstOrDefault(), doc)
+            assertEquals(cursor.firstOrNull(), doc)
         }
     }
 }

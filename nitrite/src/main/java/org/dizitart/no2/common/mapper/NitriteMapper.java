@@ -72,10 +72,22 @@ public interface NitriteMapper {
      * @param object the object to convert
      * @return the object as a value type.
      */
-    Object asValue(Object object);
+    Object convertValue(Object object);
 
 
-    String asString(Object object);
-
-    <T> T fromString(String value, Class<T> type);
+    /**
+     * Tries to convert an `object` to a value of given `type`.
+     *
+     * [icon="{@docRoot}/note.png"]
+     * NOTE: As an example, a {@link org.locationtech.jts.geom.Geometry}
+     * object is stored as a {@link java.lang.String} value in the document.
+     * This operation will return the {@link org.locationtech.jts.geom.Geometry}
+     * object from its string representation.
+     *
+     * @param <T>    the type parameter
+     * @param object the object to convert
+     * @param type intended type to convert to
+     * @return the object as a value type of type `T`.
+     * */
+    <T> T convertValue(Object object, Class<T> type);
 }

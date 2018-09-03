@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.locationtech.jts.geom.Geometry;
 
 /**
+ * Class that registers capability of serializing {@code Geometry} objects with the Jackson core.
  *
  * @since 4.0.0
  * @author Anindya Chatterjee

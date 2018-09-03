@@ -195,7 +195,7 @@ public class RandomSyncTest {
                     e.printStackTrace();
                 }
 
-                secondary.remove(eq("empId", secondary.find().firstOrDefault().getEmpId()));
+                secondary.remove(eq("empId", secondary.find().firstOrNull().getEmpId()));
                 latch.countDown();
             }
         });

@@ -31,10 +31,9 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.dizitart.no2.common.Constants.DOC_ID;
+import static org.dizitart.no2.common.util.NumberUtils.compare;
 import static org.dizitart.no2.exceptions.ErrorCodes.FE_LT_FIELD_NOT_COMPARABLE;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
-import static org.dizitart.no2.common.util.NumberUtils.compare;
 
 @Getter
 @ToString
@@ -78,7 +77,7 @@ class LesserThanFilter extends ComparisonFilter {
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = getFieldValue(document, getField());
+            Object fieldValue = document.getFieldValue(getField());
             if (fieldValue != null) {
                 if (fieldValue instanceof Number && comparable instanceof Number) {
                     if (compare((Number) fieldValue, (Number) comparable) < 0) {

@@ -66,7 +66,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
         assertEquals(collection.size(), 4);
 
         Document document = collection.find(eq("lastName", "ln4"))
-                .firstOrDefault();
+                .firstOrNull();
         assertEquals(document, update);
     }
 
@@ -197,7 +197,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
         Document doc = new Document().put("id", "test-1").put("group", "groupA");
         assertEquals(1, coll.insert(doc).getAffectedCount());
 
-        Document savedDoc1 = coll.find().firstOrDefault();
+        Document savedDoc1 = coll.find().firstOrNull();
         assertNotNull(savedDoc1);
 
         Document clonedDoc1 = new Document(savedDoc1);
@@ -207,7 +207,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
 //        clonedDoc1.remove("group");
         assertEquals(1, coll.update(clonedDoc1).getAffectedCount());
 
-        Document savedDoc2 = coll.find(Filter.ALL).firstOrDefault();
+        Document savedDoc2 = coll.find(Filter.ALL).firstOrNull();
         assertNotNull(savedDoc2);
         assertNull(savedDoc2.get("group"));
     }

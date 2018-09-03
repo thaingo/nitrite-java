@@ -43,12 +43,12 @@ import java.util.Set;
 
 import static org.dizitart.no2.Security.createSecurely;
 import static org.dizitart.no2.Security.openSecurely;
+import static org.dizitart.no2.common.Constants.RESERVED_NAMES;
 import static org.dizitart.no2.exceptions.ErrorCodes.NIOE_DIR_DOES_NOT_EXISTS;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
 import static org.dizitart.no2.tool.Recovery.recover;
 import static org.dizitart.no2.common.util.ObjectUtils.*;
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
-import static org.dizitart.no2.common.util.ValidationUtils.isValidCollectionName;
 
 /**
  * A builder utility to create a {@link Nitrite} database instance.
@@ -580,5 +580,13 @@ public class NitriteBuilder {
                 }
             }
         }
+    }
+
+    private boolean isValidCollectionName(String name) {
+        if (isNullOrEmpty(name)) return false;
+        for (String reservedName : RESERVED_NAMES) {
+            if (name.contains(reservedName)) return false;
+        }
+        return true;
     }
 }

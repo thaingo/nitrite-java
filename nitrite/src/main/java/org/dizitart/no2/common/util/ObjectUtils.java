@@ -20,30 +20,18 @@ package org.dizitart.no2.common.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.dizitart.no2.Document;
-import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.filters.Filter;
-import org.dizitart.no2.exceptions.IndexingException;
-import org.dizitart.no2.exceptions.InvalidIdException;
-import org.dizitart.no2.exceptions.NotIdentifiableException;
 import org.dizitart.no2.exceptions.ValidationException;
-import org.dizitart.no2.index.annotations.Id;
-import org.dizitart.no2.index.annotations.Index;
-import org.dizitart.no2.index.annotations.Indices;
-import org.dizitart.no2.index.annotations.InheritIndices;
-import org.dizitart.no2.common.mapper.NitriteMapper;
-import org.objenesis.ObjenesisStd;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.lang.reflect.Array;
+import java.util.Map;
 
 import static org.dizitart.no2.common.Constants.KEY_OBJ_SEPARATOR;
-import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.*;
-import static org.dizitart.no2.filters.Filter.eq;
-import static org.dizitart.no2.common.util.ReflectionUtils.*;
+import static org.dizitart.no2.common.util.Iterables.toArray;
+import static org.dizitart.no2.common.util.NumberUtils.compare;
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
-import static org.dizitart.no2.common.util.ValidationUtils.*;
+import static org.dizitart.no2.exceptions.ErrorCodes.VE_INVALID_KEYED_OBJ_STORE_KEY;
+import static org.dizitart.no2.exceptions.ErrorCodes.VE_INVALID_KEYED_OBJ_STORE_TYPE;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
  * A utility class for {@link Object}.
@@ -54,128 +42,6 @@ import static org.dizitart.no2.common.util.ValidationUtils.*;
 @UtilityClass
 @Slf4j
 public class ObjectUtils {
-    /**
-     * Generates the name of an {@link org.dizitart.no2.collection.objects.ObjectRepository}.
-     *
-     * @param <T>           the type parameter
-     * @param type          the type of object stored in the repository
-     * @return the name of the object repository.
-     */
-    public static <T> String findRepositoryName(Class<T> type) {
-        notNull(type, errorMessage("type can not be null", VE_OBJ_STORE_NULL_TYPE));
-        return type.getName();
-    }
-
-    /**
-     * Generates the name of an {@link org.dizitart.no2.collection.objects.ObjectRepository}
-     * with an unique key identifier.
-     *
-     * @param <T>  the type parameter
-     * @param key  the key identifier
-     * @param type the type of object stored in the repository
-     * @return the name of the object repository.
-     */
-    public static <T> String findRepositoryName(String key, Class<T> type) {
-        notNull(key, errorMessage("key can not be null", VE_OBJ_STORE_NULL_KEY));
-        notEmpty(key, errorMessage("key can not be empty", VE_OBJ_STORE_EMPTY_KEY));
-        notNull(type, errorMessage("type can not be null", VE_OBJ_STORE_NULL_TYPE));
-        return type.getName() + KEY_OBJ_SEPARATOR + key;
-    }
-
-    /**
-     * Extract indices information by scanning for {@link Index} annotated fields.
-     *
-     * @param <T>           the type parameter
-     * @param nitriteMapper the {@link NitriteMapper}
-     * @param type          the type of the object stored in the repository
-     * @return the set of all {@link Index} annotations found.
-     */
-    public static <T> Set<Index> extractIndices(NitriteMapper nitriteMapper, Class<T> type) {
-        notNull(type, errorMessage("type can not be null", VE_INDEX_ANNOTATION_NULL_TYPE));
-
-        List<Indices> indicesList;
-        if (type.isAnnotationPresent(InheritIndices.class)) {
-            indicesList = findAnnotations(Indices.class, type);
-        } else {
-            indicesList = new ArrayList<>();
-            Indices indices = type.getAnnotation(Indices.class);
-            if (indices != null) indicesList.add(indices);
-        }
-
-        Set<Index> indexSet = new LinkedHashSet<>();
-        if (indicesList != null) {
-            for (Indices indices : indicesList) {
-                Index[] indexList = indices.value();
-                populateIndex(nitriteMapper, type, Arrays.asList(indexList), indexSet);
-            }
-        }
-
-        List<Index> indexList;
-        if (type.isAnnotationPresent(InheritIndices.class)) {
-            indexList = findAnnotations(Index.class, type);
-        } else {
-            indexList = new ArrayList<>();
-            Index index = type.getAnnotation(Index.class);
-            if (index != null) indexList.add(index);
-        }
-
-        if (indexList != null) {
-            populateIndex(nitriteMapper, type, indexList, indexSet);
-        }
-        return indexSet;
-    }
-
-    /**
-     * Gets the field marked with {@link Id} annotation.
-     *
-     * @param <T>           the type parameter
-     * @param nitriteMapper the nitrite mapper
-     * @param type          the type
-     * @return the id field
-     */
-    public static <T> Field getIdField(NitriteMapper nitriteMapper, Class<T> type) {
-        List<Field> fields;
-        if (type.isAnnotationPresent(InheritIndices.class)) {
-            fields = getFieldsUpto(type, Object.class);
-        } else {
-            fields = Arrays.asList(type.getDeclaredFields());
-        }
-
-        boolean alreadyIdFound = false;
-        Field idField = null;
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(Id.class)) {
-                validateObjectIndexField(nitriteMapper, field.getType(), field.getName());
-                if (alreadyIdFound) {
-                    throw new NotIdentifiableException(OBJ_MULTIPLE_ID_FOUND);
-                } else {
-                    alreadyIdFound = true;
-                    idField = field;
-                }
-            }
-        }
-        return idField;
-    }
-
-    /**
-     * Creates unique filter from the object.
-     *
-     * @param object  the object
-     * @param idField the id field
-     * @return the equals filter
-     */
-    public static Filter createUniqueFilter(Object object, Field idField) {
-        idField.setAccessible(true);
-        try {
-            Object value = idField.get(object);
-            if (value == null) {
-                throw new InvalidIdException(ID_FILTER_VALUE_CAN_NOT_BE_NULL);
-            }
-            return eq(idField.getName(), value);
-        } catch (IllegalAccessException iae) {
-            throw new InvalidIdException(ID_FIELD_IS_NOT_ACCESSIBLE);
-        }
-    }
 
     /**
      * Checks whether a collection name is a valid object repository name.
@@ -246,56 +112,62 @@ public class ObjectUtils {
                 VE_INVALID_KEYED_OBJ_STORE_TYPE));
     }
 
-    public static <T> T newInstance(Class<T> type) {
-        try {
-            return type.newInstance();
-        } catch (Exception e) {
-            return new ObjenesisStd().newInstance(type);
+    /**
+     * Computes equality of two objects.
+     *
+     * @param o1 the first object
+     * @param o2 the other object
+     * @return `true` if two objects are equal.
+     */
+    public static boolean deepEquals(Object o1, Object o2) {
+        if (o1 == null && o2 == null) {
+            return true;
+        } else if (o1 == null || o2 == null) {
+            return false;
         }
-    }
 
-    public static <T> Document toDocument(T object, NitriteMapper nitriteMapper,
-                                          Field idField, boolean update) {
-        Document document = nitriteMapper.asDocument(object);
-        if (idField != null) {
-            if (idField.getType() == NitriteId.class) {
-                try {
-                    idField.setAccessible(true);
-                    if (idField.get(object) == null) {
-                        NitriteId id = document.getId();
-                        idField.set(object, id);
-                        document.put(idField.getName(), id.getIdValue());
-                    } else if (!update) {
-                        throw new InvalidIdException(AUTO_ID_ALREADY_SET);
-                    }
-                } catch (IllegalAccessException iae) {
-                    throw new InvalidIdException(CANNOT_ACCESS_AUTO_ID);
+        if (o1 == o2) {
+            // if reference equal send true
+            return true;
+        }
+
+        if (o1 instanceof Number && o2 instanceof Number) {
+            // cast to Number and take care of boxing and compare
+            return compare((Number) o1, (Number) o2) == 0;
+        } else if (o1 instanceof Iterable && o2 instanceof Iterable)  {
+            Object[] arr1 = toArray((Iterable) o1);
+            Object[] arr2 = toArray((Iterable) o2);
+            // convert iterable to array and recursively compare arrays
+            return deepEquals(arr1, arr2);
+        } else if (o1.getClass().isArray() && o2.getClass().isArray()) {
+            // if both are object array iterate each element and recursively check
+            // it respects cardinality of the elements in the array
+            int length = Array.getLength(o1);
+
+            if (length != Array.getLength(o2)) {
+                return false;
+            }
+
+            for (int i = 0; i < length; i++) {
+                Object item1 = Array.get(o1, i);
+                Object item2 = Array.get(o2, i);
+
+                if (!deepEquals(item1, item2)) {
+                    // if one element is not equal return false
+                    return false;
                 }
             }
-            Object idValue = document.get(idField.getName());
-            if (idValue == null) {
-                throw new InvalidIdException(ID_CAN_NOT_BE_NULL);
-            }
-            if (idValue instanceof String && isNullOrEmpty((String) idValue)) {
-                throw new InvalidIdException(ID_VALUE_CAN_NOT_BE_EMPTY_STRING);
-            }
+            // if all check passed it must be equal
+            return true;
+        } else if (o1 instanceof Map && o2 instanceof Map) {
+            Map map1 = (Map) o1;
+            Map map2 = (Map) o2;
+            return deepEquals(toArray(map1.entrySet()), toArray(map2.entrySet()));
+        } else {
+            // generic check
+            return o1.equals(o2);
         }
-        return document;
-    }
 
-    private <T> void populateIndex(NitriteMapper nitriteMapper, Class<T> type,
-                                   List<Index> indexList, Set<Index> indexSet) {
-        for (Index index : indexList) {
-            String name = index.value();
-            Field field = getField(type, name, type.isAnnotationPresent(InheritIndices.class));
-            if (field != null) {
-                validateObjectIndexField(nitriteMapper, field.getType(), field.getName());
-                indexSet.add(index);
-            } else {
-                throw new IndexingException(errorMessage(
-                        "field " + name + " does not exists for type " + type.getName(),
-                        IE_OBJ_INDEX_INVALID_FIELD));
-            }
-        }
+        // none of the type check passes so they are not of compatible type
     }
 }

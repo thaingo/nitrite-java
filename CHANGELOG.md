@@ -15,6 +15,15 @@ v4.0.0
 * Spatial indexing support added #34
 * RxJava support #107
 
+v3.2.0
+======
+
+**New Changes**
+
+* Closeable `NitriteCollection` and `ObjectRepository` #108
+
+**Fixes**
+
 
 v3.1.0
 ======

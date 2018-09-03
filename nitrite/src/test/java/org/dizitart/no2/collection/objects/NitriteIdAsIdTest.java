@@ -73,7 +73,7 @@ public class NitriteIdAsIdTest {
             assertNotNull(withNitriteId.idField);
         }
 
-        WithNitriteId withNitriteId = cursor.firstOrDefault();
+        WithNitriteId withNitriteId = cursor.firstOrNull();
         withNitriteId.name = "third";
 
         NitriteId id = withNitriteId.idField;
@@ -98,7 +98,7 @@ public class NitriteIdAsIdTest {
         WithNitriteId item2 = new WithNitriteId();
         item2.name = "second";
         WriteResult result = repo.insert(item2);
-        NitriteId nitriteId = Iterables.firstOrDefault(result);
+        NitriteId nitriteId = Iterables.firstOrNull(result);
         WithNitriteId byId = repo.getById(nitriteId);
         byId.idField = NitriteId.newId();
 

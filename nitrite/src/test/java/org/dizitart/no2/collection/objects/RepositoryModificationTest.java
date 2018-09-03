@@ -288,7 +288,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
 
     @Test
     public void testUpdateWithOptions() {
-        Employee employee = employeeRepository.find().firstOrDefault();
+        Employee employee = employeeRepository.find().firstOrNull();
 
         Document update = new Document();
         update.put("address", "new address");
@@ -297,7 +297,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
                 = employeeRepository.update(Filter.eq("empId", employee.getEmpId()), update, false);
         assertEquals(writeResult.getAffectedCount(), 1);
 
-        NitriteId nitriteId = Iterables.firstOrDefault(writeResult);
+        NitriteId nitriteId = Iterables.firstOrNull(writeResult);
         Employee byId = employeeRepository.getById(nitriteId);
         assertEquals(byId.getAddress(), "new address");
         assertEquals(byId.getEmpId(), employee.getEmpId());
@@ -305,7 +305,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         update.put("address", "another address");
         writeResult
                 = employeeRepository.update(Filter.eq("empId", employee.getEmpId()), update);
-        nitriteId = Iterables.firstOrDefault(writeResult);
+        nitriteId = Iterables.firstOrNull(writeResult);
         byId = employeeRepository.getById(nitriteId);
         assertEquals(byId.getAddress(), "another address");
         assertEquals(byId.getEmpId(), employee.getEmpId());
@@ -337,17 +337,17 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
 
     @Test
     public void testUpdateNull() {
-        Employee employee = employeeRepository.find().firstOrDefault();
+        Employee employee = employeeRepository.find().firstOrNull();
         Employee newEmployee = new Employee(employee);
         newEmployee.setJoinDate(null);
 
-        Employee result = employeeRepository.find(Filter.eq("empId", employee.getEmpId())).firstOrDefault();
+        Employee result = employeeRepository.find(Filter.eq("empId", employee.getEmpId())).firstOrNull();
         assertNotNull(result.getJoinDate());
 
         WriteResult writeResult = employeeRepository.update(newEmployee, false);
         assertEquals(writeResult.getAffectedCount(), 1);
 
-        result = employeeRepository.find(Filter.eq("empId", employee.getEmpId())).firstOrDefault();
+        result = employeeRepository.find(Filter.eq("empId", employee.getEmpId())).firstOrNull();
         assertNull(result.getJoinDate());
 
         // update with object filter and item and set id different
@@ -355,14 +355,14 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
 
     @Test
     public void testUpdateWithChangedId() {
-        Employee employee = employeeRepository.find().firstOrDefault();
+        Employee employee = employeeRepository.find().firstOrNull();
         Long oldId = employee.getEmpId();
         long count = employeeRepository.size();
 
         Employee newEmployee = new Employee(employee);
         newEmployee.setEmpId(50L);
 
-        Employee result = employeeRepository.find(Filter.eq("empId", oldId)).firstOrDefault();
+        Employee result = employeeRepository.find(Filter.eq("empId", oldId)).firstOrNull();
         assertNotNull(result.getJoinDate());
 
         WriteResult writeResult = employeeRepository.update(Filter.eq("empId", oldId), newEmployee, false);
@@ -375,13 +375,13 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
 
     @Test(expected = InvalidIdException.class)
     public void testUpdateWithNullId() {
-        Employee employee = employeeRepository.find().firstOrDefault();
+        Employee employee = employeeRepository.find().firstOrNull();
         Long oldId = employee.getEmpId();
 
         Employee newEmployee = new Employee(employee);
         newEmployee.setEmpId(null);
 
-        Employee result = employeeRepository.find(Filter.eq("empId", oldId)).firstOrDefault();
+        Employee result = employeeRepository.find(Filter.eq("empId", oldId)).firstOrNull();
         assertNotNull(result.getJoinDate());
 
         WriteResult writeResult = employeeRepository.update(Filter.eq("empId", oldId), newEmployee, false);
@@ -390,14 +390,14 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
 
     @Test(expected = UniqueConstraintException.class)
     public void testUpdateWithDuplicateId() {
-        Employee employee = employeeRepository.find().firstOrDefault();
+        Employee employee = employeeRepository.find().firstOrNull();
         Long oldId = employee.getEmpId();
         long count = employeeRepository.size();
 
         Employee newEmployee = new Employee(employee);
         newEmployee.setEmpId(5L);
 
-        Employee result = employeeRepository.find(Filter.eq("empId", oldId)).firstOrDefault();
+        Employee result = employeeRepository.find(Filter.eq("empId", oldId)).firstOrNull();
         assertNotNull(result.getJoinDate());
 
         WriteResult writeResult = employeeRepository.update(Filter.eq("empId", oldId), newEmployee, false);
@@ -410,7 +410,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
 
     @Test
     public void testUpdateWithObject() {
-        Employee employee = employeeRepository.find().firstOrDefault();
+        Employee employee = employeeRepository.find().firstOrNull();
         Employee newEmployee = new Employee(employee);
 
         Long id = employee.getEmpId();
@@ -420,7 +420,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         WriteResult writeResult = employeeRepository.update(newEmployee);
         assertEquals(writeResult.getAffectedCount(), 1);
 
-        Employee emp = employeeRepository.find(Filter.eq("empId", id)).firstOrDefault();
+        Employee emp = employeeRepository.find(Filter.eq("empId", id)).firstOrNull();
         assertNotEquals(address, emp.getAddress());
         assertEquals(employee.getEmpId(), emp.getEmpId());
         assertEquals(employee.getJoinDate(), emp.getJoinDate());
@@ -445,7 +445,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         writeResult = employeeRepository.update(employee, true);
         assertEquals(writeResult.getAffectedCount(), 1);
 
-        Employee emp = employeeRepository.find(Filter.eq("empId", 12L)).firstOrDefault();
+        Employee emp = employeeRepository.find(Filter.eq("empId", 12L)).firstOrNull();
         assertEquals(emp, employee);
     }
 
@@ -470,7 +470,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         employeeRepository.remove(employee);
         assertEquals(employeeRepository.size(), size);
 
-        Employee emp = employeeRepository.find(Filter.eq("empId", 12L)).firstOrDefault();
+        Employee emp = employeeRepository.find(Filter.eq("empId", 12L)).firstOrNull();
         assertNull(emp);
     }
 

@@ -19,8 +19,7 @@
 package org.dizitart.no2.common.mapper;
 
 import org.dizitart.no2.Document;
-
-import static org.dizitart.no2.common.util.ObjectUtils.newInstance;
+import org.objenesis.ObjenesisStd;
 
 /**
  * This class provides a skeletal implementation of a {@link NitriteMapper}.
@@ -72,5 +71,13 @@ public abstract class AbstractMapper implements NitriteMapper {
             return item;
         }
         return asObjectAuto(document, type);
+    }
+
+    private <T> T newInstance(Class<T> type) {
+        try {
+            return type.newInstance();
+        } catch (Exception e) {
+            return new ObjenesisStd().newInstance(type);
+        }
     }
 }

@@ -22,6 +22,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.dizitart.no2.NitriteId;
 
 /**
+ * Class that registers capability of serializing {@code NitriteId} with the Jackson core.
+ *
+ * @since 1.0.0
  * @author Anindya Chatterjee
  */
 public class NitriteIdModule extends SimpleModule {

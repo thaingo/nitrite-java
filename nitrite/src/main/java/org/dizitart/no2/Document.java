@@ -26,17 +26,19 @@ import org.dizitart.no2.exceptions.ValidationException;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.dizitart.no2.NitriteId.createId;
 import static org.dizitart.no2.NitriteId.newId;
 import static org.dizitart.no2.common.Constants.*;
-import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.DOC_GET_TYPE_NULL;
-import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
+import static org.dizitart.no2.exceptions.ErrorCodes.*;
+import static org.dizitart.no2.exceptions.ErrorMessage.*;
 
 /**
  * Represents a type-safe container of nitrite document. It is a collection
@@ -52,7 +54,9 @@ import static org.dizitart.no2.common.util.ValidationUtils.notNull;
  * @author Anindya Chatterjee.
  * @since 1.0
  */
-public class Document extends LinkedHashMap<String, Object> implements Iterable<KeyValuePair> {
+public class Document extends LinkedHashMap<String, Object>
+        implements Iterable<KeyValuePair>, Cloneable {
+
     private static final long serialVersionUID = 1477462374L;
 
     /**
@@ -197,6 +201,106 @@ public class Document extends LinkedHashMap<String, Object> implements Iterable<
     @Override
     public Iterator<KeyValuePair> iterator() {
         return new PairIterator(super.entrySet().iterator());
+    }
+
+    /**
+     * Returns a shallow copy of this {@link Document} instance: the keys and
+     * values themselves are not cloned.
+     *
+     * @since 4.0.0
+     * @return a shallow copy of this {@link Document}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Document clone() {
+        Map<String, Object> clone = (Map<String, Object>) super.clone();
+        return new Document(clone);
+    }
+
+    /**
+     * Gets the value of a field inside a document.
+     *
+     * @since 4.0.0
+     * @param field    the field
+     * @return the value of the field.
+     */
+    public Object getFieldValue(String field) {
+        Object fieldValue;
+        if (field.contains(FIELD_SEPARATOR)) {
+            fieldValue = getEmbeddedValue(field);
+        } else {
+            fieldValue = get(field);
+        }
+        return fieldValue;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Object getEmbeddedValue(String embeddedField) {
+        String regex = "\\" + FIELD_SEPARATOR;
+        String[] split = embeddedField.split(regex, 2);
+        String key = split[0];
+
+        if (isNullOrEmpty(key)) {
+            throw new ValidationException(INVALID_EMBEDDED_FIELD);
+        }
+
+        Object object = get(key);
+        if (object == null) return null;
+
+        String remainingKey = split[1];
+
+        if (object instanceof Document) {
+            Document document = (Document) object;
+            return document.getFieldValue(remainingKey);
+        } else if (object instanceof List) {
+            int index = asInteger(remainingKey);
+            if (index == -1) {
+                throw new ValidationException(errorMessage(
+                        "invalid index " + remainingKey + " for collection",
+                        VE_NEGATIVE_LIST_INDEX_FIELD));
+            }
+            List collection = (List) object;
+            if (index >= collection.size()) {
+                throw new ValidationException(errorMessage("index = " + remainingKey +
+                        " is not less than the size of the collection '" + key +
+                        "' = " + collection.size(), VE_INVALID_LIST_INDEX_FIELD));
+            }
+            return collection.get(index);
+        } else if (object.getClass().isArray()) {
+            int index = asInteger(remainingKey);
+            if (index == -1) {
+                throw new ValidationException(errorMessage(
+                        "invalid index " + remainingKey + " for collection",
+                        VE_NEGATIVE_ARRAY_INDEX_FIELD));
+            }
+            Object[] array = getArray(object);
+            if (index >= array.length) {
+                throw new ValidationException(errorMessage("index = " + remainingKey +
+                        " is not less than the size of the collection '" + key +
+                        "' = " + array.length, VE_INVALID_ARRAY_INDEX_FIELD));
+            }
+            return array[index];
+        } else {
+            throw new ValidationException(errorMessage("invalid remaining field "
+                    + remainingKey, VE_INVALID_REMAINING_FIELD));
+        }
+    }
+
+    private int asInteger(String number) {
+        try {
+            return Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    private Object[] getArray(Object val){
+        int length = Array.getLength(val);
+        Object[] outputArray = new Object[length];
+        for(int i = 0; i < length; ++i){
+            outputArray[i] = Array.get(val, i);
+        }
+        return outputArray;
     }
 
     private class PairIterator implements Iterator<KeyValuePair> {

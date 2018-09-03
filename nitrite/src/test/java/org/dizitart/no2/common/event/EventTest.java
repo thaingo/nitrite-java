@@ -41,7 +41,7 @@ import static org.awaitility.Awaitility.await;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.filters.Filter.ALL;
 import static org.dizitart.no2.filters.Filter.eq;
-import static org.dizitart.no2.common.util.Iterables.firstOrDefault;
+import static org.dizitart.no2.common.util.Iterables.firstOrNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -150,7 +150,7 @@ public class EventTest {
         assertEquals(listener.getAction(), ChangeType.UPDATE);
         assertEquals(listener.getItems().size(), 1);
 
-        ChangedItem item = firstOrDefault(listener.getItems());
+        ChangedItem item = firstOrNull(listener.getItems());
         Employee byId = employeeRepository.getById(item.getDocument().getId());
         assertEquals(byId.getAddress(), "xyz");
     }

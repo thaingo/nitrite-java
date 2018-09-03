@@ -84,7 +84,7 @@ class BackportJavaTimeTest {
         val repo = db.getRepository<TestData>()
         val testData = TestData(time = LocalDateTime.now())
         repo.insert(testData)
-        println(repo.find().firstOrDefault())
+        println(repo.find().firstOrNull())
 
         Files.delete(Paths.get(dbPath))
     }

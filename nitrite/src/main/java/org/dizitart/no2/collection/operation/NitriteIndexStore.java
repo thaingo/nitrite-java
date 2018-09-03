@@ -37,9 +37,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.dizitart.no2.common.Constants.INDEX_META_PREFIX;
-import static org.dizitart.no2.common.Constants.INTERNAL_NAME_SEPARATOR;
-import static org.dizitart.no2.common.util.IndexUtils.internalName;
+import static org.dizitart.no2.common.Constants.*;
 
 /**
  * @author Anindya Chatterjee.
@@ -144,6 +142,16 @@ class NitriteIndexStore implements IndexStore {
         getIndexMetaMap().put(field, indexMeta);
 
         return index;
+    }
+
+    private String internalName(Index index) {
+        return  INDEX_PREFIX +
+                INTERNAL_NAME_SEPARATOR +
+                index.getCollectionName() +
+                INTERNAL_NAME_SEPARATOR +
+                index.getField() +
+                INTERNAL_NAME_SEPARATOR +
+                index.getIndexType();
     }
 
     private String getName() {

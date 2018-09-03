@@ -77,8 +77,8 @@ public interface RecordIterable<T> extends Iterable<T> {
      *
      * @return the first element or `null`
      */
-    default T firstOrDefault() {
-        return Iterables.firstOrDefault(this);
+    default T firstOrNull() {
+        return Iterables.firstOrNull(this);
     }
 
     /**

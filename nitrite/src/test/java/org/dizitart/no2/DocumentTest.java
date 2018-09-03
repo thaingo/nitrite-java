@@ -16,32 +16,26 @@
  *
  */
 
-package org.dizitart.no2.common.util;
+package org.dizitart.no2;
 
-import org.dizitart.no2.Document;
-import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.common.mapper.JacksonFacade;
-import org.dizitart.no2.common.mapper.JacksonMapper;
 import org.dizitart.no2.common.mapper.MapperFacade;
+import org.dizitart.no2.exceptions.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.AbstractCollection;
-
-import static org.dizitart.no2.common.util.DocumentUtils.emptyDocument;
-import static org.dizitart.no2.common.util.DocumentUtils.getFieldValue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
- * @author Anindya Chatterjee.
+ * @author Anindya Chatterjee
  */
-public class DocumentUtilsNegativeTest {
+public class DocumentTest {
     private Document doc;
 
     @Before
     public void setUp() {
-    	MapperFacade nitriteMapper = new JacksonFacade();
-        doc = nitriteMapper.parse("{" +
+        MapperFacade mapperFacade = new JacksonFacade();
+        doc = mapperFacade.parse("{" +
                 "  score: 1034," +
                 "  location: {  " +
                 "       state: 'NY', " +
@@ -57,43 +51,48 @@ public class DocumentUtilsNegativeTest {
                 "}");
     }
 
+    @Test
+    public void testGetValue() {
+        MapperFacade nitriteMapper = new JacksonFacade();
+        assertNull(doc.getFieldValue(""));
+        assertEquals(doc.getFieldValue("score"), 1034);
+        assertEquals(doc.getFieldValue("location.state"), "NY");
+        assertEquals(doc.getFieldValue("location.address"), nitriteMapper.parse("{" +
+                "            line1: '40', " +
+                "            line2: 'ABC Street', " +
+                "            house: ['1', '2', '3'] " +
+                "       },"));
+        assertEquals(doc.getFieldValue("location.address.line1"), "40");
+        assertNull(doc.getFieldValue("location.category"));
+
+        assertEquals(doc.getFieldValue("category"), doc.get("category"));
+        assertEquals(doc.getFieldValue("category.2"), "grocery");
+        assertEquals(doc.getFieldValue("location.address.house.2"), "3");
+
+        assertNotEquals(doc.getFieldValue("location.address.test"), nitriteMapper.parse("{" +
+                "            line1: '40', " +
+                "            line2: 'ABC Street'" +
+                "       },"));
+        assertNotEquals(doc.getFieldValue("location.address.test"), "a");
+    }
+
     @Test(expected = ValidationException.class)
     public void testGetValueFailure() {
-        assertEquals(getFieldValue(doc, "score.test"), 1034);
+        assertEquals(doc.getFieldValue("score.test"), 1034);
     }
 
     @Test(expected = ValidationException.class)
     public void testGetValueInvalidIndex() {
-        assertEquals(getFieldValue(doc, "category.3"), "grocery");
+        assertEquals(doc.getFieldValue("category.3"), "grocery");
     }
 
     @Test(expected = ValidationException.class)
     public void testGetValueObjectArray() {
-        assertEquals(getFieldValue(doc, "objArray.0.value"), 1);
+        assertEquals(doc.getFieldValue("objArray.0.value"), 1);
     }
 
     @Test(expected = ValidationException.class)
     public void testGetValueInvalidKey() {
-        assertEquals(getFieldValue(doc, "."), 1);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testEmptyDocumentForInterface() {
-        emptyDocument(new JacksonMapper(), Comparable.class);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testEmptyDocumentForPrimitive() {
-        emptyDocument(new JacksonMapper(), int.class);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testEmptyDocumentForArray() {
-        emptyDocument(new JacksonMapper(), String[].class);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testEmptyDocumentForAbstractClass() {
-        emptyDocument(new JacksonMapper(), AbstractCollection.class);
+        assertEquals(doc.getFieldValue("."), 1);
     }
 }
