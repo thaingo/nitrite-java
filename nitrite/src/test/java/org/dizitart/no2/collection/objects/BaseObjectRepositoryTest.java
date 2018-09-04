@@ -149,7 +149,7 @@ public abstract class BaseObjectRepositoryTest {
             cObjectRepository.remove(ALL);
         }
 
-        if (db != null) {
+        if (db != null && !db.isClosed()) {
             db.commit();
             db.close();
         }

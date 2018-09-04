@@ -117,6 +117,10 @@ public class ErrorMessage {
             new ErrorMessage("store is closed",
                     NIOE_STORE_CLOSED);
 
+    public static final ErrorMessage NITRITE_STORE_IS_CLOSED =
+            new ErrorMessage("store is closed",
+                    NIOE_NITRITE_STORE_CLOSED);
+
     public static final ErrorMessage COLLECTION_IS_DROPPED =
             new ErrorMessage("collection has been dropped",
                     NIOE_COLLECTION_DROPPED);
@@ -140,10 +144,6 @@ public class ErrorMessage {
     public static final ErrorMessage INVALID_AND_FILTER =
             new ErrorMessage("invalid AND filter",
                     FE_AND_INVALID);
-
-    public static final ErrorMessage VALUE_IS_NOT_COMPARABLE =
-            new ErrorMessage("value is not comparable",
-                    FE_VALUE_NOT_COMPARABLE);
 
     public static final ErrorMessage NESTED_ELEM_MATCH_NOT_SUPPORTED =
             new ErrorMessage("nested elemMatch filter is not supported",
@@ -172,22 +172,6 @@ public class ErrorMessage {
     public static final ErrorMessage FILTERED_FIND_WITH_OPTIONS_OPERATION_FAILED =
             new ErrorMessage("find operation failed",
                     FE_FILTERED_FIND_WITH_OPTION_FAILED);
-
-    public static final ErrorMessage NESTED_OBJ_ELEM_MATCH_NOT_SUPPORTED =
-            new ErrorMessage("nested elemMatch filter is not supported",
-                    FE_OBJ_ELEM_MATCH_NESTED);
-
-    public static final ErrorMessage FULL_TEXT_OBJ_ELEM_MATCH_NOT_SUPPORTED =
-            new ErrorMessage("full-text search is not supported in elemMatch filter",
-                    FE_OBJ_ELEM_MATCH_FULL_TEXT);
-
-    public static final ErrorMessage OBJ_ELEM_MATCH_SUPPORTED_ON_ARRAY_ONLY =
-            new ErrorMessage("elemMatch filter only applies to array or iterable",
-                    FE_OBJ_ELEM_MATCH_NO_ARRAY);
-
-    public static final ErrorMessage CAN_NOT_SEARCH_NON_COMPARABLE_ON_INDEXED_FIELD =
-            new ErrorMessage("can not search non-comparable value on indexed field",
-                    FE_INDEX_NON_COMPARABLE_SEARCH);
 
     public static final ErrorMessage INVALID_SEARCH_TERM_LEADING_STAR =
             new ErrorMessage("invalid search term '*'",

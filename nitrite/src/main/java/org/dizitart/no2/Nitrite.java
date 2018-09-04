@@ -25,6 +25,7 @@ import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.collection.objects.RepositoryFactory;
 import org.dizitart.no2.common.Constants;
+import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.store.NitriteMap;
 import org.dizitart.no2.store.NitriteStore;
@@ -44,7 +45,7 @@ import static org.dizitart.no2.common.util.ObjectUtils.*;
 import static org.dizitart.no2.common.util.ValidationUtils.notEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
+import static org.dizitart.no2.exceptions.ErrorMessage.*;
 
 
 /**
@@ -118,15 +119,11 @@ public class Nitrite implements Closeable {
      */
     public NitriteCollection getCollection(@NotNull String name) {
         validateCollectionName(name);
-        if (store != null) {
-            NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
-            NitriteCollection collection = CollectionFactory.open(mapStore, context);
-            context.getCollectionRegistry().add(name);
-            return collection;
-        } else {
-            log.error("Underlying store is null. Nitrite has not been initialized properly.");
-        }
-        return null;
+        checkOpened();
+        NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
+        NitriteCollection collection = CollectionFactory.open(mapStore, context);
+        context.getCollectionRegistry().add(name);
+        return collection;
     }
 
     /**
@@ -143,17 +140,13 @@ public class Nitrite implements Closeable {
      * @see ObjectRepository
      */
     public <T> ObjectRepository<T> getRepository(@NotNull Class<T> type) {
-        if (store != null) {
-            String name = findRepositoryName(type);
-            NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
-            NitriteCollection collection = CollectionFactory.open(mapStore, context);
-            ObjectRepository<T> repository = RepositoryFactory.open(type, collection, context);
-            context.getRepositoryRegistry().put(name, type);
-            return repository;
-        } else {
-            log.error("Underlying store is null. Nitrite has not been initialized properly.");
-        }
-        return null;
+        checkOpened();
+        String name = findRepositoryName(type);
+        NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
+        NitriteCollection collection = CollectionFactory.open(mapStore, context);
+        ObjectRepository<T> repository = RepositoryFactory.open(type, collection, context);
+        context.getRepositoryRegistry().put(name, type);
+        return repository;
     }
 
     /**
@@ -171,17 +164,13 @@ public class Nitrite implements Closeable {
      * @see ObjectRepository
      */
     public <T> ObjectRepository<T> getRepository(@NotNull String key, @NotNull Class<T> type) {
-        if (store != null) {
-            String name = findRepositoryName(key, type);
-            NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
-            NitriteCollection collection = CollectionFactory.open(mapStore, context);
-            ObjectRepository<T> repository = RepositoryFactory.open(type, collection, context);
-            context.getRepositoryRegistry().put(name, type);
-            return repository;
-        } else {
-            log.error("Underlying store is null. Nitrite has not been initialized properly.");
-        }
-        return null;
+        checkOpened();
+        String name = findRepositoryName(key, type);
+        NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
+        NitriteCollection collection = CollectionFactory.open(mapStore, context);
+        ObjectRepository<T> repository = RepositoryFactory.open(type, collection, context);
+        context.getRepositoryRegistry().put(name, type);
+        return repository;
     }
 
     /**
@@ -275,14 +264,11 @@ public class Nitrite implements Closeable {
      * Compacts store by moving all chunks next to each other.
      */
     public void compact() {
+        checkOpened();
         if (store != null && !store.isClosed()
                 && !context.isReadOnly()) {
             store.compact();
-            if (log.isDebugEnabled()) {
-                log.debug("Store compaction is successful.");
-            }
-        } else if (store == null) {
-            log.error("Underlying store is null. Nitrite has not been initialized properly.");
+            log.debug("Store compaction is successful.");
         }
     }
 
@@ -297,13 +283,10 @@ public class Nitrite implements Closeable {
      *
      */
     public void commit() {
+        checkOpened();
         if (store != null && !context.isReadOnly()) {
             store.commit();
-            if (log.isDebugEnabled()) {
-                log.debug("Unsaved changes committed successfully.");
-            }
-        } else if (store == null) {
-            log.error("Underlying store is null. Nitrite has not been initialized properly.");
+            log.debug("Unsaved changes committed successfully.");
         }
     }
 
@@ -312,34 +295,33 @@ public class Nitrite implements Closeable {
      * for a file based store.
      */
     public synchronized void close() {
-        if (store != null) {
-            try {
-                if (hasUnsavedChanges()) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Unsaved changes detected, committing the changes.");
-                    }
-                    commit();
-                }
-                if (context.isAutoCompactEnabled()) {
-                    compact();
-                }
-
-                try {
-                    closeCollections();
-                    context.shutdown();
-                } catch (Throwable error) {
-                    log.error("Error while shutting down nitrite.", error);
-                }
-
-                store.close();
-            } catch (NonWritableChannelException error) {
-                if (!context.isReadOnly()) {
-                    throw error;
-                }
-            } finally {
-                store = null;
-                log.info("Nitrite database has been closed successfully.");
+        checkOpened();
+        try {
+            if (hasUnsavedChanges()) {
+                log.debug("Unsaved changes detected, committing the changes.");
+                commit();
             }
+            if (context.isAutoCompactEnabled()) {
+                compact();
+            }
+
+            try {
+                closeCollections();
+                context.shutdown();
+            } catch (Throwable error) {
+                throw new NitriteIOException(errorMessage("error while shutting down nitrite",
+                        NIOE_CLOSED_FAILED), error);
+            }
+
+            store.close();
+        } catch (NonWritableChannelException error) {
+            if (!context.isReadOnly()) {
+                throw new NitriteIOException(errorMessage("error while shutting down nitrite",
+                        NIOE_CLOSED_NON_W_CHANNEL), error);
+            }
+        } finally {
+            store = null;
+            log.info("Nitrite database has been closed successfully.");
         }
     }
 
@@ -351,20 +333,19 @@ public class Nitrite implements Closeable {
      * avoid database corruption.
      * */
     synchronized void closeImmediately() {
-        if (store != null) {
-            try {
-                store.closeImmediately();
-                context.shutdown();
-            } catch (NonWritableChannelException error) {
-                if (!context.isReadOnly()) {
-                    log.error("Error while closing nitrite store.", error);
-                }
-            } catch (Throwable t) {
-                log.error("Error while closing nitrite store.", t);
-            } finally {
-                store = null;
-                log.info("Nitrite database has been closed by JVM shutdown hook without saving last unsaved changes.");
+        checkOpened();
+        try {
+            store.closeImmediately();
+            context.shutdown();
+        } catch (NonWritableChannelException error) {
+            if (!context.isReadOnly()) {
+                log.error("Error while closing nitrite store.", error);
             }
+        } catch (Throwable t) {
+            log.error("Error while closing nitrite store.", t);
+        } finally {
+            store = null;
+            log.info("Nitrite database has been closed by JVM shutdown hook without saving last unsaved changes.");
         }
     }
 
@@ -434,6 +415,12 @@ public class Nitrite implements Closeable {
                 throw new ValidationException(errorMessage(
                         "name can not contains " + reservedName, VE_COLLECTION_NAME_RESERVED));
             }
+        }
+    }
+
+    private void checkOpened() {
+        if (store == null || store.isClosed()) {
+            throw new NitriteIOException(NITRITE_STORE_IS_CLOSED);
         }
     }
 }

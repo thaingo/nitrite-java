@@ -18,12 +18,20 @@
 
 package org.dizitart.no2;
 
+import org.dizitart.no2.common.KeyValuePair;
 import org.dizitart.no2.common.mapper.JacksonFacade;
 import org.dizitart.no2.common.mapper.MapperFacade;
+import org.dizitart.no2.exceptions.InvalidIdException;
+import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.junit.Assert.*;
 
 /**
@@ -94,5 +102,38 @@ public class DocumentTest {
     @Test(expected = ValidationException.class)
     public void testGetValueInvalidKey() {
         assertEquals(doc.getFieldValue("."), 1);
+    }
+
+    @Test(expected = InvalidOperationException.class)
+    public void testPut() {
+        doc.put(DOC_ID, "id");
+    }
+
+    @Test(expected = InvalidIdException.class)
+    public void testGetId() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(DOC_ID, "id");
+
+        Document document = new Document(map);
+        document.getId();
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testGetFieldValue() {
+        String key = "first.array.-1";
+        Document document = new Document()
+                .put("first", new Document().put("array", new int[] {0}));
+        document.getFieldValue(key);
+    }
+
+    @Test
+    public void testRemove() {
+        Iterator<KeyValuePair> iterator = doc.iterator();
+        assertEquals(doc.size(), 4);
+        if (iterator.hasNext()) {
+            iterator.next();
+            iterator.remove();
+        }
+        assertEquals(doc.size(), 3);
     }
 }

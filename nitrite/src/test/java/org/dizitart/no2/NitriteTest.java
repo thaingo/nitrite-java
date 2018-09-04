@@ -22,6 +22,7 @@ import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.objects.ObjectRepository;
+import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.ValidationException;
 import org.junit.After;
 import org.junit.Before;
@@ -39,6 +40,7 @@ import java.util.Set;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.common.Constants.INTERNAL_NAME_SEPARATOR;
+import static org.dizitart.no2.common.Constants.META_MAP_NAME;
 import static org.dizitart.no2.filters.Filter.ALL;
 import static org.junit.Assert.*;
 
@@ -88,7 +90,9 @@ public class NitriteTest {
             collection.remove(ALL);
             collection.close();
         }
-        db.close();
+        if (!db.isClosed()) {
+            db.close();
+        }
         Files.delete(Paths.get(fileName));
     }
 
@@ -278,5 +282,59 @@ public class NitriteTest {
     @Test(expected = ValidationException.class)
     public void testGetRepositoryInvalid() {
         db.getRepository(null);
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testGetCollectionNullStore() {
+        Nitrite db = Nitrite.builder().openOrCreate();
+        db.close();
+        db.getCollection("test");
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testGetRepositoryNullStore() {
+        Nitrite db = Nitrite.builder().openOrCreate();
+        db.close();
+        db.getRepository(NitriteTest.class);
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testGetKeyedRepositoryNullStore() {
+        Nitrite db = Nitrite.builder().openOrCreate();
+        db.close();
+        db.getRepository("key", NitriteTest.class);
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testCompactNullStore() {
+        Nitrite db = Nitrite.builder().openOrCreate();
+        db.close();
+        db.compact();
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testCommitNullStore() {
+        Nitrite db = Nitrite.builder().openOrCreate();
+        db.close();
+        db.commit();
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testCloseNullStore() {
+        try(Nitrite db = Nitrite.builder().openOrCreate()){
+            db.close();
+        }
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testCloseImmediatelyNullStore() {
+        try(Nitrite db = Nitrite.builder().openOrCreate()){
+            db.closeImmediately();
+        }
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testGetCollectionInvalidName() {
+        db.getCollection(META_MAP_NAME);
     }
 }

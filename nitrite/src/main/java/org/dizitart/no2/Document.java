@@ -145,7 +145,7 @@ public class Document extends LinkedHashMap<String, Object>
      */
     @SuppressWarnings("unchecked")
     public NitriteId getId() {
-        Long id = null;
+        Long id;
         try {
             if (!containsKey(DOC_ID)) {
                 id = newId().getIdValue();
@@ -155,7 +155,7 @@ public class Document extends LinkedHashMap<String, Object>
             }
             return createId(id);
         } catch (ClassCastException cce) {
-            throw new InvalidIdException(errorMessage("invalid _id found " + id,
+            throw new InvalidIdException(errorMessage("invalid _id found " + get(DOC_ID),
                     IIE_INVALID_ID_FOUND));
         }
     }

@@ -128,7 +128,7 @@ public abstract class BaseCollectionTest {
             if (collection != null && !collection.isDropped()) {
                 collection.close();
             }
-            if (db != null) db.close();
+            if (db != null && !db.isClosed()) db.close();
             if (!inMemory) {
                 Files.delete(Paths.get(fileName));
             }

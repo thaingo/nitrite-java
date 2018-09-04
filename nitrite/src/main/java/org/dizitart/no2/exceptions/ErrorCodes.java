@@ -131,6 +131,9 @@ public class ErrorCodes {
     public static final int NIOE_DIR_DOES_NOT_EXISTS = 2012;
     static final int NIOE_FILE_CREATE_FAILED = 2013;
     static final int NIOE_IN_MEMORY_READONLY_DB = 2014;
+    static final int NIOE_NITRITE_STORE_CLOSED = 2015;
+    public static final int NIOE_CLOSED_FAILED = 2016;
+    public static final int NIOE_CLOSED_NON_W_CHANNEL = 2017;
 
     // endregion
 

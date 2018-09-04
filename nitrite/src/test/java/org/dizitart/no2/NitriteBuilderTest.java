@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.Module;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.objects.ObjectRepository;
+import org.dizitart.no2.common.mapper.JacksonMapper;
 import org.dizitart.no2.index.TextIndexer;
 import org.dizitart.no2.index.annotations.Index;
 import org.dizitart.no2.index.fulltext.EnglishTextTokenizer;
@@ -170,6 +171,24 @@ public class NitriteBuilderTest {
         NitriteContext context = db.getContext();
 
         assertTrue(context.getRegisteredModules().contains(testModule));
+    }
+
+    @Test
+    public void testNitriteMapper() {
+        NitriteBuilder builder = Nitrite.builder()
+                .nitriteMapper(new JacksonMapper());
+        Nitrite db = builder.openOrCreate();
+        NitriteContext context = db.getContext();
+        assertNotNull(context.getNitriteMapper());
+    }
+
+    @Test
+    public void testDisableShutdownHook() {
+        NitriteBuilder builder = Nitrite.builder()
+                .disableShutdownHook()
+                .nitriteMapper(new JacksonMapper());
+        Nitrite db = builder.openOrCreate();
+        assertNotNull(db);
     }
 
     @Index(value = "longValue")
