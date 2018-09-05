@@ -22,6 +22,8 @@ import com.fasterxml.jackson.databind.Module;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.collection.NitriteCollection;
+import org.dizitart.no2.common.mapper.NitriteMapper;
+import org.dizitart.no2.common.util.StringUtils;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.SecurityException;
@@ -29,10 +31,8 @@ import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.TextIndexer;
 import org.dizitart.no2.index.fulltext.EnglishTextTokenizer;
 import org.dizitart.no2.index.fulltext.TextTokenizer;
-import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.store.NitriteMVStore;
 import org.dizitart.no2.store.NitriteStore;
-import org.dizitart.no2.common.util.StringUtils;
 import org.h2.mvstore.MVStore;
 
 import java.io.File;
@@ -44,11 +44,11 @@ import java.util.Set;
 import static org.dizitart.no2.Security.createSecurely;
 import static org.dizitart.no2.Security.openSecurely;
 import static org.dizitart.no2.common.Constants.RESERVED_NAMES;
+import static org.dizitart.no2.common.util.ObjectUtils.*;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.exceptions.ErrorCodes.NIOE_DIR_DOES_NOT_EXISTS;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
 import static org.dizitart.no2.tool.Recovery.recover;
-import static org.dizitart.no2.common.util.ObjectUtils.*;
-import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 
 /**
  * A builder utility to create a {@link Nitrite} database instance.

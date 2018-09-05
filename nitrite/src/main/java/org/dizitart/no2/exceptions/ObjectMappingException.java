@@ -26,6 +26,7 @@ package org.dizitart.no2.exceptions;
  * @author Anindya Chatterjee.
  */
 public class ObjectMappingException extends NitriteException {
+
     /**
      * Instantiates a new Object mapping exception.
      *
@@ -33,5 +34,15 @@ public class ObjectMappingException extends NitriteException {
      */
     public ObjectMappingException(ErrorMessage message) {
         super(message);
+    }
+
+    /**
+     * Instantiates a new Object mapping exception.
+     *
+     * @param message the message
+     * @param cause the inner cause
+     */
+    public ObjectMappingException(ErrorMessage message, Throwable cause) {
+        super(message, cause);
     }
 }

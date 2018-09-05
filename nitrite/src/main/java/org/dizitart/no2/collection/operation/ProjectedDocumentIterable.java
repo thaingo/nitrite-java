@@ -25,7 +25,6 @@ import org.dizitart.no2.common.KeyValuePair;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.store.NitriteMap;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -54,7 +53,6 @@ class ProjectedDocumentIterable implements RecordIterable<Document> {
         this.totalCount = findResult.getTotalCount();
     }
 
-    @NotNull
     @Override
     public Iterator<Document> iterator() {
         return new ProjectedDocumentIterator();

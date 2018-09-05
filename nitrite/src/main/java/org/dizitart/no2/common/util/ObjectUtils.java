@@ -20,17 +20,20 @@ package org.dizitart.no2.common.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.dizitart.no2.exceptions.ObjectMappingException;
 import org.dizitart.no2.exceptions.ValidationException;
+import org.objenesis.ObjenesisStd;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import static org.dizitart.no2.common.Constants.KEY_OBJ_SEPARATOR;
 import static org.dizitart.no2.common.util.Iterables.toArray;
 import static org.dizitart.no2.common.util.NumberUtils.compare;
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
-import static org.dizitart.no2.exceptions.ErrorCodes.VE_INVALID_KEYED_OBJ_STORE_KEY;
-import static org.dizitart.no2.exceptions.ErrorCodes.VE_INVALID_KEYED_OBJ_STORE_TYPE;
+import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
@@ -169,5 +172,57 @@ public class ObjectUtils {
         }
 
         // none of the type check passes so they are not of compatible type
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(Class<T> type) {
+        try {
+            return type.newInstance();
+        } catch (Exception e) {
+            try {
+                if (type.isPrimitive()) {
+                    switch (type.getName()) {
+                        case "boolean":
+                            return (T) Boolean.valueOf(false);
+                        case "byte":
+                            return (T) Byte.valueOf((byte) 0);
+                        case "short":
+                            return (T) Short.valueOf((short) 0);
+                        case "int":
+                            return (T) Integer.valueOf(0);
+                        case "long":
+                            return (T) Long.valueOf(0L);
+                        case "float":
+                            return (T) Float.valueOf(0.0f);
+                        case "double":
+                            return (T) Double.valueOf("0.0");
+                        case "char":
+                            return (T) Character.valueOf('0');
+                    }
+                }
+                if (type.isArray()) {
+                    return null;
+                }
+                T object = new ObjenesisStd().newInstance(type);
+                Field[] fields = type.getDeclaredFields();
+                if (fields != null && fields.length > 0) {
+                    for (Field field : fields) {
+                        if (!Modifier.isStatic(field.getModifiers())) {
+                            field.setAccessible(true);
+
+                            Field modifiersField = Field.class.getDeclaredField("modifiers");
+                            modifiersField.setAccessible(true);
+                            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+                            field.set(object, newInstance(field.getType()));
+                        }
+                    }
+                }
+                return object;
+            } catch (Exception error) {
+                throw new ObjectMappingException(errorMessage("failed to instantiate type " + type.getName(),
+                        OME_INSTANTIATE_FAILED), error);
+            }
+        }
     }
 }

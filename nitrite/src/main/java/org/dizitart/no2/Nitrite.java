@@ -30,7 +30,6 @@ import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.store.NitriteMap;
 import org.dizitart.no2.store.NitriteStore;
 
-import javax.validation.constraints.NotNull;
 import java.io.Closeable;
 import java.nio.channels.NonWritableChannelException;
 import java.util.HashMap;
@@ -45,7 +44,8 @@ import static org.dizitart.no2.common.util.ObjectUtils.*;
 import static org.dizitart.no2.common.util.ValidationUtils.notEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.*;
+import static org.dizitart.no2.exceptions.ErrorMessage.NITRITE_STORE_IS_CLOSED;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 
 /**
@@ -117,7 +117,7 @@ public class Nitrite implements Closeable {
      * @return the collection
      * @see NitriteCollection
      */
-    public NitriteCollection getCollection(@NotNull String name) {
+    public NitriteCollection getCollection(String name) {
         validateCollectionName(name);
         checkOpened();
         NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
@@ -139,7 +139,7 @@ public class Nitrite implements Closeable {
      * @return the repository containing objects of type {@link T}.
      * @see ObjectRepository
      */
-    public <T> ObjectRepository<T> getRepository(@NotNull Class<T> type) {
+    public <T> ObjectRepository<T> getRepository(Class<T> type) {
         checkOpened();
         String name = findRepositoryName(type);
         NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
@@ -163,7 +163,7 @@ public class Nitrite implements Closeable {
      * @return the repository containing objects of type {@link T}.
      * @see ObjectRepository
      */
-    public <T> ObjectRepository<T> getRepository(@NotNull String key, @NotNull Class<T> type) {
+    public <T> ObjectRepository<T> getRepository(String key, Class<T> type) {
         checkOpened();
         String name = findRepositoryName(key, type);
         NitriteMap<NitriteId, Document> mapStore = store.openMap(name);

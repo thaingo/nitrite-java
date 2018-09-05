@@ -20,10 +20,9 @@ package org.dizitart.no2.collection.objects;
 
 import org.dizitart.no2.Document;
 import org.dizitart.no2.collection.RecordIterable;
-import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.common.mapper.NitriteMapper;
+import org.dizitart.no2.exceptions.InvalidOperationException;
 
-import javax.validation.constraints.NotNull;
 import java.util.Iterator;
 
 import static org.dizitart.no2.common.Constants.DOC_ID;
@@ -60,7 +59,6 @@ class JoinedObjectIterable<T> implements RecordIterable<T> {
         return recordIterable.totalCount();
     }
 
-    @NotNull
     @Override
     public Iterator<T> iterator() {
         return new JoinedObjectIterator(nitriteMapper);

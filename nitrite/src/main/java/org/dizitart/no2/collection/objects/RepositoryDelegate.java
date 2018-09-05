@@ -34,7 +34,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 import static org.dizitart.no2.common.Constants.FIELD_SEPARATOR;
-import static org.dizitart.no2.common.util.DocumentUtils.dummyDocument;
+import static org.dizitart.no2.common.util.DocumentUtils.skeletonDocument;
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
@@ -252,7 +252,7 @@ class RepositoryDelegate {
 
         Document document;
         try {
-            document = dummyDocument(nitriteMapper, fieldType);
+            document = skeletonDocument(nitriteMapper, fieldType);
         } catch (Throwable e) {
             throw new IndexingException(errorMessage(
                     "invalid type specified " + fieldType.getName() + " for indexing",

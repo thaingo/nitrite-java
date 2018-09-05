@@ -41,11 +41,11 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
     compile "org.jasypt:jasypt:$jasyptVersion"
     compile "com.squareup.okhttp3:okhttp:$okhttpVersion"
-    compile "uk.co.jemos.podam:podam:$podamVersion"
     compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     compile "org.locationtech.jts:jts-core:$jtsVersion"
 
     testCompile "junit:junit:$junitVersion"
+    testCompile "uk.co.jemos.podam:podam:$podamVersion"
     testCompile "org.apache.lucene:lucene-core:$luceneVersion"
     testCompile "org.apache.lucene:lucene-analyzers-common:$luceneVersion"
     testCompile "org.apache.lucene:lucene-queryparser:$luceneVersion"

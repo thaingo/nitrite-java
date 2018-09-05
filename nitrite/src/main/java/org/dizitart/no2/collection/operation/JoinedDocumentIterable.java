@@ -26,11 +26,10 @@ import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.store.NitriteMap;
 
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
-import static org.dizitart.no2.exceptions.ErrorMessage.REMOVE_ON_DOCUMENT_ITERATOR_NOT_SUPPORTED;
 import static org.dizitart.no2.common.util.ObjectUtils.deepEquals;
+import static org.dizitart.no2.exceptions.ErrorMessage.REMOVE_ON_DOCUMENT_ITERATOR_NOT_SUPPORTED;
 
 /**
  * @author Anindya Chatterjee.
@@ -71,7 +70,6 @@ class JoinedDocumentIterable implements RecordIterable<Document> {
         return totalCount;
     }
 
-    @NotNull
     @Override
     public Iterator<Document> iterator() {
         return new JoinedDocumentIterator();

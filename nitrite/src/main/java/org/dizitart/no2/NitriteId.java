@@ -22,7 +22,6 @@ import lombok.EqualsAndHashCode;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.exceptions.InvalidIdException;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -84,7 +83,7 @@ public final class NitriteId implements Comparable<NitriteId>, Serializable {
     }
 
     @Override
-    public int compareTo(@NotNull NitriteId other) {
+    public int compareTo(NitriteId other) {
         if (other.idValue == null) {
             throw new InvalidIdException(CAN_NOT_COMPARE_WITH_NULL_ID);
         }

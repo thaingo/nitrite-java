@@ -266,8 +266,7 @@ public class ErrorCodes {
     public static final int OME_NO_DEFAULT_CTOR = 9002;
     public static final int OME_PARSE_JSON_FAILED = 9003;
     static final int OME_SERIALIZE_TO_JSON_FAILED = 9004;
-    public static final int OME_AS_STRING_FAILED = 9005;
-    public static final int OME_FROM_STRING_FAILED = 9006;
+    public static final int OME_INSTANTIATE_FAILED = 9005;
 
     // endregion
 

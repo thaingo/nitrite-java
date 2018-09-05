@@ -28,7 +28,6 @@ import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.store.NitriteMap;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -69,7 +68,6 @@ class DocumentCursor implements Cursor {
         return new JoinedDocumentIterable(findResult, cursor, lookup);
     }
 
-    @NotNull
     @Override
     public Iterator<Document> iterator() {
         return new DocumentCursorIterator();

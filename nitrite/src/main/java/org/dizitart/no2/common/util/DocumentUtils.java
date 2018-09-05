@@ -20,12 +20,14 @@ package org.dizitart.no2.common.util;
 
 import lombok.experimental.UtilityClass;
 import org.dizitart.no2.Document;
+import org.dizitart.no2.common.KeyValuePair;
 import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.filters.Filter;
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
+
+import java.util.Map;
 
 import static org.dizitart.no2.common.Constants.DOC_ID;
+import static org.dizitart.no2.common.util.ObjectUtils.newInstance;
 import static org.dizitart.no2.filters.Filter.eq;
 
 /**
@@ -36,8 +38,6 @@ import static org.dizitart.no2.filters.Filter.eq;
  */
 @UtilityClass
 public class DocumentUtils {
-
-    private static PodamFactory factory = new PodamFactoryImpl();
 
     /**
      * Determines whether a document has recently been updated/created than the other.
@@ -64,15 +64,28 @@ public class DocumentUtils {
     }
 
     /**
-     * Creates an empty document having all fields of a `type`.
+     * Creates an empty document having all fields of a `type` set to `null`.
      *
      * @param <T>           the type parameter
      * @param nitriteMapper the nitrite mapper
      * @param type          the type
      * @return the document
      */
-    public static <T> Document dummyDocument(NitriteMapper nitriteMapper, Class<T> type) {
-        T dummy = factory.manufacturePojo(type);
-        return nitriteMapper.asDocument(dummy);
+    public static <T> Document skeletonDocument(NitriteMapper nitriteMapper, Class<T> type) {
+        T dummy = newInstance(type);
+        Document document = nitriteMapper.asDocument(dummy);
+        return removeValues(document);
+    }
+
+    private Document removeValues(Document document) {
+        if (document == null) return null;
+        for (KeyValuePair entry : document) {
+            if (entry.getValue() instanceof Map) {
+                document.put(entry.getKey(), removeValues((Document) entry.getValue()));
+            } else {
+                document.put(entry.getKey(), null);
+            }
+        }
+        return document;
     }
 }

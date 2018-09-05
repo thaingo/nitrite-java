@@ -31,7 +31,7 @@ import org.junit.Test;
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.common.Constants.DOC_REVISION;
 import static org.dizitart.no2.common.util.DocumentUtils.createUniqueFilter;
-import static org.dizitart.no2.common.util.DocumentUtils.dummyDocument;
+import static org.dizitart.no2.common.util.DocumentUtils.skeletonDocument;
 import static org.dizitart.no2.common.util.DocumentUtils.isRecent;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -84,7 +84,7 @@ public class DocumentUtilsTest {
     @Test
     public void testDummyDocument() {
         NitriteMapper nitriteMapper = new JacksonMapper();
-        Document document = dummyDocument(nitriteMapper, DummyTest.class);
+        Document document = skeletonDocument(nitriteMapper, DummyTest.class);
         assertTrue(document.containsKey("first"));
         assertTrue(document.containsKey("second"));
         assertNull(document.get("first"));

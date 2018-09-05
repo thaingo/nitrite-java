@@ -22,7 +22,6 @@ import lombok.ToString;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.WriteResult;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +49,6 @@ class WriteResultImpl implements WriteResult {
         return nitriteIdList.size();
     }
 
-    @NotNull
     @Override
     public Iterator<NitriteId> iterator() {
         return nitriteIdList.iterator();
