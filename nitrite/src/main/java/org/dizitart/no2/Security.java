@@ -164,7 +164,7 @@ class Security {
     }
 
     @Data
-    private static class UserCredential implements Serializable {
+    static class UserCredential implements Serializable {
         private byte[] passwordHash;
         private byte[] passwordSalt;
     }

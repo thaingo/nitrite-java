@@ -18,14 +18,18 @@
 
 package org.dizitart.no2.collection;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import org.dizitart.no2.BaseCollectionTest;
 import org.dizitart.no2.Document;
+import org.dizitart.no2.NitriteId;
 import org.junit.Test;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.common.Constants.DOC_ID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class CollectionInsertTest extends BaseCollectionTest {
 
@@ -53,5 +57,37 @@ public class CollectionInsertTest extends BaseCollectionTest {
 
         WriteResult result = collection.insert(doc1, doc2, doc3, document);
         assertEquals(result.getAffectedCount(), 4);
+    }
+
+    @Test
+    public void testInsertObservable() {
+        Document document = createDocument("test", "Nitrite Test");
+        WriteResult result = collection.insert(doc1, doc2, doc3, document);
+        AtomicInteger count  = new AtomicInteger(0);
+        Observer<NitriteId> observer = result.toObservable().subscribeWith(new Observer<NitriteId>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                assertEquals(count.get(), 0);
+            }
+
+            @Override
+            public void onNext(NitriteId id) {
+                assertNotNull(id);
+                count.incrementAndGet();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                fail("should not happen - " + e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                assertEquals(count.get(), 4);
+            }
+        });
+        assertNotNull(observer);
+
+        assertEquals(result.getAffectedCount(), count.get());
     }
 }

@@ -702,7 +702,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     }
 
     @Test
-    public void testObservable() {
+    public void testFindObservable() {
         insert();
 
         Observable<Document> documentObservable = collection.find().toObservable();

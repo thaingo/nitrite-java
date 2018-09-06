@@ -221,7 +221,7 @@ public class CollectionOperation {
      */
     public void dropCollection() {
         indexTemplate.dropAllIndices();
-        nitriteContext.dropCollection(nitriteMap.getName());
+        nitriteContext.removeFromRegistry(nitriteMap.getName());
         nitriteMap.drop();
     }
 

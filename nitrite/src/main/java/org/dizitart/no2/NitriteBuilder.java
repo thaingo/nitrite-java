@@ -456,7 +456,7 @@ public class NitriteBuilder {
                         store = builder.open();
                     } else {
                         if (readOnly) {
-                            throw new NitriteIOException(FAILED_TO_CREATE_IN_MEMORY_READONLY_DB, ise);
+                            throw new NitriteIOException(FAILED_TO_CREATE_READONLY_DB, ise);
                         }
                     }
                 } catch (InvalidOperationException ioe) {
@@ -470,7 +470,7 @@ public class NitriteBuilder {
         } catch (IllegalArgumentException iae) {
             if (dbFile != null) {
                 if (!dbFile.getParentFile().exists()) {
-                    throw new NitriteIOException(errorMessage("Directory "+ dbFile.getParent() + " does not exists",
+                    throw new NitriteIOException(errorMessage("Directory " + dbFile.getParent() + " does not exists",
                             NIOE_DIR_DOES_NOT_EXISTS), iae);
                 }
             }
@@ -523,39 +523,31 @@ public class NitriteBuilder {
 
     private Set<String> populateCollections(NitriteStore store) {
         Set<String> collectionRegistry = new HashSet<>();
-        if (store != null) {
-            for (String name : store.getMapNames()) {
-                if (isValidCollectionName(name) && !isRepository(name)) {
-                    collectionRegistry.add(name);
-                }
+        for (String name : store.getMapNames()) {
+            if (isValidCollectionName(name) && !isRepository(name)) {
+                collectionRegistry.add(name);
             }
-        } else {
-            log.error("Underlying store is null. Nitrite has not been initialized properly.");
         }
         return collectionRegistry;
     }
 
     private Map<String, Class<?>> populateRepositories(NitriteStore store) {
         Map<String, Class<?>> repositoryRegistry = new HashMap<>();
-        if (store != null) {
-            for (String name : store.getMapNames()) {
-                if (isValidCollectionName(name) && isRepository(name)) {
-                    try {
-                        if (isKeyedRepository(name)) {
-                            String typeName = getKeyedRepositoryType(name);
-                            Class<?> type = Class.forName(typeName);
-                            repositoryRegistry.put(name, type);
-                        } else {
-                            Class<?> type = Class.forName(name);
-                            repositoryRegistry.put(name, type);
-                        }
-                    } catch (ClassNotFoundException e) {
-                        log.error("Could not find the class " + name);
+        for (String name : store.getMapNames()) {
+            if (isValidCollectionName(name) && isRepository(name)) {
+                try {
+                    if (isKeyedRepository(name)) {
+                        String typeName = getKeyedRepositoryType(name);
+                        Class<?> type = Class.forName(typeName);
+                        repositoryRegistry.put(name, type);
+                    } else {
+                        Class<?> type = Class.forName(name);
+                        repositoryRegistry.put(name, type);
                     }
+                } catch (ClassNotFoundException e) {
+                    log.error("Could not find the class " + name);
                 }
             }
-        } else {
-            log.error("Underlying store is null. Nitrite has not been initialized properly.");
         }
         return repositoryRegistry;
     }
@@ -575,7 +567,7 @@ public class NitriteBuilder {
                 } catch (Throwable t) {
                     // close the db immediately and discards
                     // any unsaved changes to avoid corruption
-                    log.error("Error while database shutdown", t);
+                    log.error("Fatal error during database shutdown", t);
                     db.closeImmediately();
                 }
             }

@@ -176,7 +176,7 @@ public class NitriteContext {
      *
      * @param name name of the collection.
      * */
-    public void dropCollection(String name) {
+    public void removeFromRegistry(String name) {
         if (!StringUtils.isNullOrEmpty(name)) {
             if (isRepository(name)) {
                 repositoryRegistry.remove(name);

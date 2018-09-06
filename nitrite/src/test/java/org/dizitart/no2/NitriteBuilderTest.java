@@ -23,18 +23,25 @@ import com.fasterxml.jackson.databind.Module;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.common.mapper.JacksonMapper;
+import org.dizitart.no2.exceptions.InvalidOperationException;
+import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.SecurityException;
 import org.dizitart.no2.index.TextIndexer;
 import org.dizitart.no2.index.annotations.Index;
 import org.dizitart.no2.index.fulltext.EnglishTextTokenizer;
 import org.dizitart.no2.index.fulltext.TextTokenizer;
 import org.dizitart.no2.services.LuceneService;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Random;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
@@ -44,12 +51,30 @@ import static org.junit.Assert.*;
  * @author Anindya Chatterjee.
  */
 public class NitriteBuilderTest {
+    private String fakeFile;
+    private String filePath;
+
+    @Before
+    public void startup() {
+        fakeFile = getRandomTempDbFile();
+        filePath = getRandomTempDbFile();
+    }
+
+    @After
+    public void cleanup() throws IOException {
+        if (Files.exists(Paths.get(filePath))) {
+            Files.delete(Paths.get(filePath));
+        }
+
+        if (Files.exists(Paths.get(fakeFile))) {
+            Files.delete(Paths.get(fakeFile));
+        }
+    }
 
     @Test
     public void testConfig() throws IOException {
         TextIndexer textIndexer = new LuceneService();
         TextTokenizer textTokenizer = new EnglishTextTokenizer();
-        String filePath = getRandomTempDbFile();
 
         NitriteBuilder builder = Nitrite.builder();
         builder.autoCommitBufferSize(1);
@@ -88,7 +113,7 @@ public class NitriteBuilderTest {
 
     @Test
     public void testConfigWithFile() {
-        File file = new File(getRandomTempDbFile());
+        File file = new File(filePath);
         NitriteBuilder builder = Nitrite.builder();
         builder.filePath(file);
         Nitrite db = builder.openOrCreate();
@@ -126,7 +151,7 @@ public class NitriteBuilderTest {
 
     @Test
     public void testPopulateRepositories() {
-        File file = new File(getRandomTempDbFile());
+        File file = new File(filePath);
         NitriteBuilder builder = Nitrite.builder();
         builder.filePath(file);
         Nitrite db = builder.openOrCreate();
@@ -163,7 +188,7 @@ public class NitriteBuilderTest {
     @Test
     public void testRegisterModule() {
         TestModule testModule = new TestModule();
-        File file = new File(getRandomTempDbFile());
+        File file = new File(filePath);
         NitriteBuilder builder = Nitrite
                 .builder()
                 .filePath(file)
@@ -202,6 +227,51 @@ public class NitriteBuilderTest {
     public void testOpenOrCreateNullPassword() {
         NitriteBuilder builder = new NitriteBuilder();
         builder.openOrCreate("abcd", null);
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testDbCorruption() throws IOException {
+        File file = new File(fakeFile);
+        FileWriter writesToFile;
+        // Create file writer object
+        writesToFile = new FileWriter(file);
+        // Wrap the writer with buffered streams
+        BufferedWriter writer = new BufferedWriter(writesToFile);
+        int line;
+        Random rand = new Random();
+        for (int j = 0; j < 10; j++) {
+            // Randomize an integer and write it to the output file
+            line = rand.nextInt(50000);
+            writer.write(line + "\n");
+        }
+        // Close the stream
+        writer.close();
+
+        Nitrite fakeDb = Nitrite.builder().filePath(fakeFile).openOrCreate();
+        assertNull(fakeDb);
+    }
+
+    @Test(expected = InvalidOperationException.class)
+    public void testDbInMemoryReadonly() {
+        Nitrite fakeDb = Nitrite.builder()
+                .readOnly()
+                .openOrCreate();
+        assertNull(fakeDb);
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testDbInvalidDirectory() {
+        fakeFile = "/tmp/fake/fake.db";
+        Nitrite db = Nitrite.builder().filePath(fakeFile).openOrCreate("test", "test");
+        assertNull(db);
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testInvalidPath() {
+        Nitrite db = Nitrite.builder()
+                .filePath("http://www.localhost.com")
+                .openOrCreate("test", "test");
+        assertNull(db);
     }
 
     @Index(value = "longValue")

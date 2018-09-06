@@ -21,6 +21,8 @@ package org.dizitart.no2.collection;
 import org.dizitart.no2.BaseCollectionTest;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.exceptions.InvalidOperationException;
+import org.dizitart.no2.exceptions.NitriteIOException;
+import org.dizitart.no2.exceptions.NotIdentifiableException;
 import org.dizitart.no2.filters.Filter;
 import org.junit.Assert;
 import org.junit.Test;
@@ -210,5 +212,33 @@ public class CollectionUpdateTest extends BaseCollectionTest {
         Document savedDoc2 = coll.find(Filter.ALL).firstOrNull();
         assertNotNull(savedDoc2);
         assertNull(savedDoc2.get("group"));
+    }
+
+    @Test(expected = NotIdentifiableException.class)
+    public void testUpdateWithoutId() {
+        NitriteCollection collection = db.getCollection("test");
+        Document document = createDocument("test", "test123");
+        collection.update(document);
+    }
+
+    @Test(expected = NotIdentifiableException.class)
+    public void testRemoveWithoutId() {
+        NitriteCollection collection = db.getCollection("test");
+        Document document = createDocument("test", "test123");
+        collection.remove(document);
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testRegisterListenerAfterDrop() {
+        NitriteCollection collection = db.getCollection("test");
+        collection.drop();
+        collection.register(changeInfo -> fail("should not happen"));
+    }
+
+    @Test(expected = NitriteIOException.class)
+    public void testRegisterListenerAfterClose() {
+        NitriteCollection collection = db.getCollection("test");
+        collection.close();
+        collection.register(changeInfo -> fail("should not happen"));
     }
 }

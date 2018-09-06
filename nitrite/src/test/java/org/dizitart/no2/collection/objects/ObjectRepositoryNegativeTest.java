@@ -19,6 +19,7 @@
 package org.dizitart.no2.collection.objects;
 
 import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.NitriteContext;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.collection.WriteResult;
@@ -26,6 +27,7 @@ import org.dizitart.no2.collection.objects.data.*;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.ObjectMappingException;
+import org.dizitart.no2.exceptions.ValidationException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -135,5 +137,13 @@ public class ObjectRepositoryNegativeTest {
         WithObjectId object = new WithObjectId();
         object.setWithOutId(id);
         repository.insert(object);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testValidateCollection() {
+        NitriteContext context = db.getContext();
+        ObjectRepository<Employee> repository =
+                RepositoryFactory.open(Employee.class, null, context);
+        repository.find();
     }
 }

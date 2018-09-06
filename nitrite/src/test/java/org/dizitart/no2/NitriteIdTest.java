@@ -18,6 +18,7 @@
 
 package org.dizitart.no2;
 
+import org.dizitart.no2.exceptions.InvalidIdException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -61,5 +62,22 @@ public class NitriteIdTest {
         two = NitriteId.newId();
 
         assertFalse(one.compareTo(two) == 0);
+    }
+
+    @Test
+    public void testToString() {
+        NitriteId nullId = NitriteId.createId(null);
+        assertNull(nullId.getIdValue());
+        assertEquals(nullId.toString(), "");
+
+        NitriteId first = NitriteId.newId();
+        assertNotEquals(first.toString(), "");
+    }
+
+    @Test(expected = InvalidIdException.class)
+    public void testCompareNull() {
+        NitriteId first = NitriteId.newId();
+        NitriteId second = NitriteId.createId(null);
+        assertEquals(first.compareTo(second), 1);
     }
 }

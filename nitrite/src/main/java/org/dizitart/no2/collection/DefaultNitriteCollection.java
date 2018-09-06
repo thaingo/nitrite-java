@@ -38,10 +38,10 @@ import org.dizitart.no2.store.NitriteStore;
 import java.util.Collection;
 
 import static org.dizitart.no2.common.Constants.DOC_ID;
-import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.*;
 import static org.dizitart.no2.common.util.DocumentUtils.createUniqueFilter;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
+import static org.dizitart.no2.exceptions.ErrorCodes.*;
+import static org.dizitart.no2.exceptions.ErrorMessage.*;
 
 /**
  * The default implementation of {@link NitriteCollection}.
@@ -69,178 +69,108 @@ class DefaultNitriteCollection implements NitriteCollection {
     @Override
     public void createIndex(String field, IndexOptions indexOptions) {
         checkOpened();
-        try {
-            // by default async is false while creating index
-            if (indexOptions == null) {
-                collectionOperation.createIndex(field, IndexType.Unique, false);
-            } else {
-                collectionOperation.createIndex(field, indexOptions.getIndexType(),
-                        indexOptions.isAsync());
-            }
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
+        // by default async is false while creating index
+        if (indexOptions == null) {
+            collectionOperation.createIndex(field, IndexType.Unique, false);
+        } else {
+            collectionOperation.createIndex(field, indexOptions.getIndexType(),
+                    indexOptions.isAsync());
         }
     }
 
     @Override
     public void rebuildIndex(String field, boolean async) {
         checkOpened();
-        try {
-            Index index = collectionOperation.findIndex(field);
-            if (index != null) {
-                validateRebuildIndex(index);
-                collectionOperation.rebuildIndex(index, async);
-            } else {
-                throw new IndexingException(errorMessage(field + " is not indexed",
-                        IE_REBUILD_INDEX_FIELD_NOT_INDEXED));
-            }
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
+        Index index = collectionOperation.findIndex(field);
+        if (index != null) {
+            validateRebuildIndex(index);
+            collectionOperation.rebuildIndex(index, async);
+        } else {
+            throw new IndexingException(errorMessage(field + " is not indexed",
+                    IE_REBUILD_INDEX_FIELD_NOT_INDEXED));
         }
     }
 
     @Override
     public Collection<Index> listIndices() {
         checkOpened();
-        try {
-            return collectionOperation.listIndexes();
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.listIndexes();
     }
 
     @Override
     public boolean hasIndex(String field) {
         checkOpened();
-        try {
-            return collectionOperation.hasIndex(field);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return false;
+        return collectionOperation.hasIndex(field);
     }
 
     @Override
     public boolean isIndexing(String field) {
         checkOpened();
-        try {
-            return collectionOperation.isIndexing(field);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return false;
+        return collectionOperation.isIndexing(field);
     }
 
     @Override
     public void dropIndex(String field) {
         checkOpened();
-        try {
-            collectionOperation.dropIndex(field);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
+        collectionOperation.dropIndex(field);
     }
 
     @Override
     public void dropAllIndices() {
         checkOpened();
-        try {
-            collectionOperation.dropAllIndices();
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
+        collectionOperation.dropAllIndices();
     }
 
     @Override
     public WriteResult insert(Document document, Document... documents) {
         checkOpened();
-        try {
-            return collectionOperation.insert(document, documents);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.insert(document, documents);
     }
 
     @Override
     public WriteResult insert(Document[] documents) {
         checkOpened();
-        try {
-            return collectionOperation.insert(documents);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.insert(documents);
     }
 
     @Override
     public Cursor find(org.dizitart.no2.filters.Filter filter) {
         checkOpened();
-        try {
-            return collectionOperation.find(filter);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.find(filter);
     }
 
     @Override
     public Cursor find(FindOptions findOptions) {
         checkOpened();
-        try {
-            return collectionOperation.find(findOptions);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.find(findOptions);
     }
 
     @Override
     public Cursor find(org.dizitart.no2.filters.Filter filter, FindOptions findOptions) {
         checkOpened();
-        try {
-            return collectionOperation.find(filter, findOptions);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.find(filter, findOptions);
     }
 
     @Override
     public Cursor find() {
         checkOpened();
-        try {
-            return collectionOperation.find();
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.find();
     }
 
     @Override
     public Document getById(NitriteId nitriteId) {
         checkOpened();
-        try {
-            return collectionOperation.getById(nitriteId);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.getById(nitriteId);
     }
 
     @Override
     public void drop() {
         checkOpened();
-        try {
-            collectionOperation.dropCollection();
-            isDropped = true;
-            closeCollection();
-            eventBus.post(new ChangeInfo(ChangeType.DROP));
-            closeEventBus();
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
+        collectionOperation.dropCollection();
+        isDropped = true;
+        closeCollection();
+        eventBus.post(new ChangeInfo(ChangeType.DROP));
+        closeEventBus();
     }
 
     @Override
@@ -273,105 +203,63 @@ class DefaultNitriteCollection implements NitriteCollection {
     @Override
     public long size() {
         checkOpened();
-        try {
-            return nitriteMap.sizeAsLong();
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return 0;
+        return nitriteMap.sizeAsLong();
     }
 
     @Override
     public WriteResult update(Document document) {
         checkOpened();
-        try {
-            if (document.containsKey(DOC_ID)) {
-                return update(createUniqueFilter(document), document);
-            } else {
-                throw new NotIdentifiableException(UPDATE_FAILED_AS_NO_ID_FOUND);
-            }
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
+        if (document.containsKey(DOC_ID)) {
+            return update(createUniqueFilter(document), document);
+        } else {
+            throw new NotIdentifiableException(UPDATE_FAILED_AS_NO_ID_FOUND);
         }
-        return null;
     }
 
     @Override
     public WriteResult update(Document document, boolean upsert) {
         checkOpened();
-        try {
-            return update(createUniqueFilter(document), document, UpdateOptions.updateOptions(upsert));
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return update(createUniqueFilter(document), document, UpdateOptions.updateOptions(upsert));
     }
 
     @Override
     public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update) {
         checkOpened();
-        try {
-            return update(filter, update, new UpdateOptions());
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return update(filter, update, new UpdateOptions());
     }
 
     @Override
     public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update, UpdateOptions updateOptions) {
         checkOpened();
-        try {
-            return collectionOperation.update(filter, update, updateOptions);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.update(filter, update, updateOptions);
     }
 
     @Override
     public WriteResult remove(Document document) {
         checkOpened();
-        try {
-            notNull(document, errorMessage("document can not be null", VE_NC_REMOVE_NULL_DOCUMENT));
-            if (document.containsKey(DOC_ID)) {
-                return remove(createUniqueFilter(document));
-            } else {
-                throw new NotIdentifiableException(REMOVE_FAILED_AS_NO_ID_FOUND);
-            }
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
+        notNull(document, errorMessage("document can not be null", VE_NC_REMOVE_NULL_DOCUMENT));
+        if (document.containsKey(DOC_ID)) {
+            return remove(createUniqueFilter(document));
+        } else {
+            throw new NotIdentifiableException(REMOVE_FAILED_AS_NO_ID_FOUND);
         }
-        return null;
     }
 
     @Override
     public WriteResult remove(org.dizitart.no2.filters.Filter filter) {
         checkOpened();
-        try {
-            return remove(filter, new RemoveOptions());
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return remove(filter, new RemoveOptions());
     }
 
     @Override
     public WriteResult remove(Filter filter, RemoveOptions removeOptions) {
         checkOpened();
-        try {
-            return collectionOperation.remove(filter, removeOptions);
-        } catch (VirtualMachineError vme) {
-            handleVirtualMachineError(vme);
-        }
-        return null;
+        return collectionOperation.remove(filter, removeOptions);
     }
 
     @Override
     public void register(ChangeListener listener) {
-        if (eventBus == null && !isClosed() && !isDropped()) {
-            eventBus = new ChangeEventBus();
-        }
+        checkOpened();
         eventBus.register(listener);
     }
 
@@ -393,36 +281,21 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     private void checkOpened() {
-        if (nitriteStore == null || nitriteStore.isClosed()) {
-            throw new NitriteIOException(STORE_IS_CLOSED);
-        }
-
         if (isDropped) {
             throw new NitriteIOException(COLLECTION_IS_DROPPED);
+        }
+
+        if (nitriteStore == null || nitriteStore.isClosed()) {
+            throw new NitriteIOException(STORE_IS_CLOSED);
         }
     }
 
     private void validateRebuildIndex(Index index) {
         notNull(index, errorMessage("index can not be null", VE_NC_REBUILD_INDEX_NULL_INDEX));
-        if (!hasIndex(index.getField())) {
-            throw new IndexingException(errorMessage(index + " does not exists for " +
-                    "collection " + nitriteMap.getName(), IE_REBUILD_INDEX_DOES_NOT_EXISTS));
-        }
 
         if (isIndexing(index.getField())) {
             throw new IndexingException(errorMessage("indexing on value " + index.getField() +
                     " is currently running", IE_VALIDATE_REBUILD_INDEX_RUNNING));
-        }
-    }
-
-    private void handleVirtualMachineError(VirtualMachineError vme) {
-        if (nitriteStore != null) {
-            // if there is any fatal error, close store immediately
-            nitriteStore.closeImmediately();
-            close();
-        }
-        if (vme != null) {
-            throw vme;
         }
     }
 

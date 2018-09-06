@@ -285,9 +285,9 @@ public class ErrorMessage {
             new ErrorMessage("unable create readonly in-memory database",
                     IOE_IN_MEMORY_READONLY_DB);
 
-    public static final ErrorMessage FAILED_TO_CREATE_IN_MEMORY_READONLY_DB =
-            new ErrorMessage("can not create readonly in-memory database",
-                    NIOE_IN_MEMORY_READONLY_DB);
+    public static final ErrorMessage FAILED_TO_CREATE_READONLY_DB =
+            new ErrorMessage("can not create readonly database",
+                    NIOE_FAILED_CREATE_READONLY_DB);
 
     public static final ErrorMessage UNABLE_TO_SORT_ON_ARRAY =
             new ErrorMessage("can not sort on array or collection objects",
