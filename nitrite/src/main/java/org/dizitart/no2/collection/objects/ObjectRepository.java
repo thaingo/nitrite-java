@@ -131,7 +131,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      */
-    WriteResult update(org.dizitart.no2.filters.Filter filter, T update);
+    WriteResult update(Filter filter, T update);
 
     /**
      * Updates objects in the repository. Update operation can be customized
@@ -159,7 +159,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      * @throws org.dizitart.no2.exceptions.ValidationException if `updateOptions` is `null`.
      */
-    WriteResult update(org.dizitart.no2.filters.Filter filter, T update, boolean upsert);
+    WriteResult update(Filter filter, T update, boolean upsert);
 
     /**
      * Updates objects in the repository by setting the field specified in `document`.
@@ -182,7 +182,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      */
-    WriteResult update(org.dizitart.no2.filters.Filter filter, Document update);
+    WriteResult update(Filter filter, Document update);
 
     /**
      * Updates objects in the repository by setting the field specified in `document`.
@@ -209,7 +209,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` object is `null`.
      */
-    WriteResult update(org.dizitart.no2.filters.Filter filter, Document update, boolean justOnce);
+    WriteResult update(Filter filter, Document update, boolean justOnce);
 
     /**
      * Removes matching elements from the collection.
@@ -224,7 +224,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @param filter the filter to apply to select elements from collection.
      * @return the result of the remove operation.
      */
-    WriteResult remove(org.dizitart.no2.filters.Filter filter);
+    WriteResult remove(Filter filter);
 
     /**
      * Removes objects from the collection. Remove operation can be customized by
@@ -242,7 +242,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @param removeOptions the remove options to customize the operations.
      * @return the result of the remove operation.
      */
-    WriteResult remove(org.dizitart.no2.filters.Filter filter, RemoveOptions removeOptions);
+    WriteResult remove(Filter filter, RemoveOptions removeOptions);
 
     /**
      * Returns a cursor to all objects in the collection.
@@ -267,7 +267,7 @@ public interface ObjectRepository<T> extends PersistentCollection<T> {
      * @see org.dizitart.no2.filters.Filters
      * @see Cursor#project(Class)
      */
-    Cursor<T> find(org.dizitart.no2.filters.Filter filter);
+    Cursor<T> find(Filter filter);
 
     /**
      * Returns a customized cursor to all objects in the collection.

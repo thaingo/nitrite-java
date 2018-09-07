@@ -132,31 +132,31 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public WriteResult update(org.dizitart.no2.filters.Filter filter, T update) {
+    public WriteResult update(Filter filter, T update) {
         return update(filter, update, false);
     }
 
     @Override
-    public WriteResult update(org.dizitart.no2.filters.Filter filter, T update, boolean upsert) {
+    public WriteResult update(Filter filter, T update, boolean upsert) {
         validateCollection();
         notNull(update, errorMessage("update can not be null", VE_OBJ_UPDATE_NULL_OBJECT));
 
         Document updateDocument = asDocument(update, true);
-        removeIdFields(updateDocument);
+        removeNitriteId(updateDocument);
         return collection.update(setNitriteMapper(filter), updateDocument, updateOptions(upsert, true));
     }
 
     @Override
-    public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update) {
+    public WriteResult update(Filter filter, Document update) {
         return update(filter, update, false);
     }
 
     @Override
-    public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update, boolean justOnce) {
+    public WriteResult update(Filter filter, Document update, boolean justOnce) {
         validateCollection();
         notNull(update, errorMessage("update can not be null", VE_OBJ_UPDATE_NULL_DOCUMENT));
 
-        removeIdFields(update);
+        removeNitriteId(update);
         serializeFields(update);
         return collection.update(setNitriteMapper(filter), update, updateOptions(false, justOnce));
     }
@@ -170,13 +170,13 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public WriteResult remove(org.dizitart.no2.filters.Filter filter) {
+    public WriteResult remove(Filter filter) {
         validateCollection();
         return remove(setNitriteMapper(filter), new RemoveOptions());
     }
 
     @Override
-    public WriteResult remove(org.dizitart.no2.filters.Filter filter, RemoveOptions removeOptions) {
+    public WriteResult remove(Filter filter, RemoveOptions removeOptions) {
         validateCollection();
         return collection.remove(setNitriteMapper(filter), removeOptions);
     }
@@ -188,7 +188,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public Cursor<T> find(org.dizitart.no2.filters.Filter filter) {
+    public Cursor<T> find(Filter filter) {
         validateCollection();
         return new ObjectCursor<>(nitriteMapper,
                 collection.find(setNitriteMapper(filter)), type);
@@ -202,7 +202,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
     }
 
     @Override
-    public Cursor<T> find(org.dizitart.no2.filters.Filter filter, FindOptions findOptions) {
+    public Cursor<T> find(Filter filter, FindOptions findOptions) {
         validateCollection();
         return new ObjectCursor<>(nitriteMapper,
                 collection.find(setNitriteMapper(filter), findOptions), type);
@@ -323,7 +323,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
         }
     }
 
-    private org.dizitart.no2.filters.Filter setNitriteMapper(Filter filter) {
+    private Filter setNitriteMapper(Filter filter) {
         if (filter != null) {
             filter.setNitriteMapper(nitriteMapper);
             return filter;
@@ -331,7 +331,7 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
         return null;
     }
 
-    private void removeIdFields(Document document) {
+    private void removeNitriteId(Document document) {
         document.remove(DOC_ID);
         if (idField != null && idField.getType() == NitriteId.class) {
             document.remove(idField.getName());

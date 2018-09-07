@@ -58,7 +58,7 @@ public class ErrorCodes {
     public static final int VE_REFLECT_FIELD_NO_SUCH_FIELD = 1028;
     public static final int VE_OBJ_STORE_NULL_TYPE = 1029;
     public static final int VE_INDEX_ANNOTATION_NULL_TYPE = 1030;
-    public static final int VE_INDEX_NULL_INDEX = 1031;
+    public static final int VE_MAP_STORE_NULL = 1031;
     public static final int VE_IS_INDEXING_NULL_FIELD = 1032;
     public static final int VE_HAS_INDEX_NULL_FIELD = 1033;
     public static final int VE_FIND_EQUAL_INDEX_NULL_FIELD = 1034;
@@ -112,6 +112,7 @@ public class ErrorCodes {
     public static final int VE_OBJ_STORE_EMPTY_KEY = 1082;
     public static final int VE_INVALID_KEYED_OBJ_STORE_KEY = 1083;
     public static final int VE_INVALID_KEYED_OBJ_STORE_TYPE = 1084;
+    public static final int VE_CONTEXT_NULL = 1085;
 
     // endregion
 

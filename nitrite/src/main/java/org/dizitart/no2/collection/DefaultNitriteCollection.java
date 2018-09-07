@@ -134,7 +134,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public Cursor find(org.dizitart.no2.filters.Filter filter) {
+    public Cursor find(Filter filter) {
         checkOpened();
         return collectionOperation.find(filter);
     }
@@ -146,7 +146,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public Cursor find(org.dizitart.no2.filters.Filter filter, FindOptions findOptions) {
+    public Cursor find(Filter filter, FindOptions findOptions) {
         checkOpened();
         return collectionOperation.find(filter, findOptions);
     }
@@ -223,13 +223,13 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update) {
+    public WriteResult update(Filter filter, Document update) {
         checkOpened();
         return update(filter, update, new UpdateOptions());
     }
 
     @Override
-    public WriteResult update(org.dizitart.no2.filters.Filter filter, Document update, UpdateOptions updateOptions) {
+    public WriteResult update(Filter filter, Document update, UpdateOptions updateOptions) {
         checkOpened();
         return collectionOperation.update(filter, update, updateOptions);
     }
@@ -246,7 +246,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public WriteResult remove(org.dizitart.no2.filters.Filter filter) {
+    public WriteResult remove(Filter filter) {
         checkOpened();
         return remove(filter, new RemoveOptions());
     }

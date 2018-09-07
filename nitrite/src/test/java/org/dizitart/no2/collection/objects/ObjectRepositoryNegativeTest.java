@@ -24,10 +24,7 @@ import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.collection.WriteResult;
 import org.dizitart.no2.collection.objects.data.*;
-import org.dizitart.no2.exceptions.InvalidIdException;
-import org.dizitart.no2.exceptions.InvalidOperationException;
-import org.dizitart.no2.exceptions.ObjectMappingException;
-import org.dizitart.no2.exceptions.ValidationException;
+import org.dizitart.no2.exceptions.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -145,5 +142,23 @@ public class ObjectRepositoryNegativeTest {
         ObjectRepository<Employee> repository =
                 RepositoryFactory.open(Employee.class, null, context);
         repository.find();
+    }
+
+    @Test(expected = NotIdentifiableException.class)
+    public void testUpdateNoId() {
+        ObjectRepository<WithOutId> repository = db.getRepository(WithOutId.class);
+        WithOutId object = new WithOutId();
+        object.setName("name");
+        object.setNumber(1L);
+        repository.update(object);
+    }
+
+    @Test(expected = NotIdentifiableException.class)
+    public void testRemoveNoId() {
+        ObjectRepository<WithOutId> repository = db.getRepository(WithOutId.class);
+        WithOutId object = new WithOutId();
+        object.setName("name");
+        object.setNumber(1L);
+        repository.remove(object);
     }
 }

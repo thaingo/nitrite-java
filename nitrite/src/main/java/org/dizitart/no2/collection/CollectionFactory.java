@@ -21,7 +21,12 @@ package org.dizitart.no2.collection;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteContext;
 import org.dizitart.no2.NitriteId;
+import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.store.NitriteMap;
+
+import static org.dizitart.no2.exceptions.ErrorCodes.VE_CONTEXT_NULL;
+import static org.dizitart.no2.exceptions.ErrorCodes.VE_MAP_STORE_NULL;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
  * A factory class to create a {@link NitriteCollection}.
@@ -39,6 +44,14 @@ public class CollectionFactory {
      */
     public static NitriteCollection open(NitriteMap<NitriteId, Document> mapStore,
                                          NitriteContext context) {
+        if (mapStore == null) {
+            throw new ValidationException(errorMessage("mapStore cannot be null", VE_MAP_STORE_NULL));
+        }
+
+        if (context == null) {
+            throw new ValidationException(errorMessage("context cannot be null", VE_CONTEXT_NULL));
+        }
+
         return new DefaultNitriteCollection(mapStore, context);
     }
 }

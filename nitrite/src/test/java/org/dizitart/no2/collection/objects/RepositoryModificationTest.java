@@ -28,11 +28,11 @@ import org.dizitart.no2.collection.objects.data.Company;
 import org.dizitart.no2.collection.objects.data.DataGenerator;
 import org.dizitart.no2.collection.objects.data.Employee;
 import org.dizitart.no2.collection.objects.data.Note;
+import org.dizitart.no2.common.util.Iterables;
 import org.dizitart.no2.exceptions.InvalidIdException;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.Index;
-import org.dizitart.no2.common.util.Iterables;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static org.awaitility.Awaitility.await;
+import static org.dizitart.no2.Document.createDocument;
 import static org.junit.Assert.*;
 
 /**
@@ -127,7 +128,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         Employee employee = new Employee();
         employee.setCompany(null);
         employee.setAddress("abcd road");
-        employee.setBlob(new byte[] {1, 2, 125});
+        employee.setBlob(new byte[]{1, 2, 125});
         employee.setEmpId(12L);
         employee.setJoinDate(new Date());
         Note empNote = new Note();
@@ -201,7 +202,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         Employee employee = new Employee();
         employee.setCompany(null);
         employee.setAddress("some road");
-        employee.setBlob(new byte[] {1, 2, 125});
+        employee.setBlob(new byte[]{1, 2, 125});
         employee.setEmpId(12L);
         employee.setJoinDate(joiningDate);
         Note empNote1 = new Note();
@@ -226,7 +227,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         Employee employee = new Employee();
         employee.setCompany(null);
         employee.setAddress("some road");
-        employee.setBlob(new byte[] {1, 2, 125});
+        employee.setBlob(new byte[]{1, 2, 125});
         employee.setEmpId(12L);
         employee.setJoinDate(joiningDate);
         Note empNote1 = new Note();
@@ -331,7 +332,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         update.setAddress("new address");
 
         WriteResult writeResult
-            = employeeRepository.update(Filter.eq("joinDate", now), update, false);
+                = employeeRepository.update(Filter.eq("joinDate", now), update, false);
         assertEquals(writeResult.getAffectedCount(), 0);
     }
 
@@ -432,7 +433,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         Employee employee = new Employee();
         employee.setCompany(null);
         employee.setAddress("some road");
-        employee.setBlob(new byte[] {1, 2, 125});
+        employee.setBlob(new byte[]{1, 2, 125});
         employee.setEmpId(12L);
         employee.setJoinDate(new Date());
         Note empNote = new Note();
@@ -454,7 +455,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         Employee employee = new Employee();
         employee.setCompany(null);
         employee.setAddress("some road");
-        employee.setBlob(new byte[] {1, 2, 125});
+        employee.setBlob(new byte[]{1, 2, 125});
         employee.setEmpId(12L);
         employee.setJoinDate(new Date());
         Note empNote = new Note();
@@ -480,7 +481,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         Employee employee1 = new Employee();
         employee1.setCompany(null);
         employee1.setAddress("some road");
-        employee1.setBlob(new byte[] {1, 2, 125});
+        employee1.setBlob(new byte[]{1, 2, 125});
         employee1.setEmpId(12L);
         employee1.setJoinDate(joiningDate);
         Note empNote1 = new Note();
@@ -491,7 +492,7 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         Employee employee2 = new Employee();
         employee2.setCompany(null);
         employee2.setAddress("other road");
-        employee2.setBlob(new byte[] {10, 12, 25});
+        employee2.setBlob(new byte[]{10, 12, 25});
         employee2.setEmpId(2L);
         employee2.setJoinDate(joiningDate);
         Note empNote2 = new Note();
@@ -505,5 +506,20 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
         for (Employee e : result.project(Employee.class)) {
             assertEquals(e.getJoinDate(), joiningDate);
         }
+    }
+
+    @Test
+    public void testUpdateWithDoc() {
+        Note note = new Note();
+        note.setNoteId(10L);
+        note.setText("some note text");
+
+        Document document = createDocument("address", "some address")
+                .put("employeeNote", note);
+
+        WriteResult result = employeeRepository.update(Filter.ALL, document);
+        assertEquals(result.getAffectedCount(), 10);
+        assertEquals(employeeRepository.getById(result.toObservable().firstElement()
+                .blockingGet()).getEmployeeNote().getText(), "some note text");
     }
 }

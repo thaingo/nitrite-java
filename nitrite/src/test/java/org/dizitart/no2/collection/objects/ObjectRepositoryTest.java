@@ -22,6 +22,7 @@ import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.WriteResult;
 import org.dizitart.no2.collection.objects.data.*;
+import org.dizitart.no2.meta.Attributes;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -250,5 +251,13 @@ public class ObjectRepositoryTest {
         assertEquals(repository.find(text("text", "second")).size(), 0); // filtered in stop words
         assertEquals(repository.find(eq("date", new Date(100000L))).size(), 1);
         assertEquals(repository.find(eq("id", 1L)).size(), 1);
+    }
+
+    @Test
+    public void testAttributes() {
+        ObjectRepository<WithDateId> repository = db.getRepository(WithDateId.class);
+        Attributes attributes = new Attributes(repository.getName());
+        repository.setAttributes(attributes);
+        assertEquals(repository.getAttributes(), attributes);
     }
 }

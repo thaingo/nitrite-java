@@ -16,22 +16,27 @@
  *
  */
 
-package org.dizitart.no2.collection.objects.data;
+package org.dizitart.no2.collection;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import org.dizitart.no2.index.annotations.Id;
+import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.meta.Attributes;
+import org.junit.Test;
 
-import java.io.Serializable;
+import static org.junit.Assert.assertEquals;
 
 /**
- * @author Anindya Chatterjee.
+ * @author Anindya Chatterjee
  */
-@EqualsAndHashCode
-public class Note implements Serializable {
-    @Id
-    @Getter @Setter private Long noteId;
+public class NitriteCollectionTest {
 
-    @Getter @Setter private String text;
+    @Test
+    public void testAttributes() {
+        Nitrite db = Nitrite.builder().openOrCreate();
+        NitriteCollection collection = db.getCollection("test");
+
+        Attributes attributes = new Attributes("test");
+        collection.setAttributes(attributes);
+
+        assertEquals(collection.getAttributes(), attributes);
+    }
 }

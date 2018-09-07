@@ -104,7 +104,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @return the result of the update operation.
      * @throws org.dizitart.no2.exceptions.ValidationException if the `update` document is `null`.
      */
-    WriteResult update(org.dizitart.no2.filters.Filter filter, Document update);
+    WriteResult update(Filter filter, Document update);
 
     /**
      * Updates documents in the collection. Update operation can be customized
@@ -126,7 +126,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @throws org.dizitart.no2.exceptions.ValidationException if `updateOptions` is `null`.
      * @see UpdateOptions
      */
-    WriteResult update(org.dizitart.no2.filters.Filter filter, Document update, UpdateOptions updateOptions);
+    WriteResult update(Filter filter, Document update, UpdateOptions updateOptions);
 
     /**
      * Removes matching elements from the collection.
@@ -141,7 +141,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @param filter the filter to apply to select elements from collection.
      * @return the result of the remove operation.
      */
-    WriteResult remove(org.dizitart.no2.filters.Filter filter);
+    WriteResult remove(Filter filter);
 
     /**
      * Removes document from a collection. Remove operation can be customized by
@@ -159,7 +159,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @param removeOptions the remove options to customize the operations.
      * @return the result of the remove operation.
      */
-    WriteResult remove(org.dizitart.no2.filters.Filter filter, RemoveOptions removeOptions);
+    WriteResult remove(Filter filter, RemoveOptions removeOptions);
 
     /**
      * Returns a cursor to all documents in the collection.
@@ -184,7 +184,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @see org.dizitart.no2.filters.Filters
      * @see Cursor#project(Document)
      */
-    Cursor find(org.dizitart.no2.filters.Filter filter);
+    Cursor find(Filter filter);
 
     /**
      * Returns a customized cursor to all documents in the collection.
