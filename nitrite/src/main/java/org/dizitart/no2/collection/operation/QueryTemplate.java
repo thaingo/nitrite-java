@@ -67,7 +67,7 @@ class QueryTemplate {
         return new DocumentCursor(findResult);
     }
 
-    Cursor find(org.dizitart.no2.filters.Filter filter) {
+    Cursor find(Filter filter) {
         if (filter == null) {
             return find();
         }
@@ -101,7 +101,7 @@ class QueryTemplate {
         return new DocumentCursor(findResult);
     }
 
-    Cursor find(org.dizitart.no2.filters.Filter filter, FindOptions findOptions) {
+    Cursor find(Filter filter, FindOptions findOptions) {
         if (filter == null) {
             return find(findOptions);
         }

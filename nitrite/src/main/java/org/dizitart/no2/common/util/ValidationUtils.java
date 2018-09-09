@@ -74,6 +74,20 @@ public class ValidationUtils {
     }
 
     /**
+     * Validates if an array contains `null` item.
+     *
+     * @param array   the array to check for `null` object
+     * @param message the message
+     * */
+    public static <T> void containsNull(T[] array, ErrorMessage message) {
+        for (T element : array) {
+            if (element == null) {
+                throw new ValidationException(message);
+            }
+        }
+    }
+
+    /**
      * Validates if a field of a document can be indexed.
      *
      * @param fieldValue the field value

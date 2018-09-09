@@ -172,7 +172,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * Applies a filter on the collection and returns a cursor to the
      * selected documents.
      *
-     * See {@link org.dizitart.no2.filters.Filters} for all available filters.
+     * See {@link org.dizitart.no2.filters.Filter} for all available filters.
      *
      * [icon="{@docRoot}/note.png"]
      * NOTE: If there is an index on the value specified in the filter, this operation
@@ -181,7 +181,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @param filter the filter to apply to select documents from collection.
      * @return a cursor to all selected documents.
      * @throws org.dizitart.no2.exceptions.ValidationException if `filter` is null.
-     * @see org.dizitart.no2.filters.Filters
+     * @see org.dizitart.no2.filters.Filter
      * @see Cursor#project(Document)
      */
     Cursor find(Filter filter);
@@ -203,7 +203,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * Applies a filter on the collection and returns a customized cursor to the
      * selected documents.
      *
-     * See {@link org.dizitart.no2.filters.Filters} for all available filters.
+     * See {@link org.dizitart.no2.filters.Filter} for all available filters.
      *
      * [icon="{@docRoot}/note.png"]
      * NOTE: If there is an index on the value specified in the filter, this operation
@@ -214,7 +214,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @return a cursor to all selected documents.
      * @throws org.dizitart.no2.exceptions.ValidationException if `filter` is null.
      * @throws org.dizitart.no2.exceptions.ValidationException if `findOptions` is null.
-     * @see org.dizitart.no2.filters.Filters
+     * @see org.dizitart.no2.filters.Filter
      * @see FindOptions#limit(int, int)
      * @see FindOptions#sort(String, SortOrder)
      * @see SortOrder

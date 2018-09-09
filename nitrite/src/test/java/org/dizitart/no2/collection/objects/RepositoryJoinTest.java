@@ -24,6 +24,7 @@ import org.dizitart.no2.NitriteBuilder;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.Lookup;
 import org.dizitart.no2.collection.RecordIterable;
+import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.index.annotations.Id;
 import org.junit.After;
 import org.junit.Before;
@@ -36,11 +37,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
+import static org.dizitart.no2.collection.FindOptions.limit;
 import static org.dizitart.no2.filters.Filter.ALL;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author Anindya Chatterjee
@@ -183,6 +186,33 @@ public class RepositoryJoinTest {
                 assertEquals(addresses.length, 1);
                 assertEquals(addresses[0].personId,  personDetails.getId());
             }
+        }
+
+        result = personRepository.find(limit(0, 5)).join(addressRepository.find(), lookup,
+                PersonDetails.class);
+
+        assertEquals(result.size(), 5);
+        assertEquals(result.totalCount(), 10);
+        assertTrue(result.hasMore());
+        assertNotNull(result.toString());
+    }
+
+    @Test(expected = InvalidOperationException.class)
+    public void testRemove() {
+        Lookup lookup = new Lookup();
+        lookup.setLocalField("id");
+        lookup.setForeignField("personId");
+        lookup.setTargetField("addresses");
+
+        RecordIterable<PersonDetails> result
+                = personRepository.find().join(addressRepository.find(), lookup,
+                PersonDetails.class);
+        assertEquals(result.size(), 10);
+
+        Iterator<PersonDetails> iterator = result.iterator();
+        if (iterator.hasNext()) {
+            iterator.next();
+            iterator.remove();
         }
     }
 

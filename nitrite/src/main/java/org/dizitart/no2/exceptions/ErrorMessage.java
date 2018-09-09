@@ -209,10 +209,6 @@ public class ErrorMessage {
             new ErrorMessage("id field is not accessible",
                     IIE_ID_FIELD_NOT_ACCESSIBLE);
 
-    public static final ErrorMessage FAILED_TO_CREATE_AUTO_ID =
-            new ErrorMessage("failed to auto generate nitrite id",
-                    IIE_FAILED_TO_CREATE_AUTO_ID);
-
     public static final ErrorMessage ID_VALUE_CAN_NOT_BE_EMPTY_STRING =
             new ErrorMessage("id value can not be empty string",
                     IIE_ID_VALUE_EMPTY_STRING);

@@ -39,6 +39,7 @@ import java.util.Collection;
 
 import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.dizitart.no2.common.util.DocumentUtils.createUniqueFilter;
+import static org.dizitart.no2.common.util.ValidationUtils.containsNull;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
@@ -69,6 +70,8 @@ class DefaultNitriteCollection implements NitriteCollection {
     @Override
     public void createIndex(String field, IndexOptions indexOptions) {
         checkOpened();
+        notNull(field, errorMessage("field cannot be null", VE_CREATE_INDEX_NULL_FIELD));
+
         // by default async is false while creating index
         if (indexOptions == null) {
             collectionOperation.createIndex(field, IndexType.Unique, false);
@@ -81,6 +84,8 @@ class DefaultNitriteCollection implements NitriteCollection {
     @Override
     public void rebuildIndex(String field, boolean async) {
         checkOpened();
+        notNull(field, errorMessage("field cannot be null", VE_REBUILD_INDEX_NULL_FIELD));
+
         Index index = collectionOperation.findIndex(field);
         if (index != null) {
             validateRebuildIndex(index);
@@ -94,78 +99,105 @@ class DefaultNitriteCollection implements NitriteCollection {
     @Override
     public Collection<Index> listIndices() {
         checkOpened();
+
         return collectionOperation.listIndexes();
     }
 
     @Override
     public boolean hasIndex(String field) {
         checkOpened();
+        notNull(field, errorMessage("field cannot be null", VE_HAS_INDEX_NULL_FIELD));
+
         return collectionOperation.hasIndex(field);
     }
 
     @Override
     public boolean isIndexing(String field) {
         checkOpened();
+        notNull(field, errorMessage("field cannot be null", VE_IS_INDEXING_NULL_FIELD));
+
         return collectionOperation.isIndexing(field);
     }
 
     @Override
     public void dropIndex(String field) {
         checkOpened();
+        notNull(field, errorMessage("field cannot be null", VE_DROP_INDEX_NULL_FIELD));
+
         collectionOperation.dropIndex(field);
     }
 
     @Override
     public void dropAllIndices() {
         checkOpened();
+
         collectionOperation.dropAllIndices();
     }
 
     @Override
     public WriteResult insert(Document document, Document... documents) {
         checkOpened();
+        notNull(document, errorMessage("null document cannot be inserted", VE_INSERT_NULL_DOCUMENT));
+        if (documents != null) {
+            containsNull(documents, errorMessage("null document cannot be inserted",
+                    VE_INSERT_OTHERS_CONTAINS_NULL));
+        }
+
         return collectionOperation.insert(document, documents);
     }
 
     @Override
     public WriteResult insert(Document[] documents) {
         checkOpened();
+        notNull(documents, errorMessage("null document cannot be inserted", VE_INSERT_NULL_DOCUMENT_ARRAY));
+        containsNull(documents, errorMessage("null document cannot be inserted",
+                VE_INSERT_DOCUMENTS_CONTAINS_NULL));
+
         return collectionOperation.insert(documents);
     }
 
     @Override
     public Cursor find(Filter filter) {
         checkOpened();
+
         return collectionOperation.find(filter);
     }
 
     @Override
     public Cursor find(FindOptions findOptions) {
         checkOpened();
+        notNull(findOptions, errorMessage("findOptions cannot be null", VE_FIND_NULL_FIND_OPTIONS));
+
         return collectionOperation.find(findOptions);
     }
 
     @Override
     public Cursor find(Filter filter, FindOptions findOptions) {
         checkOpened();
+        notNull(findOptions, errorMessage("findOptions cannot be null", VE_FIND_FILTERED_NULL_FIND_OPTIONS));
+
         return collectionOperation.find(filter, findOptions);
     }
 
     @Override
     public Cursor find() {
         checkOpened();
+
         return collectionOperation.find();
     }
 
     @Override
     public Document getById(NitriteId nitriteId) {
         checkOpened();
+        notNull(nitriteId, errorMessage("nitriteId cannot be null", VE_GET_BY_ID_NULL_ID));
+
         return collectionOperation.getById(nitriteId);
     }
 
     @Override
     public void drop() {
         checkOpened();
+
         collectionOperation.dropCollection();
         isDropped = true;
         closeCollection();
@@ -203,12 +235,15 @@ class DefaultNitriteCollection implements NitriteCollection {
     @Override
     public long size() {
         checkOpened();
+
         return nitriteMap.sizeAsLong();
     }
 
     @Override
     public WriteResult update(Document document) {
         checkOpened();
+        notNull(document, errorMessage("null document cannot be used for update", VE_UPDATE_NULL_DOCUMENT));
+
         if (document.containsKey(DOC_ID)) {
             return update(createUniqueFilter(document), document);
         } else {
@@ -219,25 +254,33 @@ class DefaultNitriteCollection implements NitriteCollection {
     @Override
     public WriteResult update(Document document, boolean upsert) {
         checkOpened();
+        notNull(document, errorMessage("null document cannot be used for update", VE_UPDATE_NULL_DOCUMENT_OPTION));
+
         return update(createUniqueFilter(document), document, UpdateOptions.updateOptions(upsert));
     }
 
     @Override
     public WriteResult update(Filter filter, Document update) {
         checkOpened();
+        notNull(update, errorMessage("null document cannot be used for update", VE_UPDATE_NULL_DOCUMENT_FILTER));
+
         return update(filter, update, new UpdateOptions());
     }
 
     @Override
     public WriteResult update(Filter filter, Document update, UpdateOptions updateOptions) {
         checkOpened();
+        notNull(update, errorMessage("null document cannot be used for update", VE_UPDATE_OPTIONS_NULL_DOCUMENT));
+        notNull(updateOptions, errorMessage("updateOptions can not be null", VE_UPDATE_NULL_UPDATE_OPTIONS));
+
         return collectionOperation.update(filter, update, updateOptions);
     }
 
     @Override
     public WriteResult remove(Document document) {
         checkOpened();
-        notNull(document, errorMessage("document can not be null", VE_NC_REMOVE_NULL_DOCUMENT));
+        notNull(document, errorMessage("null document cannot be removed", VE_REMOVE_NULL_DOCUMENT));
+
         if (document.containsKey(DOC_ID)) {
             return remove(createUniqueFilter(document));
         } else {
@@ -248,23 +291,31 @@ class DefaultNitriteCollection implements NitriteCollection {
     @Override
     public WriteResult remove(Filter filter) {
         checkOpened();
+
         return remove(filter, new RemoveOptions());
     }
 
     @Override
     public WriteResult remove(Filter filter, RemoveOptions removeOptions) {
         checkOpened();
+        notNull(removeOptions, errorMessage("removeOptions cannot be null", VE_REMOVE_NULL_DOCUMENT));
+
         return collectionOperation.remove(filter, removeOptions);
     }
 
     @Override
     public void register(ChangeListener listener) {
         checkOpened();
+        notNull(listener, errorMessage("listener cannot be null", VE_LISTENER_NULL));
+
         eventBus.register(listener);
     }
 
     @Override
     public void deregister(ChangeListener listener) {
+        checkOpened();
+        notNull(listener, errorMessage("listener cannot be null", VE_LISTENER_DEREGISTER_NULL));
+
         if (eventBus != null) {
             eventBus.deregister(listener);
         }
@@ -272,11 +323,16 @@ class DefaultNitriteCollection implements NitriteCollection {
 
     @Override
     public Attributes getAttributes() {
+        checkOpened();
+
         return nitriteMap != null ? nitriteMap.getAttributes() : null;
     }
 
     @Override
     public void setAttributes(Attributes attributes) {
+        checkOpened();
+        notNull(attributes, errorMessage("attributes cannot be null", VE_ATTRIBUTE_NULL));
+
         nitriteMap.setAttributes(attributes);
     }
 

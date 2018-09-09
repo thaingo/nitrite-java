@@ -25,19 +25,15 @@ import org.dizitart.no2.collection.*;
 import org.dizitart.no2.common.event.ChangeInfo;
 import org.dizitart.no2.common.event.ChangeListener;
 import org.dizitart.no2.common.event.EventBus;
+import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.*;
 import org.dizitart.no2.index.fulltext.EnglishTextTokenizer;
 import org.dizitart.no2.index.fulltext.TextTokenizer;
-import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.store.IndexStore;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.util.Collection;
-
-import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
-import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 
 /**
  * A service class for Nitrite database operations.
@@ -79,8 +75,6 @@ public class CollectionOperation {
      * @param async     asynchronous operation if set to `true`
      */
     public void createIndex(String field, IndexType indexType, boolean async) {
-        notNull(field, errorMessage("field can not be null", VE_CREATE_INDEX_NULL_FIELD));
-        notNull(indexType, errorMessage("indexType can not be null", VE_CREATE_INDEX_NULL_INDEX_TYPE));
         indexTemplate.ensureIndex(field, indexType, async);
     }
 
@@ -91,7 +85,6 @@ public class CollectionOperation {
      * @param isAsync asynchronous operation if set to `true`
      */
     public void rebuildIndex(Index index, boolean isAsync) {
-        notNull(index, errorMessage("index can not be null", VE_REBUILD_INDEX_NULL_INDEX));
         indexTemplate.rebuildIndex(index, isAsync);
     }
 
@@ -102,7 +95,6 @@ public class CollectionOperation {
      * @return the index information.
      */
     public Index findIndex(String field) {
-        notNull(field, errorMessage("field can not be null", VE_FIND_INDEX_NULL_INDEX));
         return indexTemplate.findIndex(field);
     }
 
@@ -112,7 +104,6 @@ public class CollectionOperation {
      * @param field the value
      */
     public void dropIndex(String field) {
-        notNull(field, errorMessage("field can not be null", VE_DROP_INDEX_NULL_FIELD));
         indexTemplate.dropIndex(field);
     }
 
@@ -123,7 +114,6 @@ public class CollectionOperation {
      * @return `true` if operation is still running; `false` otherwise.
      */
     public boolean isIndexing(String field) {
-        notNull(field, errorMessage("field can not be null", VE_IS_INDEXING_NULL_FIELD));
         return indexTemplate.isIndexing(field);
     }
 
@@ -134,7 +124,6 @@ public class CollectionOperation {
      * @return `true` if indexed; `false` otherwise.
      */
     public boolean hasIndex(String field) {
-        notNull(field, errorMessage("field can not be null", VE_HAS_INDEX_NULL_FIELD));
         return indexTemplate.hasIndex(field);
     }
 
@@ -166,8 +155,6 @@ public class CollectionOperation {
      * @return the write result
      */
     public WriteResultImpl insert(Document document, Document... documents) {
-        notNull(document, errorMessage("document can not be null", VE_INSERT_NULL_DOCUMENT));
-
         int length = documents == null ? 0 : documents.length;
 
         if (length > 0) {
@@ -187,7 +174,6 @@ public class CollectionOperation {
      * @return the write result
      */
     public WriteResult insert(Document[] documents) {
-        notNull(documents, errorMessage("documents can not be null", VE_INSERT_NULL_DOCUMENT_ARRAY));
         return readWriteOperation.insert(documents);
     }
 
@@ -199,9 +185,7 @@ public class CollectionOperation {
      * @param updateOptions the update options
      * @return the write result
      */
-    public WriteResultImpl update(org.dizitart.no2.filters.Filter filter, Document update, UpdateOptions updateOptions) {
-        notNull(update, errorMessage("update document can not be null", VE_UPDATE_NULL_DOCUMENT));
-        notNull(updateOptions, errorMessage("updateOptions can not be null", VE_UPDATE_NULL_UPDATE_OPTIONS));
+    public WriteResultImpl update(Filter filter, Document update, UpdateOptions updateOptions) {
         return readWriteOperation.update(filter, update, updateOptions);
     }
 
@@ -212,7 +196,7 @@ public class CollectionOperation {
      * @param removeOptions the remove options
      * @return the write result
      */
-    public WriteResultImpl remove(org.dizitart.no2.filters.Filter filter, RemoveOptions removeOptions) {
+    public WriteResultImpl remove(Filter filter, RemoveOptions removeOptions) {
         return readWriteOperation.remove(filter, removeOptions);
     }
 
@@ -235,7 +219,7 @@ public class CollectionOperation {
      * @param filter the filter
      * @return the result set
      */
-    public Cursor find(org.dizitart.no2.filters.Filter filter) {
+    public Cursor find(Filter filter) {
         return queryTemplate.find(filter);
     }
 
@@ -255,7 +239,6 @@ public class CollectionOperation {
      * @return the result set
      */
     public Cursor find(FindOptions findOptions) {
-        notNull(findOptions, errorMessage("findOptions can not be null", VE_FIND_NULL_FIND_OPTIONS));
         return queryTemplate.find(findOptions);
     }
 
@@ -267,7 +250,6 @@ public class CollectionOperation {
      * @return the result set
      */
     public Cursor find(Filter filter, FindOptions findOptions) {
-        notNull(findOptions, errorMessage("findOptions can not be null", VE_FIND_FILTERED_NULL_FIND_OPTIONS));
         return queryTemplate.find(filter, findOptions);
     }
 
@@ -278,7 +260,6 @@ public class CollectionOperation {
      * @return the document associated with the id; `null` otherwise.
      */
     public Document getById(NitriteId nitriteId) {
-        notNull(nitriteId, errorMessage("nitriteId can not be null", VE_GET_BY_ID_NULL_ID));
         return queryTemplate.getById(nitriteId);
     }
 

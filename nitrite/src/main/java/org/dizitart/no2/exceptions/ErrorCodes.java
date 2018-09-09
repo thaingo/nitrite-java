@@ -75,9 +75,9 @@ public class ErrorCodes {
     public static final int VE_FIND_TEXT_INDEX_NULL_FIELD = 1045;
     public static final int VE_FIND_TEXT_INDEX_NULL_VALUE = 1046;
     public static final int VE_CREATE_INDEX_NULL_FIELD = 1047;
-    public static final int VE_CREATE_INDEX_NULL_INDEX_TYPE = 1048;
-    public static final int VE_REBUILD_INDEX_NULL_INDEX = 1049;
-    public static final int VE_FIND_INDEX_NULL_INDEX = 1050;
+    public static final int VE_REBUILD_INDEX_NULL_FIELD = 1048;
+    public static final int VE_ATTRIBUTE_NULL = 1049;
+    public static final int VE_LISTENER_DEREGISTER_NULL = 1050;
     public static final int VE_DROP_INDEX_NULL_FIELD = 1051;
     public static final int VE_INSERT_NULL_DOCUMENT = 1052;
     public static final int VE_INSERT_NULL_DOCUMENT_ARRAY = 1053;
@@ -91,7 +91,7 @@ public class ErrorCodes {
     public static final int VE_RECOVER_NULL_FILE_NAME = 1061;
     public static final int VE_RECOVER_EMPTY_FILE_NAME = 1062;
     public static final int VE_RECOVER_NULL_WRITER = 1063;
-    public static final int VE_NC_REMOVE_NULL_DOCUMENT= 1064;
+    public static final int VE_REMOVE_NULL_DOCUMENT = 1064;
     public static final int VE_PROJECT_NULL_PROJECTION = 1065;
     public static final int VE_OBJ_CREATE_INDEX_NULL_FIELD = 1066;
     public static final int VE_OBJ_UPDATE_NULL_OBJECT = 1067;
@@ -113,6 +113,32 @@ public class ErrorCodes {
     public static final int VE_INVALID_KEYED_OBJ_STORE_KEY = 1083;
     public static final int VE_INVALID_KEYED_OBJ_STORE_TYPE = 1084;
     public static final int VE_CONTEXT_NULL = 1085;
+    public static final int VE_OBJ_REBUILD_INDEX_NULL_FIELD = 1086;
+    public static final int VE_OBJ_HAS_INDEX_NULL_FIELD = 1087;
+    public static final int VE_OBJ_IS_INDEXING_NULL_FIELD = 1088;
+    public static final int VE_OBJ_DROP_INDEX_NULL_FIELD = 1089;
+    public static final int VE_OBJ_INSERT_NULL = 1090;
+    public static final int VE_OBJ_INSERT_ARRAY_NULL = 1091;
+    public static final int VE_OBJ_INSERT_ARRAY_CONTAINS_NULL = 1092;
+    public static final int VE_OBJ_UPDATE_NULL = 1093;
+    public static final int VE_OBJ_UPDATE_ELEMENT_NULL = 1094;
+    public static final int VE_OBJ_FILTER_UPDATE_NULL = 1095;
+    public static final int VE_OBJ_FILTER_UPDATE_NULL_DOCUMENT = 1096;
+    public static final int VE_OBJ_REMOVE_NULL_OBJECT = 1097;
+    public static final int VE_OBJ_REMOVE_OPTION_NULL = 1098;
+    public static final int VE_OBJ_FIND_OPTION_NULL = 1099;
+    public static final int VE_OBJ_FILTER_FIND_OPTION_NULL = 1100;
+    public static final int VE_OBJ_NITRITE_ID_GET_NULL = 1101;
+    public static final int VE_OBJ_ATTRIBUTE_NULL = 1102;
+    public static final int VE_OBJ_LISTENER_NULL = 1103;
+    public static final int VE_OBJ_LISTENER_DEREGISTER_NULL = 1104;
+    public static final int VE_OBJ_INSERT_OTHERS_CONTAINS_NULL = 1105;
+    public static final int VE_INSERT_OTHERS_CONTAINS_NULL = 1106;
+    public static final int VE_INSERT_DOCUMENTS_CONTAINS_NULL = 1107;
+    public static final int VE_UPDATE_NULL_DOCUMENT_OPTION = 1108;
+    public static final int VE_UPDATE_NULL_DOCUMENT_FILTER = 1109;
+    public static final int VE_UPDATE_OPTIONS_NULL_DOCUMENT = 1110;
+    public static final int VE_LISTENER_NULL = 1111;
 
     // endregion
 
@@ -157,7 +183,7 @@ public class ErrorCodes {
     // region FilterException Codes
 
     static final int FE_AND_INVALID = 4001;
-    static final int FE_VALUE_NOT_COMPARABLE = 4002;
+    public static final int FE_GEO_EQ_FILTER_FIELD_NOT_INDEXED = 4002;
     static final int FE_ELEM_MATCH_NESTED = 4003;
     static final int FE_ELEM_MATCH_FULL_TEXT = 4004;
     static final int FE_ELEM_MATCH_NO_ARRAY = 4005;
@@ -181,22 +207,21 @@ public class ErrorCodes {
     static final int FE_FTS_STAR_NOT_VALID = 4023;
     static final int FE_FILTERED_FIND_FAILED = 4024;
     static final int FE_FILTERED_FIND_WITH_OPTION_FAILED = 4025;
-    static final int FE_OBJ_ELEM_MATCH_NESTED = 4026;
-    static final int FE_OBJ_ELEM_MATCH_FULL_TEXT = 4027;
-    static final int FE_OBJ_ELEM_MATCH_NO_ARRAY = 4028;
+    public static final int FE_EQ_NOT_SPATIAL = 4026;
+    public static final int FE_INTERSECTS_FILTER_FIELD_NOT_INDEXED = 4027;
+    public static final int FE_WITHIN_FILTER_FIELD_NOT_INDEXED = 4028;
     public static final int FE_POINT_NULL = 4029;
     public static final int FE_IN_SEARCH_TERM_NOT_COMPARABLE = 4030;
     public static final int FE_SEARCH_TERM_NOT_COMPARABLE = 4031;
-    static final int FE_INDEX_NON_COMPARABLE_SEARCH = 4032;
+    public static final int FE_TEXT_FILTER_FIELD_NOT_INDEXED = 4032;
     static final int FE_SEARCH_TERM_INVALID_LEADING_STAR = 4033;
     static final int FE_SEARCH_TERM_INVALID_TRAILING_STAR = 4034;
     static final int FE_MULTIPLE_WORDS_WITH_WILDCARD = 4035;
     public static final int FE_EQUAL_NOT_COMPARABLE = 4036;
-    public static final int FE_TEXT_FILTER_FIELD_NOT_INDEXED = 4037;
-    public static final int FE_WITHIN_FILTER_FIELD_NOT_INDEXED = 4038;
-    public static final int FE_INTERSECTS_FILTER_FIELD_NOT_INDEXED = 4039;
-    public static final int FE_EQ_NOT_SPATIAL = 4040;
-    public static final int FE_GEO_EQ_FILTER_FIELD_NOT_INDEXED = 4041;
+
+
+
+
 
     // endregion
 
@@ -220,8 +245,7 @@ public class ErrorCodes {
     public static final int IE_FAILED_TO_WRITE_FTS_DATA = 5016;
     static final int IE_FAILED_TO_QUERY_FTS_DATA = 5017;
     public static final int IE_INVALID_TYPE_FOR_INDEX = 5018;
-    public static final int IE_REBUILD_INDEX_DOES_NOT_EXISTS = 5019;
-    public static final int IE_REBUILD_INDEX_NON_SPATIAL = 5020;
+    public static final int IE_REBUILD_INDEX_NON_SPATIAL = 5019;
 
     // endregion
 
@@ -232,10 +256,9 @@ public class ErrorCodes {
     static final int IIE_NULL_ID = 6003;
     static final int IIE_ID_FIELD_NOT_ACCESSIBLE = 6004;
     static final int IIE_ID_VALUE_EMPTY_STRING = 6005;
-    static final int IIE_FAILED_TO_CREATE_AUTO_ID = 6006;
+    static final int IIE_AUTO_ID_ALREADY_SET = 6006;
     static final int IIE_NULL_ID_FILTER_VALUE = 6007;
     static final int IIE_CANNOT_ACCESS_AUTO_ID = 6008;
-    static final int IIE_AUTO_ID_ALREADY_SET = 6009;
 
     // endregion
 

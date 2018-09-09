@@ -200,16 +200,24 @@ public class ObjectUtils {
                             return (T) Character.valueOf('0');
                     }
                 }
+
                 if (type.isArray()) {
                     return null;
                 }
+
+                if (type == String.class) {
+                    return (T) "";
+                }
+
                 T object = new ObjenesisStd().newInstance(type);
                 Field[] fields = type.getDeclaredFields();
                 if (fields != null && fields.length > 0) {
                     for (Field field : fields) {
+                        // set value for non static fields
                         if (!Modifier.isStatic(field.getModifiers())) {
                             field.setAccessible(true);
 
+                            // remove final modifier
                             Field modifiersField = Field.class.getDeclaredField("modifiers");
                             modifiersField.setAccessible(true);
                             modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
@@ -219,7 +227,7 @@ public class ObjectUtils {
                     }
                 }
                 return object;
-            } catch (Exception error) {
+            } catch (Throwable error) {
                 throw new ObjectMappingException(errorMessage("failed to instantiate type " + type.getName(),
                         OME_INSTANTIATE_FAILED), error);
             }

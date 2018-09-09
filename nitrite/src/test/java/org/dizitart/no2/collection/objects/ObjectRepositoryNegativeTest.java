@@ -28,6 +28,7 @@ import org.dizitart.no2.exceptions.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.locationtech.jts.geom.LineString;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,6 +36,7 @@ import java.nio.file.Paths;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Anindya Chatterjee.
@@ -160,5 +162,23 @@ public class ObjectRepositoryNegativeTest {
         object.setName("name");
         object.setNumber(1L);
         repository.remove(object);
+    }
+
+    @Test(expected = ObjectMappingException.class)
+    public void testProjectionFailedInstantiate() {
+        ObjectRepository<WithOutId> repository = db.getRepository(WithOutId.class);
+        WithOutId object = new WithOutId();
+        object.setName("name");
+        object.setNumber(1L);
+        repository.insert(object);
+
+        RecordIterable<LineString> project = repository.find().project(LineString.class);
+        assertNull(project);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testNullInsert() {
+        ObjectRepository<WithOutId> repository = db.getRepository(WithOutId.class);
+        repository.insert(null);
     }
 }
