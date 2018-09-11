@@ -22,11 +22,15 @@ import org.dizitart.no2.common.mapper.JacksonMapper;
 import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.common.util.ObjectUtilsTest;
 import org.dizitart.no2.exceptions.IndexingException;
+import org.dizitart.no2.exceptions.InvalidIdException;
+import org.dizitart.no2.exceptions.NotIdentifiableException;
 import org.dizitart.no2.exceptions.ValidationException;
+import org.dizitart.no2.index.annotations.Id;
 import org.dizitart.no2.index.annotations.Index;
 import org.dizitart.no2.index.annotations.Indices;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Set;
@@ -82,6 +86,27 @@ public class RepositoryDelegateTest {
         assertEquals(repositoryDelegate.getFieldsUpto(ClassWithAnnotatedFields.class,
                 ClassWithNoAnnotatedFields.class).size(), 3);
     }
+
+    @Test(expected = InvalidIdException.class)
+    public void testCreateUniqueFilterInvalidId() throws NoSuchFieldException {
+        B b = new B();
+        Field field = b.getClass().getDeclaredField("d");
+        repositoryDelegate.createUniqueFilter(b, field);
+    }
+
+    @Test(expected = NotIdentifiableException.class)
+    public void testGetIdFieldMultipleId() {
+        class Test {
+            @Id
+            private String id1;
+
+            @Id
+            private Long id2;
+        }
+
+        repositoryDelegate.getIdField(new JacksonMapper(), Test.class);
+    }
+
 
     private static class ClassWithAnnotatedFields extends ClassWithNoAnnotatedFields {
         private String stringValue;

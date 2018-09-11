@@ -96,6 +96,10 @@ public class JacksonMapper extends AbstractMapper {
     @Override
     public <T> Document asDocumentAuto(T object) {
         try {
+            if (object == null) {
+                return null;
+            }
+
             JsonNode node = objectMapper.convertValue(object, JsonNode.class);
             return loadDocument(node);
         } catch (IllegalArgumentException iae) {
@@ -114,6 +118,10 @@ public class JacksonMapper extends AbstractMapper {
     @Override
     public <T> T asObjectAuto(Document document, Class<T> type) {
         try {
+            if (document == null) {
+                return null;
+            }
+
             return objectMapper.convertValue(document, type);
         } catch (IllegalArgumentException iae) {
             log.error("Error while converting document to object ", iae);

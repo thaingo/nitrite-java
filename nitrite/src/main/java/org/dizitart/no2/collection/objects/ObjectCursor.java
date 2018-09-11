@@ -116,10 +116,7 @@ class ObjectCursor<T> implements Cursor<T> {
         @Override
         public T next() {
             Document document = documentIterator.next();
-            if (document != null) {
-                return nitriteMapper.asObject(document, type);
-            }
-            return null;
+            return nitriteMapper.asObject(document, type);
         }
 
         @Override
