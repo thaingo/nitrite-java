@@ -18,6 +18,7 @@
 
 package org.dizitart.no2.collection.objects;
 
+import lombok.Getter;
 import org.dizitart.no2.common.mapper.JacksonMapper;
 import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.common.util.ObjectUtilsTest;
@@ -28,6 +29,7 @@ import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.index.annotations.Id;
 import org.dizitart.no2.index.annotations.Index;
 import org.dizitart.no2.index.annotations.Indices;
+import org.dizitart.no2.index.annotations.InheritIndices;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -36,6 +38,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Anindya Chatterjee
@@ -107,6 +110,31 @@ public class RepositoryDelegateTest {
         repositoryDelegate.getIdField(new JacksonMapper(), Test.class);
     }
 
+    @Test(expected = ValidationException.class)
+    public void testInvalidEmbeddedKey() {
+        repositoryDelegate.getField(ClassWithAnnotatedFields.class, "..", true);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testInvalidGetField() {
+        repositoryDelegate.getField(ClassWithAnnotatedFields.class, "fake.fake", true);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testExtractInvalidIndex() {
+        @Index(value = "fake")
+        class Test {
+            private String test;
+        }
+
+        repositoryDelegate.extractIndices(new JacksonMapper(), Test.class);
+    }
+
+    @Test
+    public void testFindAnnotationFromInterface() {
+        Set<Index> indices = repositoryDelegate.extractIndices(new JacksonMapper(), TestInterface.class);
+        assertFalse(indices.isEmpty());
+    }
 
     private static class ClassWithAnnotatedFields extends ClassWithNoAnnotatedFields {
         private String stringValue;
@@ -179,4 +207,14 @@ public class RepositoryDelegateTest {
         private Long longValue;
     }
 
+    @Index(value = "value")
+    private interface Interface {
+        String getValue();
+    }
+
+    @InheritIndices
+    private static class TestInterface implements Interface {
+        @Getter
+        private String value;
+    }
 }

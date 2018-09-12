@@ -29,7 +29,6 @@ import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.SecurityException;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.TextIndexer;
-import org.dizitart.no2.index.fulltext.EnglishTextTokenizer;
 import org.dizitart.no2.index.fulltext.TextTokenizer;
 import org.dizitart.no2.store.NitriteMVStore;
 import org.dizitart.no2.store.NitriteStore;
@@ -486,9 +485,6 @@ public class NitriteBuilder {
         if (store != null) {
             NitriteContext context = new NitriteContext();
             context.setTextIndexer(textIndexer);
-            if (textTokenizer == null) {
-                textTokenizer = new EnglishTextTokenizer();
-            }
             context.setTextTokenizer(textTokenizer);
             context.setFilePath(filePath);
             if (autoCommitBufferSize > 0) {

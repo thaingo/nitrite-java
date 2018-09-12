@@ -260,4 +260,5 @@ public class ObjectRepositoryTest {
         repository.setAttributes(attributes);
         assertEquals(repository.getAttributes(), attributes);
     }
+
 }

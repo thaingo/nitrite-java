@@ -182,7 +182,7 @@ class RepositoryDelegate {
             }
             if (field == null) {
                 throw new ValidationException(errorMessage(
-                        "no such value \'" + name + "\' for type " + type.getName(),
+                        "no such field \'" + name + "\' for type " + type.getName(),
                         VE_REFLECT_FIELD_NO_SUCH_FIELD));
             }
             return field;
@@ -204,7 +204,7 @@ class RepositoryDelegate {
             field = startingClass.getDeclaredField(key);
         } catch (NoSuchFieldException nsfe) {
             throw new ValidationException(errorMessage(
-                    "no such value \'" + key + "\' for type " + startingClass.getName(),
+                    "no such field \'" + key + "\' for type " + startingClass.getName(),
                     VE_OBJ_INVALID_FIELD));
         }
 
@@ -223,10 +223,6 @@ class RepositoryDelegate {
             if (field != null) {
                 validateObjectIndexField(nitriteMapper, field.getType(), field.getName());
                 indexSet.add(index);
-            } else {
-                throw new IndexingException(errorMessage(
-                        "field " + name + " does not exists for type " + type.getName(),
-                        IE_OBJ_INDEX_INVALID_FIELD));
             }
         }
     }

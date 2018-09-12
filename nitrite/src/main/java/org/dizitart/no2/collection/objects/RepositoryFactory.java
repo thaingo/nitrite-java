@@ -18,9 +18,14 @@
 
 package org.dizitart.no2.collection.objects;
 
-import lombok.experimental.UtilityClass;
 import org.dizitart.no2.NitriteContext;
 import org.dizitart.no2.collection.NitriteCollection;
+import org.dizitart.no2.exceptions.ValidationException;
+
+import static org.dizitart.no2.exceptions.ErrorCodes.VE_COLLECTION_NULL;
+import static org.dizitart.no2.exceptions.ErrorCodes.VE_NITRITE_CONTEXT_NULL;
+import static org.dizitart.no2.exceptions.ErrorCodes.VE_TYPE_NULL;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
  * A factory class to open a {@link ObjectRepository}.
@@ -28,7 +33,6 @@ import org.dizitart.no2.collection.NitriteCollection;
  * @since 1.0
  * @author Anindya Chatterjee
  */
-@UtilityClass
 public class RepositoryFactory {
 
     /**
@@ -43,6 +47,18 @@ public class RepositoryFactory {
     public static <T> ObjectRepository<T> open(Class<T> type,
                                                NitriteCollection collection,
                                                NitriteContext nitriteContext) {
+        if (type == null) {
+            throw new ValidationException(errorMessage("type cannot be null", VE_TYPE_NULL));
+        }
+
+        if (collection == null) {
+            throw new ValidationException(errorMessage("collection cannot be null", VE_COLLECTION_NULL));
+        }
+
+        if (nitriteContext == null) {
+            throw new ValidationException(errorMessage("nitriteContext cannot be null", VE_NITRITE_CONTEXT_NULL));
+        }
+
         return new DefaultObjectRepository<>(type, collection, nitriteContext);
     }
 }

@@ -139,6 +139,9 @@ public class ErrorCodes {
     public static final int VE_UPDATE_NULL_DOCUMENT_FILTER = 1109;
     public static final int VE_UPDATE_OPTIONS_NULL_DOCUMENT = 1110;
     public static final int VE_LISTENER_NULL = 1111;
+    public static final int VE_TYPE_NULL = 1112;
+    public static final int VE_COLLECTION_NULL = 1113;
+    public static final int VE_NITRITE_CONTEXT_NULL = 1114;
 
     // endregion
 
@@ -219,10 +222,6 @@ public class ErrorCodes {
     static final int FE_MULTIPLE_WORDS_WITH_WILDCARD = 4035;
     public static final int FE_EQUAL_NOT_COMPARABLE = 4036;
 
-
-
-
-
     // endregion
 
     // region IndexingException Codes
@@ -237,7 +236,7 @@ public class ErrorCodes {
     public static final int IE_REBUILD_INDEX_RUNNING = 5008;
     public static final int IE_DROP_NON_EXISTING_INDEX = 5009;
     public static final int IE_REMOVE_FULL_TEXT_INDEX_FAILED = 5010;
-    public static final int IE_OBJ_INDEX_INVALID_FIELD = 5011;
+    public static final int IE_REBUILD_INDEX_NON_SPATIAL = 5011;
     public static final int IE_INDEX_ON_ARRAY_NOT_SUPPORTED = 5012;
     public static final int IE_INDEX_ON_NON_COMPARABLE_FIELD = 5013;
     public static final int IE_OBJ_INDEX_ON_ARRAY_NOT_SUPPORTED = 5014;
@@ -245,7 +244,6 @@ public class ErrorCodes {
     public static final int IE_FAILED_TO_WRITE_FTS_DATA = 5016;
     static final int IE_FAILED_TO_QUERY_FTS_DATA = 5017;
     public static final int IE_INVALID_TYPE_FOR_INDEX = 5018;
-    public static final int IE_REBUILD_INDEX_NON_SPATIAL = 5019;
 
     // endregion
 
