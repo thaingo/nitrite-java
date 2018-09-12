@@ -242,7 +242,7 @@ class IndexTemplate {
         if (indexBuildRegistry.get(field) != null
                 && indexBuildRegistry.get(field).get()) {
             throw new IndexingException(errorMessage(
-                    "can not drop index as indexing is running on " + field,
+                    "cannot drop index as indexing is running on " + field,
                     IE_CAN_NOT_DROP_RUNNING_INDEX));
         }
 
@@ -272,7 +272,7 @@ class IndexTemplate {
         for (Map.Entry<String, AtomicBoolean> entry :indexBuildRegistry.entrySet()) {
             if (entry.getValue() != null && entry.getValue().get()) {
                 throw new IndexingException(errorMessage(
-                        "can not drop index as indexing is running on " + entry.getKey(),
+                        "cannot drop index as indexing is running on " + entry.getKey(),
                         IE_CAN_NOT_DROP_ALL_RUNNING_INDEX));
             }
         }

@@ -122,7 +122,7 @@ class RepositoryDelegate {
     }
 
     <T> Set<Index> extractIndices(NitriteMapper nitriteMapper, Class<T> type) {
-        notNull(type, errorMessage("type can not be null", VE_INDEX_ANNOTATION_NULL_TYPE));
+        notNull(type, errorMessage("type cannot be null", VE_INDEX_ANNOTATION_NULL_TYPE));
 
         List<Indices> indicesList;
         if (type.isAnnotationPresent(InheritIndices.class)) {
@@ -229,7 +229,7 @@ class RepositoryDelegate {
 
     private void validateObjectIndexField(NitriteMapper nitriteMapper, Class<?> fieldType, String field) {
         if (!Comparable.class.isAssignableFrom(fieldType) && !fieldType.isPrimitive()) {
-            throw new IndexingException(errorMessage("can not index on non comparable field " + field,
+            throw new IndexingException(errorMessage("cannot index on non comparable field " + field,
                     IE_OBJ_INDEX_ON_NON_COMPARABLE_FIELD));
         }
 
@@ -263,7 +263,7 @@ class RepositoryDelegate {
     }
 
     List<Field> getFieldsUpto(Class<?> startClass, Class<?> exclusiveParent) {
-        notNull(startClass, errorMessage("startClass can not be null", VE_REFLECT_FIELD_NULL_START_CLASS));
+        notNull(startClass, errorMessage("startClass cannot be null", VE_REFLECT_FIELD_NULL_START_CLASS));
         List<Field> currentClassFields = new ArrayList<>(Arrays.asList(startClass.getDeclaredFields()));
         filterSynthetics(currentClassFields);
         Class<?> parentClass = startClass.getSuperclass();
@@ -286,8 +286,8 @@ class RepositoryDelegate {
     }
 
     private <T extends Annotation> List<T> findAnnotations(Class<T> annotation, Class<?> type) {
-        notNull(type, errorMessage("type can not be null", VE_REFLECT_NULL_START_CLASS));
-        notNull(annotation, errorMessage("annotationClass can not be null", VE_REFLECT_NULL_ANNOTATION_CLASS));
+        notNull(type, errorMessage("type cannot be null", VE_REFLECT_NULL_START_CLASS));
+        notNull(annotation, errorMessage("annotationClass cannot be null", VE_REFLECT_NULL_ANNOTATION_CLASS));
         List<T> annotations = new ArrayList<>();
 
         T t = type.getAnnotation(annotation);

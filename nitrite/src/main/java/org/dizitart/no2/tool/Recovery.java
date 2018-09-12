@@ -81,9 +81,9 @@ public class Recovery {
      * @return `true` if repair successful; otherwise `false`
      */
     public static boolean recover(String fileName, PrintWriter writer) {
-        notNull(fileName, errorMessage("fileName can not be null", VE_RECOVER_NULL_FILE_NAME));
-        notEmpty(fileName, errorMessage("fileName can not be empty", VE_RECOVER_EMPTY_FILE_NAME));
-        notNull(writer, errorMessage("writer can not be null", VE_RECOVER_NULL_WRITER));
+        notNull(fileName, errorMessage("fileName cannot be null", VE_RECOVER_NULL_FILE_NAME));
+        notEmpty(fileName, errorMessage("fileName cannot be empty", VE_RECOVER_EMPTY_FILE_NAME));
+        notNull(writer, errorMessage("writer cannot be null", VE_RECOVER_NULL_WRITER));
         return repair(fileName, writer);
     }
 

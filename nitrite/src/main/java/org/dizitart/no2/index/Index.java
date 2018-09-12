@@ -76,11 +76,11 @@ public class Index implements Comparable<Index>, Serializable {
      * @param collectionName the collection name
      */
     public Index(IndexType indexType, String field, String collectionName) {
-        notNull(indexType, errorMessage("indexType can not be null", VE_INDEX_NULL_INDEX_TYPE));
-        notNull(field, errorMessage("field can not be null", VE_INDEX_NULL_FIELD));
-        notEmpty(field, errorMessage("field can not be empty", VE_INDEX_EMPTY_FIELD));
-        notNull(collectionName, errorMessage("collectionName can not be null", VE_INDEX_NULL_COLLECTION));
-        notEmpty(collectionName, errorMessage("collectionName can not be empty", VE_INDEX_EMPTY_COLLECTION));
+        notNull(indexType, errorMessage("indexType cannot be null", VE_INDEX_NULL_INDEX_TYPE));
+        notNull(field, errorMessage("field cannot be null", VE_INDEX_NULL_FIELD));
+        notEmpty(field, errorMessage("field cannot be empty", VE_INDEX_EMPTY_FIELD));
+        notNull(collectionName, errorMessage("collectionName cannot be null", VE_INDEX_NULL_COLLECTION));
+        notEmpty(collectionName, errorMessage("collectionName cannot be empty", VE_INDEX_EMPTY_COLLECTION));
 
         this.indexType = indexType;
         this.field = field;

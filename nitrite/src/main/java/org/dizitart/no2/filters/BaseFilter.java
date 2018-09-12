@@ -83,8 +83,8 @@ public abstract class BaseFilter implements Filter {
     }
 
     private void validateSearchTerm(NitriteMapper nitriteMapper, String field, Object value) {
-        notNull(field, errorMessage("field can not be null", VE_SEARCH_TERM_NULL_FIELD));
-        notEmpty(field, errorMessage("field can not be empty", VE_SEARCH_TERM_EMPTY_FIELD));
+        notNull(field, errorMessage("field cannot be null", VE_SEARCH_TERM_NULL_FIELD));
+        notEmpty(field, errorMessage("field cannot be empty", VE_SEARCH_TERM_EMPTY_FIELD));
 
         if (value != null) {
             if (!nitriteMapper.isValueType(value) && !(value instanceof Comparable)) {

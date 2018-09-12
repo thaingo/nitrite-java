@@ -47,7 +47,7 @@ class QueryTemplate {
 
     QueryTemplate(IndexedQueryTemplate indexedQueryTemplate,
                   NitriteMap<NitriteId, Document> nitriteMap) {
-        notNull(indexedQueryTemplate, errorMessage("indexedQueryTemplate can not be null",
+        notNull(indexedQueryTemplate, errorMessage("indexedQueryTemplate cannot be null",
             VE_INDEXED_QUERY_TEMPLATE_NULL));
         this.indexedQueryTemplate = indexedQueryTemplate;
         this.nitriteMap = nitriteMap;

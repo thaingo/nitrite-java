@@ -271,7 +271,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     public WriteResult update(Filter filter, Document update, UpdateOptions updateOptions) {
         checkOpened();
         notNull(update, errorMessage("null document cannot be used for update", VE_UPDATE_OPTIONS_NULL_DOCUMENT));
-        notNull(updateOptions, errorMessage("updateOptions can not be null", VE_UPDATE_NULL_UPDATE_OPTIONS));
+        notNull(updateOptions, errorMessage("updateOptions cannot be null", VE_UPDATE_NULL_UPDATE_OPTIONS));
 
         return collectionOperation.update(filter, update, updateOptions);
     }
@@ -347,7 +347,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     private void validateRebuildIndex(Index index) {
-        notNull(index, errorMessage("index can not be null", VE_NC_REBUILD_INDEX_NULL_INDEX));
+        notNull(index, errorMessage("index cannot be null", VE_NC_REBUILD_INDEX_NULL_INDEX));
 
         if (isIndexing(index.getField())) {
             throw new IndexingException(errorMessage("indexing on value " + index.getField() +

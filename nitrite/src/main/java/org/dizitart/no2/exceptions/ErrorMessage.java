@@ -90,11 +90,11 @@ public class ErrorMessage {
                     SE_INVALID_USER_PASSWORD);
 
     public static final ErrorMessage USER_ID_IS_EMPTY =
-            new ErrorMessage("user id can not be empty",
+            new ErrorMessage("user id cannot be empty",
                     SE_USER_ID_EMPTY);
 
     public static final ErrorMessage PASSWORD_IS_EMPTY =
-            new ErrorMessage("password can not be empty",
+            new ErrorMessage("password cannot be empty",
                     SE_PASSWORD_EMPTY);
 
     public static final ErrorMessage DATABASE_OPENED_IN_OTHER_PROCESS =
@@ -194,15 +194,15 @@ public class ErrorMessage {
                     IE_FAILED_TO_QUERY_FTS_DATA);
 
     public static final ErrorMessage CAN_NOT_COMPARE_WITH_NULL_ID =
-            new ErrorMessage("can not compare with null id",
+            new ErrorMessage("cannot compare with null id",
                     IIE_COMPARISON_WITH_NULL_ID);
 
     public static final ErrorMessage ID_CAN_NOT_BE_NULL =
-            new ErrorMessage("id can not be null",
+            new ErrorMessage("id cannot be null",
                     IIE_NULL_ID);
 
     public static final ErrorMessage ID_FILTER_VALUE_CAN_NOT_BE_NULL =
-            new ErrorMessage("id value can not be null",
+            new ErrorMessage("id value cannot be null",
                     IIE_NULL_ID_FILTER_VALUE);
 
     public static final ErrorMessage ID_FIELD_IS_NOT_ACCESSIBLE =
@@ -210,11 +210,11 @@ public class ErrorMessage {
                     IIE_ID_FIELD_NOT_ACCESSIBLE);
 
     public static final ErrorMessage ID_VALUE_CAN_NOT_BE_EMPTY_STRING =
-            new ErrorMessage("id value can not be empty string",
+            new ErrorMessage("id value cannot be empty string",
                     IIE_ID_VALUE_EMPTY_STRING);
 
     public static final ErrorMessage CANNOT_ACCESS_AUTO_ID =
-            new ErrorMessage("auto generated id value can not be accessed",
+            new ErrorMessage("auto generated id value cannot be accessed",
                     IIE_CANNOT_ACCESS_AUTO_ID);
 
     public static final ErrorMessage AUTO_ID_ALREADY_SET =
@@ -222,11 +222,11 @@ public class ErrorMessage {
                     IIE_AUTO_ID_ALREADY_SET);
 
     public static final ErrorMessage PAGINATION_SIZE_CAN_NOT_BE_NEGATIVE =
-            new ErrorMessage("pagination size can not be negative",
+            new ErrorMessage("pagination size cannot be negative",
                     VE_NEGATIVE_PAGINATION_SIZE);
 
     public static final ErrorMessage PAGINATION_OFFSET_CAN_NOT_BE_NEGATIVE =
-            new ErrorMessage("pagination offset can not be negative",
+            new ErrorMessage("pagination offset cannot be negative",
                     VE_NEGATIVE_PAGINATION_OFFSET);
 
     public static final ErrorMessage PAGINATION_OFFSET_GREATER_THAN_SIZE =
@@ -238,23 +238,23 @@ public class ErrorMessage {
                     VE_REPOSITORY_NOT_INITIALIZED);
 
     public static final ErrorMessage CAN_NOT_PROJECT_TO_PRIMITIVE =
-            new ErrorMessage("can not project to primitive type",
+            new ErrorMessage("cannot project to primitive type",
                     VE_PROJECTION_PRIMITIVE_TYPE);
 
     public static final ErrorMessage CAN_NOT_PROJECT_TO_INTERFACE =
-            new ErrorMessage("can not project to interface",
+            new ErrorMessage("cannot project to interface",
                     VE_PROJECTION_INTERFACE);
 
     public static final ErrorMessage CAN_NOT_PROJECT_TO_ARRAY =
-            new ErrorMessage("can not project to array",
+            new ErrorMessage("cannot project to array",
                     VE_PROJECTION_ARRAY);
 
     public static final ErrorMessage CAN_NOT_PROJECT_TO_ABSTRACT =
-            new ErrorMessage("can not project to abstract type",
+            new ErrorMessage("cannot project to abstract type",
                     VE_PROJECTION_ABSTRACT_TYPE);
 
     public static final ErrorMessage CAN_NOT_PROJECT_TO_EMPTY_TYPE =
-            new ErrorMessage("can not project to empty type",
+            new ErrorMessage("cannot project to empty type",
                     VE_PROJECT_EMPTY_TYPE);
 
     public static final ErrorMessage SYNC_NO_REMOTE_COLLECTION =
@@ -270,7 +270,7 @@ public class ErrorMessage {
                     VE_INVALID_EMBEDDED_FIELD);
 
     public static final ErrorMessage DOC_GET_TYPE_NULL =
-            new ErrorMessage("type can not be null",
+            new ErrorMessage("type cannot be null",
                     VE_INVALID_EMBEDDED_FIELD);
 
     public static final ErrorMessage PROJECTION_WITH_NOT_NULL_VALUES =
@@ -282,11 +282,11 @@ public class ErrorMessage {
                     IOE_IN_MEMORY_READONLY_DB);
 
     public static final ErrorMessage FAILED_TO_CREATE_READONLY_DB =
-            new ErrorMessage("can not create readonly database",
+            new ErrorMessage("cannot create readonly database",
                     NIOE_FAILED_CREATE_READONLY_DB);
 
     public static final ErrorMessage UNABLE_TO_SORT_ON_ARRAY =
-            new ErrorMessage("can not sort on array or collection objects",
+            new ErrorMessage("cannot sort on array or collection objects",
                     IOE_SORT_ON_ARRAY_TYPE);
 
     public static final ErrorMessage REMOVE_ON_DOCUMENT_ITERATOR_NOT_SUPPORTED =

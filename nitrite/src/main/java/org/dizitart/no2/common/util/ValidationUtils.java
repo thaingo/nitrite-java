@@ -106,7 +106,7 @@ public class ValidationUtils {
         }
 
         if (!(fieldValue instanceof Comparable)) {
-            throw new IndexingException(errorMessage("can not index on non comparable field " + field,
+            throw new IndexingException(errorMessage("cannot index on non comparable field " + field,
                     IE_INDEX_ON_NON_COMPARABLE_FIELD));
         }
     }

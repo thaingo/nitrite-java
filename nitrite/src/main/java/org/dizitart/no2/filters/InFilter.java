@@ -88,11 +88,11 @@ class InFilter extends BaseFilter {
     }
 
     private void validateInFilterValue(String field, List<Comparable> values) {
-        ValidationUtils.notNull(field, errorMessage("field can not be null", VE_IN_FILTER_NULL_FIELD));
-        ValidationUtils.notEmpty(field, errorMessage("field can not be empty", VE_IN_FILTER_EMPTY_FIELD));
-        ValidationUtils.notNull(values, errorMessage("values can not be null", VE_IN_FILTER_NULL_VALUES));
+        ValidationUtils.notNull(field, errorMessage("field cannot be null", VE_IN_FILTER_NULL_FIELD));
+        ValidationUtils.notEmpty(field, errorMessage("field cannot be empty", VE_IN_FILTER_EMPTY_FIELD));
+        ValidationUtils.notNull(values, errorMessage("values cannot be null", VE_IN_FILTER_NULL_VALUES));
         if (values.size() == 0) {
-            throw new ValidationException(errorMessage("values can not be empty", VE_IN_FILTER_EMPTY_VALUES));
+            throw new ValidationException(errorMessage("values cannot be empty", VE_IN_FILTER_EMPTY_VALUES));
         }
     }
 }

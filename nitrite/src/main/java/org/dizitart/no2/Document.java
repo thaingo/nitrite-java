@@ -97,7 +97,7 @@ public class Document extends LinkedHashMap<String, Object>
     public Document put(final String key, final Object value) {
         if (DOC_ID.contentEquals(key) && !validId(value)) {
             throw new InvalidOperationException(
-                    errorMessage("document id is an auto generated value and can not be " + value,
+                    errorMessage("document id is an auto generated value and cannot be " + value,
                             IOE_DOC_ID_AUTO_GENERATED));
         }
 

@@ -167,7 +167,7 @@ public class Replicator {
             ScheduledExecutorService replicatorPool
                     = ExecutorServiceManager.scheduledExecutor();
 
-            notNull(collection, errorMessage("collection can not be null", VE_SYNC_NULL_COLLECTION));
+            notNull(collection, errorMessage("collection cannot be null", VE_SYNC_NULL_COLLECTION));
             String uniqueName = collection.getName();
             RemoveLogWriter removeLogWriter
                     = new RemoveLogWriter(changeLogRepository);

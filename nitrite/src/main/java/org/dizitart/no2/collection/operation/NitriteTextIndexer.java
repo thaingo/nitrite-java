@@ -119,8 +119,8 @@ class NitriteTextIndexer implements TextIndexer {
 
     @Override
     public Set<NitriteId> findText(String field, String searchString) {
-        notNull(field, errorMessage("field can not be null", VE_FIND_TEXT_INDEX_NULL_FIELD));
-        notNull(searchString, errorMessage("searchString can not be null", VE_FIND_TEXT_INDEX_NULL_VALUE));
+        notNull(field, errorMessage("field cannot be null", VE_FIND_TEXT_INDEX_NULL_FIELD));
+        notNull(searchString, errorMessage("searchString cannot be null", VE_FIND_TEXT_INDEX_NULL_VALUE));
 
         try {
             if (searchString.startsWith("*") || searchString.endsWith("*")) {

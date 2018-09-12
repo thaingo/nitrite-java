@@ -103,7 +103,7 @@ public class Nitrite implements Closeable {
      * [icon="{@docRoot}/alert.png"]
      * [CAUTION]
      * ====
-     * The name can not contain below reserved strings:
+     * The name cannot contain below reserved strings:
      *
      * - {@link Constants#INTERNAL_NAME_SEPARATOR}
      * - {@link Constants#USER_MAP}
@@ -395,25 +395,25 @@ public class Nitrite implements Closeable {
     }
 
     private <T> String findRepositoryName(String key, Class<T> type) {
-        notNull(key, errorMessage("key can not be null", VE_OBJ_STORE_NULL_KEY));
-        notEmpty(key, errorMessage("key can not be empty", VE_OBJ_STORE_EMPTY_KEY));
-        notNull(type, errorMessage("type can not be null", VE_OBJ_STORE_NULL_TYPE));
+        notNull(key, errorMessage("key cannot be null", VE_OBJ_STORE_NULL_KEY));
+        notEmpty(key, errorMessage("key cannot be empty", VE_OBJ_STORE_EMPTY_KEY));
+        notNull(type, errorMessage("type cannot be null", VE_OBJ_STORE_NULL_TYPE));
         return type.getName() + KEY_OBJ_SEPARATOR + key;
     }
 
     private <T> String findRepositoryName(Class<T> type) {
-        notNull(type, errorMessage("type can not be null", VE_OBJ_STORE_NULL_TYPE));
+        notNull(type, errorMessage("type cannot be null", VE_OBJ_STORE_NULL_TYPE));
         return type.getName();
     }
 
     private void validateCollectionName(String name) {
-        notNull(name, errorMessage("name can not be null", VE_COLLECTION_NULL_NAME));
-        notEmpty(name, errorMessage("name can not be empty", VE_COLLECTION_EMPTY_NAME));
+        notNull(name, errorMessage("name cannot be null", VE_COLLECTION_NULL_NAME));
+        notEmpty(name, errorMessage("name cannot be empty", VE_COLLECTION_EMPTY_NAME));
 
         for (String reservedName : RESERVED_NAMES) {
             if (name.contains(reservedName)) {
                 throw new ValidationException(errorMessage(
-                        "name can not contains " + reservedName, VE_COLLECTION_NAME_RESERVED));
+                        "name cannot contains " + reservedName, VE_COLLECTION_NAME_RESERVED));
             }
         }
     }
