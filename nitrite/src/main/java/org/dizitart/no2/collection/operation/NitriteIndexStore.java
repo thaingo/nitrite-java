@@ -18,8 +18,6 @@
 
 package org.dizitart.no2.collection.operation;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.IndexType;
@@ -163,8 +161,6 @@ class NitriteIndexStore implements IndexStore {
         return mvStore.openMap(indexMetaName);
     }
 
-    @EqualsAndHashCode
-    @ToString
     private static class IndexMeta implements Serializable {
         private Index index;
         private String indexMap;

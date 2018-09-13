@@ -18,11 +18,11 @@
 
 package org.dizitart.no2.collection.objects;
 
-import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.collection.FindOptions;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.collection.SortOrder;
 import org.dizitart.no2.collection.objects.data.*;
+import org.dizitart.no2.filters.Filter;
 import org.junit.Test;
 
 import java.util.Date;
@@ -425,5 +425,21 @@ public class RepositorySearchTest extends BaseObjectRepositoryTest {
         sortBy = FindOptions.sort("status", SortOrder.Ascending);
         assertEquals(repository.find(sortBy).size(), 3);
         assertEquals(repository.find(sortBy).firstOrNull().getStatus(), "Married");
+    }
+
+    @Test
+    public void testRepeatableIndexAnnotation() {
+        ObjectRepository<RepeatableIndexTest> repo = db.getRepository(RepeatableIndexTest.class);
+        RepeatableIndexTest first = new RepeatableIndexTest();
+        first.setAge(12);
+        first.setFirstName("fName");
+        first.setLastName("lName");
+        repo.insert(first);
+
+        assertTrue(repo.hasIndex("firstName"));
+        assertTrue(repo.hasIndex("age"));
+        assertTrue(repo.hasIndex("lastName"));
+
+        assertEquals(repo.find(eq("age", 12)).firstOrNull(), first);
     }
 }

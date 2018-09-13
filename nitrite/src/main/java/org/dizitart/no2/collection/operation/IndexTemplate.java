@@ -89,12 +89,7 @@ class IndexTemplate {
             }
         }
 
-        try {
-            rebuildIndex(index, isAsync);
-        } catch (IllegalStateException ise) {
-            throw new IndexingException(errorMessage(
-                    ise.getMessage(), IE_CREATE_INDEX_FAILED), ise);
-        }
+        rebuildIndex(index, isAsync);
     }
 
     void updateIndexEntry(Document document, NitriteId nitriteId) {
@@ -284,8 +279,8 @@ class IndexTemplate {
         indexBuildRegistry.clear();
     }
 
-    // call to this method is already synchronized, only one thread per value
-    // can access it only if rebuild is already not running for that value
+    // call to this method is already synchronized, only one thread per field
+    // can access it only if rebuild is already not running for that field
     void rebuildIndex(final Index index, boolean isAsync) {
         final String field = index.getField();
         if (getBuildFlag(field).compareAndSet(false, true)) {

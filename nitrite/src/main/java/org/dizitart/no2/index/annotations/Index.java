@@ -22,10 +22,7 @@ import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Specifies a field to be indexed.
@@ -51,6 +48,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Repeatable(Indices.class)
 public @interface Index {
     /**
      * The field name to be indexed.

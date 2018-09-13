@@ -273,6 +273,22 @@ public class SpatialIndexTest {
         assertEquals(cursor.toList(), Collections.singletonList(object1));
     }
 
+    @Test
+    public void testParseGeometry() throws ParseException {
+        Nitrite db = Nitrite.builder().openOrCreate();
+        WKTReader reader = new WKTReader();
+        Geometry point = reader.read("POINT(500 505)");
+        Document document = Document.createDocument("geom", point);
+
+        NitriteCollection collection = db.getCollection("test");
+        collection.insert(document);
+        collection.createIndex("geom", IndexOptions.indexOptions(IndexType.Spatial));
+
+        Document update = document.clone();
+        update.put("geom", reader.read("POINT(0 0)"));
+        collection.update(update);
+    }
+
     @Data
     @Index(value = "geometry", type = IndexType.Spatial)
     private static class SpatialData {
