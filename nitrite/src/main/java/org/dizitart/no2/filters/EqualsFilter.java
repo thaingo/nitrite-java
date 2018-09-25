@@ -89,7 +89,7 @@ class EqualsFilter extends BaseFilter {
 
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = document.getFieldValue(getField());
+            Object fieldValue = document.get(getField());
             if (deepEquals(fieldValue, value)) {
                 nitriteIdSet.add(entry.getKey());
             }

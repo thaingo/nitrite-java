@@ -100,7 +100,7 @@ class NitriteSpatialIndexer implements SpatialIndexer {
             Document object = entry.getValue();
 
             // retrieved the value from document
-            Object fieldValue = object.getFieldValue(field);
+            Object fieldValue = object.get(field);
 
             if (fieldValue == null) continue;
 

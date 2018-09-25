@@ -51,7 +51,7 @@ class RegexFilter extends StringFilter {
 
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = document.getFieldValue(getField());
+            Object fieldValue = document.get(getField());
             if (fieldValue != null) {
                 if (fieldValue instanceof String) {
                     Matcher matcher = pattern.matcher((String) fieldValue);

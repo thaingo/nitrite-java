@@ -106,7 +106,7 @@ class NitriteTextIndexer implements TextIndexer {
             Document object = entry.getValue();
 
             // retrieve the value from document
-            Object fieldValue = object.getFieldValue(field);
+            Object fieldValue = object.get(field);
 
             if (fieldValue == null) continue;
             if (!(fieldValue instanceof String)) {

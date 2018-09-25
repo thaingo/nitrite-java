@@ -75,7 +75,7 @@ class InFilter extends BaseFilter {
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = document.getFieldValue(getField());
+            Object fieldValue = document.get(getField());
 
             if (fieldValue instanceof Comparable) {
                 Comparable comparable = (Comparable) fieldValue;

@@ -98,7 +98,7 @@ class IndexTemplate {
         for (String field : fields) {
             Index index = indexStore.findIndex(field);
             if (index != null) {
-                Object fieldValue = document.getFieldValue(field);
+                Object fieldValue = document.get(field);
 
                 if (fieldValue == null) continue;
                 validateDocumentIndexField(fieldValue, field);
@@ -137,7 +137,7 @@ class IndexTemplate {
         for (String field : fields) {
             Index index = indexStore.findIndex(field);
             if (index != null) {
-                Object fieldValue = document.getFieldValue(field);
+                Object fieldValue = document.get(field);
 
                 if (fieldValue == null) continue;
                 validateDocumentIndexField(fieldValue, field);
@@ -175,8 +175,8 @@ class IndexTemplate {
         for (String field : fields) {
             Index index = indexStore.findIndex(field);
             if (index != null) {
-                Object newValue = newDocument.getFieldValue(field);
-                Object oldValue = oldDocument.getFieldValue(field);
+                Object newValue = newDocument.get(field);
+                Object oldValue = oldDocument.get(field);
 
                 if (newValue == null) continue;
                 if (newValue instanceof Comparable && oldValue instanceof Comparable) {

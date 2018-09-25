@@ -118,6 +118,9 @@ public class Document extends LinkedHashMap<String, Object>
      * @return the object
      */
     public Object get(String key) {
+        if (!containsKey(key)) {
+            return deepGet(key);
+        }
         return super.get(key);
     }
 
@@ -214,27 +217,18 @@ public class Document extends LinkedHashMap<String, Object>
         return new Document(clone);
     }
 
-    /**
-     * Gets the value of a field inside a document.
-     *
-     * @since 4.0.0
-     * @param field    the field
-     * @return the value of the field.
-     */
-    public Object getFieldValue(String field) {
-        Object fieldValue;
+    private Object deepGet(String field) {
         if (field.contains(FIELD_SEPARATOR)) {
-            fieldValue = getEmbeddedValue(field);
+            return getByEmbeddedKey(field);
         } else {
-            fieldValue = get(field);
+            return null;
         }
-        return fieldValue;
     }
 
     @SuppressWarnings("unchecked")
-    private Object getEmbeddedValue(String embeddedField) {
+    private Object getByEmbeddedKey(String embeddedKey) {
         String regex = "\\" + FIELD_SEPARATOR;
-        String[] split = embeddedField.split(regex, 2);
+        String[] split = embeddedKey.split(regex, 2);
         String key = split[0];
 
         if (isNullOrEmpty(key)) {
@@ -248,7 +242,7 @@ public class Document extends LinkedHashMap<String, Object>
 
         if (object instanceof Document) {
             Document document = (Document) object;
-            return document.getFieldValue(remainingKey);
+            return document.get(remainingKey);
         } else if (object instanceof List) {
             int index = asInteger(remainingKey);
             if (index == -1) {

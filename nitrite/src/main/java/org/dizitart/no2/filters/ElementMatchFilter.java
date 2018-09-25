@@ -68,7 +68,7 @@ class ElementMatchFilter implements Filter {
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = document.getFieldValue(field);
+            Object fieldValue = document.get(field);
 
             if (fieldValue == null) {
                 continue;
@@ -160,7 +160,7 @@ class ElementMatchFilter implements Filter {
         Object value = ((EqualsFilter) filter).getValue();
         if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = document.getFieldValue(((EqualsFilter) filter).getField());
+            Object docValue = document.get(((EqualsFilter) filter).getField());
             return deepEquals(value, docValue);
         } else {
             return deepEquals(item, value);
@@ -178,7 +178,7 @@ class ElementMatchFilter implements Filter {
             return arg.compareTo(comparable) > 0;
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = document.getFieldValue(((GreaterThanFilter) filter).getField());
+            Object docValue = document.get(((GreaterThanFilter) filter).getField());
             if (docValue instanceof Comparable) {
                 Comparable arg = (Comparable) docValue;
                 return arg.compareTo(comparable) > 0;
@@ -205,7 +205,7 @@ class ElementMatchFilter implements Filter {
             return arg.compareTo(comparable) >= 0;
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = document.getFieldValue(((GreaterEqualFilter) filter).getField());
+            Object docValue = document.get(((GreaterEqualFilter) filter).getField());
             if (docValue instanceof Comparable) {
                 Comparable arg = (Comparable) docValue;
                 return arg.compareTo(comparable) >= 0;
@@ -232,7 +232,7 @@ class ElementMatchFilter implements Filter {
             return arg.compareTo(comparable) <= 0;
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = document.getFieldValue(((LesserEqualFilter) filter).getField());
+            Object docValue = document.get(((LesserEqualFilter) filter).getField());
             if (docValue instanceof Comparable) {
                 Comparable arg = (Comparable) docValue;
                 return arg.compareTo(comparable) <= 0;
@@ -259,7 +259,7 @@ class ElementMatchFilter implements Filter {
             return arg.compareTo(comparable) < 0;
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = document.getFieldValue(((LesserThanFilter) filter).getField());
+            Object docValue = document.get(((LesserThanFilter) filter).getField());
             if (docValue instanceof Comparable) {
                 Comparable arg = (Comparable) docValue;
                 return arg.compareTo(comparable) < 0;
@@ -280,7 +280,7 @@ class ElementMatchFilter implements Filter {
         if (values != null) {
             if (item instanceof Document) {
                 Document document = (Document) item;
-                Object docValue = document.getFieldValue(((InFilter) filter).getField());
+                Object docValue = document.get(((InFilter) filter).getField());
                 if (docValue instanceof Comparable) {
                     return values.contains(docValue);
                 }
@@ -299,7 +299,7 @@ class ElementMatchFilter implements Filter {
             return matcher.find();
         } else if (item instanceof Document) {
             Document document = (Document) item;
-            Object docValue = document.getFieldValue(((RegexFilter) filter).getField());
+            Object docValue = document.get(((RegexFilter) filter).getField());
             if (docValue instanceof String) {
                 Pattern pattern = Pattern.compile(value);
                 Matcher matcher = pattern.matcher((String) docValue);

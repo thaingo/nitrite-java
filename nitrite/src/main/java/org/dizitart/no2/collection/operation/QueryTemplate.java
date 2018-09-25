@@ -161,7 +161,7 @@ class QueryTemplate {
 
         for (NitriteId id : nitriteIdSet) {
             Document document = nitriteMap.get(id);
-            Object value = document.getFieldValue(sortField);
+            Object value = document.get(sortField);
 
             if (value != null) {
                 if (value.getClass().isArray() || value instanceof Iterable) {

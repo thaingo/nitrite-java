@@ -75,7 +75,7 @@ class GreaterThanFilter extends ComparisonFilter {
         Set<NitriteId> nitriteIdSet = new LinkedHashSet<>();
         for (Map.Entry<NitriteId, Document> entry: documentMap.entrySet()) {
             Document document = entry.getValue();
-            Object fieldValue = document.getFieldValue(getField());
+            Object fieldValue = document.get(getField());
             if (fieldValue != null) {
                 if (fieldValue instanceof Number && comparable instanceof Number) {
                     if (compare((Number) fieldValue, (Number) comparable) > 0) {

@@ -62,46 +62,46 @@ public class DocumentTest {
     @Test
     public void testGetValue() {
         MapperFacade nitriteMapper = new JacksonFacade();
-        assertNull(doc.getFieldValue(""));
-        assertEquals(doc.getFieldValue("score"), 1034);
-        assertEquals(doc.getFieldValue("location.state"), "NY");
-        assertEquals(doc.getFieldValue("location.address"), nitriteMapper.parse("{" +
+        assertNull(doc.get(""));
+        assertEquals(doc.get("score"), 1034);
+        assertEquals(doc.get("location.state"), "NY");
+        assertEquals(doc.get("location.address"), nitriteMapper.parse("{" +
                 "            line1: '40', " +
                 "            line2: 'ABC Street', " +
                 "            house: ['1', '2', '3'] " +
                 "       },"));
-        assertEquals(doc.getFieldValue("location.address.line1"), "40");
-        assertNull(doc.getFieldValue("location.category"));
+        assertEquals(doc.get("location.address.line1"), "40");
+        assertNull(doc.get("location.category"));
 
-        assertEquals(doc.getFieldValue("category"), doc.get("category"));
-        assertEquals(doc.getFieldValue("category.2"), "grocery");
-        assertEquals(doc.getFieldValue("location.address.house.2"), "3");
+        assertEquals(doc.get("category"), doc.get("category"));
+        assertEquals(doc.get("category.2"), "grocery");
+        assertEquals(doc.get("location.address.house.2"), "3");
 
-        assertNotEquals(doc.getFieldValue("location.address.test"), nitriteMapper.parse("{" +
+        assertNotEquals(doc.get("location.address.test"), nitriteMapper.parse("{" +
                 "            line1: '40', " +
                 "            line2: 'ABC Street'" +
                 "       },"));
-        assertNotEquals(doc.getFieldValue("location.address.test"), "a");
+        assertNotEquals(doc.get("location.address.test"), "a");
     }
 
     @Test(expected = ValidationException.class)
     public void testGetValueFailure() {
-        assertEquals(doc.getFieldValue("score.test"), 1034);
+        assertEquals(doc.get("score.test"), 1034);
     }
 
     @Test(expected = ValidationException.class)
     public void testGetValueInvalidIndex() {
-        assertEquals(doc.getFieldValue("category.3"), "grocery");
+        assertEquals(doc.get("category.3"), "grocery");
     }
 
     @Test(expected = ValidationException.class)
     public void testGetValueObjectArray() {
-        assertEquals(doc.getFieldValue("objArray.0.value"), 1);
+        assertEquals(doc.get("objArray.0.value"), 1);
     }
 
     @Test(expected = ValidationException.class)
     public void testGetValueInvalidKey() {
-        assertEquals(doc.getFieldValue("."), 1);
+        assertEquals(doc.get("."), 1);
     }
 
     @Test(expected = InvalidOperationException.class)
@@ -119,11 +119,11 @@ public class DocumentTest {
     }
 
     @Test(expected = ValidationException.class)
-    public void testGetFieldValue() {
+    public void testget() {
         String key = "first.array.-1";
         Document document = new Document()
                 .put("first", new Document().put("array", new int[] {0}));
-        document.getFieldValue(key);
+        document.get(key);
     }
 
     @Test
