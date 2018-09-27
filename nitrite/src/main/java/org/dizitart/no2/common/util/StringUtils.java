@@ -47,4 +47,28 @@ public class StringUtils {
     public static boolean isNullOrEmpty(CharSequence value) {
         return value == null || value.length() == 0;
     }
+
+    /**
+     * Returns a new String composed of copies of the `strings`
+     * joined together with a copy of the specified `separator`.
+     *
+     * @param separator  the delimiter that separates each element
+     * @param strings the elements to join together.
+     *
+     * @return a new {@code String} that is composed of the `strings`
+     * separated by the `separator`
+     * @since 4.0.0
+     * */
+    public static String join(String separator, String[] strings) {
+        StringBuilder sb = new StringBuilder();
+        int end = 0;
+        for (String s : strings) {
+            if (s != null) {
+                sb.append(s);
+                end = sb.length();
+                sb.append(separator);
+            }
+        }
+        return sb.substring(0, end);
+    }
 }

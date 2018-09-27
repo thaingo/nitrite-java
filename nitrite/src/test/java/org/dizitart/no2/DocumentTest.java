@@ -82,26 +82,18 @@ public class DocumentTest {
                 "            line2: 'ABC Street'" +
                 "       },"));
         assertNotEquals(doc.get("location.address.test"), "a");
+        assertNull(doc.get("."));
+        assertNull(doc.get("score.test"));
     }
 
-    @Test(expected = ValidationException.class)
-    public void testGetValueFailure() {
-        assertEquals(doc.get("score.test"), 1034);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testGetValueInvalidIndex() {
-        assertEquals(doc.get("category.3"), "grocery");
-    }
-
-    @Test(expected = ValidationException.class)
+    @Test
     public void testGetValueObjectArray() {
         assertEquals(doc.get("objArray.0.value"), 1);
     }
 
     @Test(expected = ValidationException.class)
-    public void testGetValueInvalidKey() {
-        assertEquals(doc.get("."), 1);
+    public void testGetValueInvalidIndex() {
+        assertEquals(doc.get("category.3"), "grocery");
     }
 
     @Test(expected = InvalidOperationException.class)
@@ -119,7 +111,7 @@ public class DocumentTest {
     }
 
     @Test(expected = ValidationException.class)
-    public void testget() {
+    public void testGet() {
         String key = "first.array.-1";
         Document document = new Document()
                 .put("first", new Document().put("array", new int[] {0}));

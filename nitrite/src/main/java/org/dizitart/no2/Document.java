@@ -26,18 +26,15 @@ import org.dizitart.no2.exceptions.ValidationException;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.dizitart.no2.NitriteId.createId;
 import static org.dizitart.no2.NitriteId.newId;
 import static org.dizitart.no2.common.Constants.*;
-import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
-import static org.dizitart.no2.exceptions.ErrorMessage.*;
+import static org.dizitart.no2.exceptions.ErrorMessage.DOC_GET_TYPE_NULL;
+import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
  * Represents a type-safe container of nitrite document. It is a collection
@@ -228,53 +225,66 @@ public class Document extends LinkedHashMap<String, Object>
     @SuppressWarnings("unchecked")
     private Object getByEmbeddedKey(String embeddedKey) {
         String regex = "\\" + FIELD_SEPARATOR;
-        String[] split = embeddedKey.split(regex, 2);
-        String key = split[0];
-
-        if (isNullOrEmpty(key)) {
-            throw new ValidationException(INVALID_EMBEDDED_FIELD);
+        String[] path = embeddedKey.split(regex);
+        if (path.length < 1) {
+            return null;
         }
 
-        Object object = get(key);
-        if (object == null) return null;
+        return recursiveGet(get(path[0]), Arrays.copyOfRange(path, 1, path.length));
+    }
 
-        String remainingKey = split[1];
+    private Object recursiveGet(Object object, String[] remainingPath) {
+        if (object == null) {
+            return null;
+        }
 
-        if (object instanceof Document) {
-            Document document = (Document) object;
-            return document.get(remainingKey);
-        } else if (object instanceof List) {
-            int index = asInteger(remainingKey);
-            if (index == -1) {
+        if (remainingPath.length == 0) {
+            return object;
+        }
+
+        if (object.getClass().isArray()) {
+            String indexString = remainingPath[0];
+            int index = asInteger(indexString);
+            if (index < 0) {
                 throw new ValidationException(errorMessage(
-                        "invalid index " + remainingKey + " for collection",
-                        VE_NEGATIVE_LIST_INDEX_FIELD));
-            }
-            List collection = (List) object;
-            if (index >= collection.size()) {
-                throw new ValidationException(errorMessage("index = " + remainingKey +
-                        " is not less than the size of the collection '" + key +
-                        "' = " + collection.size(), VE_INVALID_LIST_INDEX_FIELD));
-            }
-            return collection.get(index);
-        } else if (object.getClass().isArray()) {
-            int index = asInteger(remainingKey);
-            if (index == -1) {
-                throw new ValidationException(errorMessage(
-                        "invalid index " + remainingKey + " for collection",
+                        "invalid index " + indexString + " for array",
                         VE_NEGATIVE_ARRAY_INDEX_FIELD));
             }
+
             Object[] array = getArray(object);
             if (index >= array.length) {
-                throw new ValidationException(errorMessage("index = " + remainingKey +
-                        " is not less than the size of the collection '" + key +
-                        "' = " + array.length, VE_INVALID_ARRAY_INDEX_FIELD));
+                throw new ValidationException(errorMessage("index " + indexString +
+                        " is not less than the size of the array " + array.length,
+                        VE_INVALID_ARRAY_INDEX_FIELD));
             }
-            return array[index];
-        } else {
-            throw new ValidationException(errorMessage("invalid remaining field "
-                    + remainingKey, VE_INVALID_REMAINING_FIELD));
+
+            return recursiveGet(array[index], Arrays.copyOfRange(remainingPath, 1, remainingPath.length));
         }
+
+        if (object instanceof List) {
+            String indexString = remainingPath[0];
+            int index = asInteger(indexString);
+            if (index < 0) {
+                throw new ValidationException(errorMessage(
+                        "invalid index " + indexString + " for list",
+                        VE_NEGATIVE_LIST_INDEX_FIELD));
+            }
+
+            List collection = (List) object;
+            if (index >= collection.size()) {
+                throw new ValidationException(errorMessage("index " + indexString +
+                        " is not less than the size of the list " + collection.size(), VE_INVALID_LIST_INDEX_FIELD));
+            }
+
+            return recursiveGet(collection.get(index), Arrays.copyOfRange(remainingPath, 1, remainingPath.length));
+        }
+
+        if (object instanceof Document) {
+            return recursiveGet(((Document) object).get(remainingPath[0]),
+                    Arrays.copyOfRange(remainingPath, 1, remainingPath.length));
+        }
+
+        return null;
     }
 
     private int asInteger(String number) {

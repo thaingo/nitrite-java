@@ -105,7 +105,7 @@ public class ErrorCodes {
     public static final int VE_INVALID_LIST_INDEX_FIELD = 1075;
     public static final int VE_NEGATIVE_ARRAY_INDEX_FIELD = 1076;
     public static final int VE_INVALID_ARRAY_INDEX_FIELD = 1077;
-    public static final int VE_INVALID_REMAINING_FIELD = 1078;
+    public static final int VE_NITRITE_CONTEXT_NULL = 1078;
     public static final int VE_TYPE_NOT_SERIALIZABLE = 1079;
     static final int VE_PROJECTION_WITH_NOT_NULL_VALUE = 1080;
     public static final int VE_OBJ_STORE_NULL_KEY = 1081;
@@ -141,7 +141,6 @@ public class ErrorCodes {
     public static final int VE_LISTENER_NULL = 1111;
     public static final int VE_TYPE_NULL = 1112;
     public static final int VE_COLLECTION_NULL = 1113;
-    public static final int VE_NITRITE_CONTEXT_NULL = 1114;
 
     // endregion
 
@@ -230,7 +229,7 @@ public class ErrorCodes {
     public static final int IE_VALIDATE_REBUILD_INDEX_RUNNING = 5002;
     static final int IE_FULL_TEXT_NON_STRING_VALUE = 5003;
     public static final int IE_INDEX_EXISTS = 5004;
-    public static final int IE_CREATE_INDEX_FAILED = 5005;
+    public static final int IE_INVALID_TYPE_FOR_INDEX = 5005;
     public static final int IE_CAN_NOT_DROP_ALL_RUNNING_INDEX = 5006;
     public static final int IE_CAN_NOT_DROP_RUNNING_INDEX = 5007;
     public static final int IE_REBUILD_INDEX_RUNNING = 5008;
@@ -243,7 +242,6 @@ public class ErrorCodes {
     public static final int IE_OBJ_INDEX_ON_NON_COMPARABLE_FIELD = 5015;
     public static final int IE_FAILED_TO_WRITE_FTS_DATA = 5016;
     static final int IE_FAILED_TO_QUERY_FTS_DATA = 5017;
-    public static final int IE_INVALID_TYPE_FOR_INDEX = 5018;
 
     // endregion
 

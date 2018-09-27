@@ -265,10 +265,6 @@ public class ErrorMessage {
             new ErrorMessage("invalid embedded field provided",
                     VE_OBJ_INVALID_EMBEDDED_FIELD);
 
-    public static final ErrorMessage INVALID_EMBEDDED_FIELD =
-            new ErrorMessage("invalid embedded field provided",
-                    VE_INVALID_EMBEDDED_FIELD);
-
     public static final ErrorMessage DOC_GET_TYPE_NULL =
             new ErrorMessage("type cannot be null",
                     VE_INVALID_EMBEDDED_FIELD);
