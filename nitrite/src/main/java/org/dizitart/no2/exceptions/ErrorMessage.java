@@ -197,6 +197,10 @@ public class ErrorMessage {
             new ErrorMessage("cannot compare with null id",
                     IIE_COMPARISON_WITH_NULL_ID);
 
+    public static final ErrorMessage ID_VALUE_CAN_NOT_BE_NULL =
+            new ErrorMessage("id cannot be null",
+                    IIE_NULL_VALUE_ID);
+
     public static final ErrorMessage ID_CAN_NOT_BE_NULL =
             new ErrorMessage("id cannot be null",
                     IIE_NULL_ID);

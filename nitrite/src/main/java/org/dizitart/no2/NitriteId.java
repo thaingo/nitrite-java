@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.dizitart.no2.common.Constants.ID_PREFIX;
 import static org.dizitart.no2.common.Constants.ID_SUFFIX;
 import static org.dizitart.no2.exceptions.ErrorMessage.CAN_NOT_COMPARE_WITH_NULL_ID;
+import static org.dizitart.no2.exceptions.ErrorMessage.ID_VALUE_CAN_NOT_BE_NULL;
 
 /**
  * An unique identifier across the Nitrite database. Each document in
@@ -74,6 +75,10 @@ public final class NitriteId implements Comparable<NitriteId>, Serializable {
      * @return the {@link NitriteId}
      */
     public static NitriteId createId(Long value) {
+        if (value == null) {
+            throw new InvalidIdException(ID_VALUE_CAN_NOT_BE_NULL);
+        }
+
         return new NitriteId(value);
     }
 

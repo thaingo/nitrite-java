@@ -255,6 +255,7 @@ public class ErrorCodes {
     static final int IIE_AUTO_ID_ALREADY_SET = 6006;
     static final int IIE_NULL_ID_FILTER_VALUE = 6007;
     static final int IIE_CANNOT_ACCESS_AUTO_ID = 6008;
+    static final int IIE_NULL_VALUE_ID = 6009;
 
     // endregion
 
