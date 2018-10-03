@@ -337,4 +337,10 @@ public class NitriteTest {
     public void testGetCollectionInvalidName() {
         db.getCollection(META_MAP_NAME);
     }
+
+    @Test(expected = NitriteIOException.class)
+    public void testIssue112() {
+        Nitrite db = Nitrite.builder().filePath("/tmp").openOrCreate();
+        assertNull(db);
+    }
 }

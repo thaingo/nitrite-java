@@ -163,6 +163,7 @@ public class ErrorCodes {
     static final int NIOE_NITRITE_STORE_CLOSED = 2015;
     public static final int NIOE_CLOSED_FAILED = 2016;
     public static final int NIOE_CLOSED_NON_W_CHANNEL = 2017;
+    public static final int NIOE_PATH_IS_DIRECTORY = 2018;
 
     // endregion
 

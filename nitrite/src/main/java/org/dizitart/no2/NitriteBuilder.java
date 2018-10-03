@@ -46,6 +46,7 @@ import static org.dizitart.no2.common.Constants.RESERVED_NAMES;
 import static org.dizitart.no2.common.util.ObjectUtils.*;
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.exceptions.ErrorCodes.NIOE_DIR_DOES_NOT_EXISTS;
+import static org.dizitart.no2.exceptions.ErrorCodes.NIOE_PATH_IS_DIRECTORY;
 import static org.dizitart.no2.exceptions.ErrorMessage.*;
 import static org.dizitart.no2.tool.Recovery.recover;
 
@@ -449,6 +450,10 @@ public class NitriteBuilder {
             if (!isNullOrEmpty(filePath)) {
                 try {
                     File file = new File(filePath);
+                    if (file.isDirectory()) {
+                        throw new NitriteIOException(errorMessage(filePath + " is a directory, must be a file", NIOE_PATH_IS_DIRECTORY));
+                    }
+
                     if (file.exists() && file.isFile()) {
                         log.error("Database corruption detected. Trying to repair", ise);
                         recover(filePath);
