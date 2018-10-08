@@ -46,7 +46,7 @@ import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 class NitriteSpatialIndexer implements SpatialIndexer {
     private IndexStore indexStore;
     private NitriteMap<NitriteId, Document> nitriteMap;
-    private final Object lock = new Object();
+//    private final Object lock = new Object();
 
     NitriteSpatialIndexer(NitriteMap<NitriteId, Document> nitriteMap,
                           IndexStore indexStore) {
@@ -56,38 +56,30 @@ class NitriteSpatialIndexer implements SpatialIndexer {
 
     @Override
     public void writeIndex(NitriteId id, String field, Geometry element, boolean unique) {
-        synchronized (lock) {
-            NitriteRTreeMap indexMap = indexStore.getSpatialIndexMap(field);
-            SpatialKey spatialKey = getKey(id.getIdValue(), element);
-            indexMap.add(spatialKey, element);
-        }
+        NitriteRTreeMap indexMap = indexStore.getSpatialIndexMap(field);
+        SpatialKey spatialKey = getKey(id.getIdValue(), element);
+        indexMap.add(spatialKey, element);
     }
 
     @Override
     public void updateIndex(NitriteId id, String field, Geometry newElement, Geometry oldElement, boolean unique) {
-        synchronized (lock) {
-            NitriteRTreeMap indexMap = indexStore.getSpatialIndexMap(field);
-            SpatialKey oldKey = getKey(id.getIdValue(), oldElement);
-            SpatialKey newKey = getKey(id.getIdValue(), newElement);
-            indexMap.remove(oldKey);
-            indexMap.add(newKey, newElement);
-        }
+        NitriteRTreeMap indexMap = indexStore.getSpatialIndexMap(field);
+        SpatialKey oldKey = getKey(id.getIdValue(), oldElement);
+        SpatialKey newKey = getKey(id.getIdValue(), newElement);
+        indexMap.remove(oldKey);
+        indexMap.add(newKey, newElement);
     }
 
     @Override
     public void removeIndex(NitriteId id, String field, Geometry element) {
-        synchronized (lock) {
-            NitriteRTreeMap indexMap = indexStore.getSpatialIndexMap(field);
-            SpatialKey spatialKey = getKey(id.getIdValue(), element);
-            indexMap.remove(spatialKey);
-        }
+        NitriteRTreeMap indexMap = indexStore.getSpatialIndexMap(field);
+        SpatialKey spatialKey = getKey(id.getIdValue(), element);
+        indexMap.remove(spatialKey);
     }
 
     @Override
     public void dropIndex(String field) {
-        synchronized (lock) {
-            indexStore.dropIndex(field);
-        }
+        indexStore.dropIndex(field);
     }
 
     @Override

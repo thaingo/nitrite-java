@@ -38,12 +38,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class CollectionFindNegativeTest extends BaseCollectionTest {
     @Test(expected = FilterException.class)
-    public void testFindFilterInvalidAccessor() {
-        insert();
-        collection.find(Filter.eq("lastName.name", "ln2"));
-    }
-
-    @Test(expected = FilterException.class)
     public void testFindFilterInvalidIndex() {
         insert();
         collection.find(Filter.eq("data.9", 4));

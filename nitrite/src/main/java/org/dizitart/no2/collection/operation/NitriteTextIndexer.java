@@ -42,7 +42,6 @@ class NitriteTextIndexer implements TextIndexer {
     private TextTokenizer tokenizerService;
     private IndexStore indexStore;
     private NitriteMap<NitriteId, Document> nitriteMap;
-    private final Object lock = new Object();
 
     NitriteTextIndexer(
             NitriteMap<NitriteId, Document> nitriteMap,
@@ -68,20 +67,18 @@ class NitriteTextIndexer implements TextIndexer {
         try {
             Set<String> words = tokenizerService.tokenize(text);
 
-            synchronized (lock) {
-                NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap
-                        = indexStore.getIndexMap(field);
+            NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap
+                    = indexStore.getIndexMap(field);
 
-                for (String word : words) {
-                    ConcurrentSkipListSet<NitriteId> nitriteIds = indexMap.get(word);
-                    if (nitriteIds != null) {
-                        nitriteIds.remove(id);
+            for (String word : words) {
+                ConcurrentSkipListSet<NitriteId> nitriteIds = indexMap.get(word);
+                if (nitriteIds != null) {
+                    nitriteIds.remove(id);
 
-                        if (nitriteIds.isEmpty()) {
-                            indexMap.remove(word);
-                        } else {
-                            indexMap.put(word, nitriteIds);
-                        }
+                    if (nitriteIds.isEmpty()) {
+                        indexMap.remove(word);
+                    } else {
+                        indexMap.put(word, nitriteIds);
                     }
                 }
             }
@@ -94,9 +91,7 @@ class NitriteTextIndexer implements TextIndexer {
 
     @Override
     public void dropIndex(String field) {
-        synchronized (lock) {
-            indexStore.dropIndex(field);
-        }
+        indexStore.dropIndex(field);
     }
 
     @Override
@@ -137,19 +132,17 @@ class NitriteTextIndexer implements TextIndexer {
         try {
             Set<String> words = tokenizerService.tokenize(text);
 
-            synchronized (lock) {
-                NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap
-                        = indexStore.getIndexMap(field);
+            NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap
+                    = indexStore.getIndexMap(field);
 
-                for (String word : words) {
-                    ConcurrentSkipListSet<NitriteId> nitriteIds = indexMap.get(word);
+            for (String word : words) {
+                ConcurrentSkipListSet<NitriteId> nitriteIds = indexMap.get(word);
 
-                    if (nitriteIds == null) {
-                        nitriteIds = new ConcurrentSkipListSet<>();
-                    }
-                    nitriteIds.add(id);
-                    indexMap.put(word, nitriteIds);
+                if (nitriteIds == null) {
+                    nitriteIds = new ConcurrentSkipListSet<>();
                 }
+                nitriteIds.add(id);
+                indexMap.put(word, nitriteIds);
             }
         } catch (IOException ioe) {
             throw new IndexingException(errorMessage(

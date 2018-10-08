@@ -115,7 +115,7 @@ public class Document extends LinkedHashMap<String, Object>
      * @return the object
      */
     public Object get(String key) {
-        if (!containsKey(key)) {
+        if (key != null && !containsKey(key)) {
             return deepGet(key);
         }
         return super.get(key);

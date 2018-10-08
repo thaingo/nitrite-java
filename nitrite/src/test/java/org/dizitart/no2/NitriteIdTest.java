@@ -64,14 +64,10 @@ public class NitriteIdTest {
         assertFalse(one.compareTo(two) == 0);
     }
 
-    @Test
+    @Test(expected = InvalidIdException.class)
     public void testToString() {
         NitriteId nullId = NitriteId.createId(null);
-        assertNull(nullId.getIdValue());
-        assertEquals(nullId.toString(), "");
-
-        NitriteId first = NitriteId.newId();
-        assertNotEquals(first.toString(), "");
+        assertNotEquals(nullId.toString(), "");
     }
 
     @Test(expected = InvalidIdException.class)

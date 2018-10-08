@@ -25,9 +25,10 @@ import io.reactivex.observers.TestObserver;
 import org.dizitart.no2.BaseCollectionTest;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.common.mapper.JacksonFacade;
 import org.dizitart.no2.common.mapper.MapperFacade;
+import org.dizitart.no2.exceptions.IndexingException;
+import org.dizitart.no2.filters.Filter;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,8 +44,8 @@ import static org.dizitart.no2.collection.FindOptions.limit;
 import static org.dizitart.no2.collection.FindOptions.sort;
 import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.dizitart.no2.common.Constants.DOC_REVISION;
-import static org.dizitart.no2.filters.Filter.*;
 import static org.dizitart.no2.common.util.TestUtil.isSorted;
+import static org.dizitart.no2.filters.Filter.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
@@ -730,5 +731,12 @@ public class CollectionFindTest extends BaseCollectionTest {
         documentObservable.subscribeWith(observer);
 
         observer.assertSubscribed();
+    }
+
+    @Test
+    public void testFindFilterInvalidAccessor() {
+        insert();
+        Cursor cursor = collection.find(Filter.eq("lastName.name", "ln2"));
+        assertEquals(cursor.size(), 0);
     }
 }
