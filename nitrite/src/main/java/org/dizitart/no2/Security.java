@@ -79,31 +79,39 @@ class Security {
 
     static MVStore openSecurely(MVStore.Builder builder, String userId, String password) {
         MVStore store = builder.open();
+        boolean success = false;
 
-        if (!isNullOrEmpty(password) && !isNullOrEmpty(userId)) {
-            if (!store.hasMap(USER_MAP)) {
-                throw new SecurityException(NO_USER_MAP_FOUND);
-            }
-            MVMap<String, UserCredential> userMap = store.openMap(USER_MAP);
-            UserCredential userCredential = userMap.get(userId);
+        try {
+            if (!isNullOrEmpty(password) && !isNullOrEmpty(userId)) {
+                if (!store.hasMap(USER_MAP)) {
+                    throw new SecurityException(NO_USER_MAP_FOUND);
+                }
+                MVMap<String, UserCredential> userMap = store.openMap(USER_MAP);
+                UserCredential userCredential = userMap.get(userId);
 
-            if (userCredential != null) {
-                byte[] salt = userCredential.getPasswordSalt();
-                byte[] expectedHash = userCredential.getPasswordHash();
+                if (userCredential != null) {
+                    byte[] salt = userCredential.getPasswordSalt();
+                    byte[] expectedHash = userCredential.getPasswordHash();
 
-                if (!isExpectedPassword(password.toCharArray(), salt, expectedHash)) {
-                    throw new SecurityException(INVALID_USER_PASSWORD);
+                    if (!isExpectedPassword(password.toCharArray(), salt, expectedHash)) {
+                        throw new SecurityException(INVALID_USER_PASSWORD);
+                    }
+                } else {
+                    throw new SecurityException(NULL_USER_CREDENTIAL);
                 }
             } else {
-                throw new SecurityException(NULL_USER_CREDENTIAL);
+                if (store.hasMap(USER_MAP)) {
+                    throw new SecurityException(USER_MAP_SHOULD_NOT_EXISTS);
+                }
             }
-        } else {
-            if (store.hasMap(USER_MAP)) {
-                throw new SecurityException(USER_MAP_SHOULD_NOT_EXISTS);
+
+            success = true;
+            return store;
+        } finally {
+            if (!success) {
+                store.close();
             }
         }
-
-        return store;
     }
 
     static boolean validateUserPassword(NitriteStore store, String userId, String password) {
