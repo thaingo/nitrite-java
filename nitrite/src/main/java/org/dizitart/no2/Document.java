@@ -31,6 +31,7 @@ import java.util.*;
 import static org.dizitart.no2.NitriteId.createId;
 import static org.dizitart.no2.NitriteId.newId;
 import static org.dizitart.no2.common.Constants.*;
+import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.DOC_GET_TYPE_NULL;
@@ -212,6 +213,32 @@ public class Document extends LinkedHashMap<String, Object>
     public Document clone() {
         Map<String, Object> clone = (Map<String, Object>) super.clone();
         return new Document(clone);
+    }
+
+    public Set<String> getFields() {
+        return getFieldsInternal("");
+    }
+
+    private Set<String> getFieldsInternal(String prefix) {
+        Set<String> fields = new TreeSet<>();
+
+        for (KeyValuePair entry : this) {
+            Object value = entry.getValue();
+            if (value instanceof Document) {
+                if (isNullOrEmpty(prefix)) {
+                    fields.addAll(((Document) value).getFieldsInternal(entry.getKey()));
+                } else {
+                    fields.addAll(((Document) value).getFieldsInternal(prefix + FIELD_SEPARATOR + entry.getKey()));
+                }
+            } else if (!(value instanceof Iterable)) {
+                if (isNullOrEmpty(prefix)) {
+                    fields.add(entry.getKey());
+                } else {
+                    fields.add(prefix + FIELD_SEPARATOR + entry.getKey());
+                }
+            }
+        }
+        return fields;
     }
 
     private Object deepGet(String field) {

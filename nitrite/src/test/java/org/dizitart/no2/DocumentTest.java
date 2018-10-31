@@ -30,6 +30,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import static org.dizitart.no2.common.Constants.DOC_ID;
 import static org.junit.Assert.*;
@@ -127,5 +128,16 @@ public class DocumentTest {
             iterator.remove();
         }
         assertEquals(doc.size(), 3);
+    }
+
+    @Test
+    public void getFields() {
+        Set<String> fields = doc.getFields();
+        assertEquals(fields.size(), 5);
+        assertTrue(fields.contains("location.address.line1"));
+        assertTrue(fields.contains("location.address.line2"));
+        assertTrue(fields.contains("location.city"));
+        assertTrue(fields.contains("location.state"));
+        assertTrue(fields.contains("score"));
     }
 }

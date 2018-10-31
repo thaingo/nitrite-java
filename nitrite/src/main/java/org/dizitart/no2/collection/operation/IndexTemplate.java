@@ -22,9 +22,7 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.common.ExecutorServiceManager;
-import org.dizitart.no2.common.KeyValuePair;
 import org.dizitart.no2.common.mapper.NitriteMapper;
-import org.dizitart.no2.common.util.StringUtils;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.index.ComparableIndexer;
 import org.dizitart.no2.index.Index;
@@ -36,13 +34,10 @@ import org.locationtech.jts.geom.Geometry;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.dizitart.no2.common.Constants.FIELD_SEPARATOR;
-import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.validateDocumentIndexField;
 import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
@@ -93,7 +88,7 @@ class IndexTemplate {
     }
 
     void updateIndexEntry(Document document, NitriteId nitriteId) {
-        Set<String> fields = getFields(document);
+        Set<String> fields = document.getFields();
 
         for (String field : fields) {
             Index index = indexStore.findIndex(field);
@@ -132,7 +127,7 @@ class IndexTemplate {
     }
 
     void removeIndexEntry(Document document, NitriteId nitriteId) {
-        Set<String> fields = getFields(document);
+        Set<String> fields = document.getFields();
 
         for (String field : fields) {
             Index index = indexStore.findIndex(field);
@@ -170,7 +165,7 @@ class IndexTemplate {
 
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     void refreshIndexEntry(Document oldDocument, Document newDocument, NitriteId nitriteId) {
-        Set<String> fields = getFields(newDocument);
+        Set<String> fields = newDocument.getFields();
 
         for (String field : fields) {
             Index index = indexStore.findIndex(field);
@@ -340,33 +335,6 @@ class IndexTemplate {
             geometry = (Geometry) fieldValue;
         }
         return geometry;
-    }
-
-    private Set<String> getFields(Document document) {
-        return getFieldsInternal(document, "");
-    }
-
-    private Set<String> getFieldsInternal(Document document, String prefix) {
-        Set<String> fields = new TreeSet<>();
-        if (document == null) return fields;
-
-        for (KeyValuePair entry : document) {
-            Object value = entry.getValue();
-            if (value instanceof Document) {
-                if (isNullOrEmpty(prefix)) {
-                    fields.addAll(getFieldsInternal((Document) value, entry.getKey()));
-                } else {
-                    fields.addAll(getFieldsInternal((Document) value, prefix + FIELD_SEPARATOR + entry.getKey()));
-                }
-            } else if (!(value instanceof Iterable)) {
-                if (StringUtils.isNullOrEmpty(prefix)) {
-                    fields.add(entry.getKey());
-                } else {
-                    fields.add(prefix + FIELD_SEPARATOR + entry.getKey());
-                }
-            }
-        }
-        return fields;
     }
 
 }
