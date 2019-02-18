@@ -35,6 +35,7 @@ buildscript {
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:$nexusStagingPlugin"
         classpath "com.adarshr:gradle-test-logger-plugin:$testLoggerPluginVersion"
         classpath "gradle.plugin.gradle-plugins:jartest:$jarTestVersion"
+        classpath "gradle.plugin.io.morethan.jmhreport:gradle-jmh-report:0.9.0"
     }
 }
 

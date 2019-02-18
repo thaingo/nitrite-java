@@ -67,7 +67,7 @@ public abstract class AbstractMapper implements NitriteMapper {
     @Override
     public <T> T asObject(Document document, Class<T> type) {
         if (Mappable.class.isAssignableFrom(type)) {
-            T item = newInstance(type);
+            T item = newInstance(type, false);
             if (item == null) return null;
 
             ((Mappable) item).read(this, document);

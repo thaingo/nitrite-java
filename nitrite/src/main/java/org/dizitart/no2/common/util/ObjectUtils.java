@@ -22,11 +22,14 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.exceptions.ObjectMappingException;
 import org.dizitart.no2.exceptions.ValidationException;
+import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
+import org.objenesis.instantiator.ObjectInstantiator;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.dizitart.no2.common.Constants.KEY_OBJ_SEPARATOR;
@@ -37,7 +40,7 @@ import static org.dizitart.no2.exceptions.ErrorCodes.*;
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
- * A utility class for {@link Object}.
+ * A utility class.
  *
  * @since 1.0
  * @author Anindya Chatterjee.
@@ -45,6 +48,8 @@ import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 @UtilityClass
 @Slf4j
 public class ObjectUtils {
+    private static Map<String, ObjectInstantiator> constructorCache = new HashMap<>();
+    private static Objenesis objenesis = new ObjenesisStd();
 
     /**
      * Checks whether a collection name is a valid object repository name.
@@ -175,41 +180,47 @@ public class ObjectUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T newInstance(Class<T> type) {
+    public static <T> T newInstance(Class<T> type, boolean createSkeleton) {
         try {
-            return type.newInstance();
-        } catch (Exception e) {
-            try {
-                if (type.isPrimitive()) {
-                    switch (type.getName()) {
-                        case "boolean":
-                            return (T) Boolean.valueOf(false);
-                        case "byte":
-                            return (T) Byte.valueOf((byte) 0);
-                        case "short":
-                            return (T) Short.valueOf((short) 0);
-                        case "int":
-                            return (T) Integer.valueOf(0);
-                        case "long":
-                            return (T) Long.valueOf(0L);
-                        case "float":
-                            return (T) Float.valueOf(0.0f);
-                        case "double":
-                            return (T) Double.valueOf("0.0");
-                        case "char":
-                            return (T) Character.valueOf('0');
-                    }
+            if (type.isPrimitive()) {
+                switch (type.getName()) {
+                    case "boolean":
+                        return (T) Boolean.valueOf(false);
+                    case "byte":
+                        return (T) Byte.valueOf((byte) 0);
+                    case "short":
+                        return (T) Short.valueOf((short) 0);
+                    case "int":
+                        return (T) Integer.valueOf(0);
+                    case "long":
+                        return (T) Long.valueOf(0L);
+                    case "float":
+                        return (T) Float.valueOf(0.0f);
+                    case "double":
+                        return (T) Double.valueOf("0.0");
+                    case "char":
+                        return (T) Character.valueOf('0');
                 }
+            }
 
-                if (type.isArray()) {
-                    return null;
-                }
+            if (type.isArray()) {
+                return null;
+            }
 
-                if (type == String.class) {
-                    return (T) "";
-                }
+            if (type == String.class) {
+                return (T) "";
+            }
 
-                T object = new ObjenesisStd().newInstance(type);
+            String clazz = type.getTypeName();
+            ObjectInstantiator instantiator = constructorCache.get(clazz);
+            if (instantiator == null) {
+                instantiator = objenesis.getInstantiatorOf(type);
+                constructorCache.put(clazz, instantiator);
+            }
+
+            T item = (T) instantiator.newInstance();
+
+            if (createSkeleton) {
                 Field[] fields = type.getDeclaredFields();
                 if (fields != null && fields.length > 0) {
                     for (Field field : fields) {
@@ -222,15 +233,16 @@ public class ObjectUtils {
                             modifiersField.setAccessible(true);
                             modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
-                            field.set(object, newInstance(field.getType()));
+                            field.set(item, newInstance(field.getType(), true));
                         }
                     }
                 }
-                return object;
-            } catch (Throwable error) {
-                throw new ObjectMappingException(errorMessage("failed to instantiate type " + type.getName(),
-                        OME_INSTANTIATE_FAILED), error);
             }
+
+            return item;
+        } catch (Exception e) {
+            throw new ObjectMappingException(errorMessage("failed to instantiate type " + type.getName(),
+                    OME_INSTANTIATE_FAILED), e);
         }
     }
 }
