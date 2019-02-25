@@ -23,13 +23,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.exceptions.ObjectMappingException;
 import org.dizitart.no2.exceptions.ValidationException;
 import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisSerializer;
 import org.objenesis.ObjenesisStd;
 import org.objenesis.instantiator.ObjectInstantiator;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.dizitart.no2.common.Constants.KEY_OBJ_SEPARATOR;
@@ -48,8 +49,8 @@ import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 @UtilityClass
 @Slf4j
 public class ObjectUtils {
-    private static Map<String, ObjectInstantiator> constructorCache = new HashMap<>();
-    private static Objenesis objenesis = new ObjenesisStd();
+    private static Objenesis stdObjenesis = new ObjenesisStd(true);
+    private static Objenesis serializerObjenesis = new ObjenesisSerializer(true);
 
     /**
      * Checks whether a collection name is a valid object repository name.
@@ -182,42 +183,11 @@ public class ObjectUtils {
     @SuppressWarnings("unchecked")
     public static <T> T newInstance(Class<T> type, boolean createSkeleton) {
         try {
-            if (type.isPrimitive()) {
-                switch (type.getName()) {
-                    case "boolean":
-                        return (T) Boolean.valueOf(false);
-                    case "byte":
-                        return (T) Byte.valueOf((byte) 0);
-                    case "short":
-                        return (T) Short.valueOf((short) 0);
-                    case "int":
-                        return (T) Integer.valueOf(0);
-                    case "long":
-                        return (T) Long.valueOf(0L);
-                    case "float":
-                        return (T) Float.valueOf(0.0f);
-                    case "double":
-                        return (T) Double.valueOf("0.0");
-                    case "char":
-                        return (T) Character.valueOf('0');
-                }
+            if (type.isPrimitive() || type.isArray() || type == String.class) {
+                return defaultValue(type);
             }
 
-            if (type.isArray()) {
-                return null;
-            }
-
-            if (type == String.class) {
-                return (T) "";
-            }
-
-            String clazz = type.getTypeName();
-            ObjectInstantiator instantiator = constructorCache.get(clazz);
-            if (instantiator == null) {
-                instantiator = objenesis.getInstantiatorOf(type);
-                constructorCache.put(clazz, instantiator);
-            }
-
+            ObjectInstantiator instantiator = getInstantiatorOf(type);
             T item = (T) instantiator.newInstance();
 
             if (createSkeleton) {
@@ -233,16 +203,83 @@ public class ObjectUtils {
                             modifiersField.setAccessible(true);
                             modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
-                            field.set(item, newInstance(field.getType(), true));
+                            if (isSkeletonRequired(type, field.getType())) {
+                                field.set(item, newInstance(field.getType(), true));
+                            } else {
+                                field.set(item, defaultValue(field.getType()));
+                            }
                         }
                     }
                 }
             }
 
             return item;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ObjectMappingException(errorMessage("failed to instantiate type " + type.getName(),
                     OME_INSTANTIATE_FAILED), e);
         }
+    }
+
+    private static <T> ObjectInstantiator<T> getInstantiatorOf(Class<T> type) {
+        if (Serializable.class.isAssignableFrom(type)) {
+            return serializerObjenesis.getInstantiatorOf(type);
+        } else {
+            return stdObjenesis.getInstantiatorOf(type);
+        }
+    }
+
+    private static <P, F> boolean isSkeletonRequired(Class<P> enclosingType, Class<F> fieldType) {
+        String fieldTypePackage = getPackageName(fieldType);
+        String enclosingTypePackage = getPackageName(enclosingType);
+
+        return isCompatible(enclosingTypePackage, fieldTypePackage);
+    }
+
+    private static boolean isCompatible(String enclosingTypePackage, String fieldTypePackage) {
+        if (enclosingTypePackage.contains(fieldTypePackage) && fieldTypePackage.contains(".")) return true;
+        int lastDot = fieldTypePackage.lastIndexOf('.');
+        if (lastDot == -1) return false;
+        return isCompatible(enclosingTypePackage, fieldTypePackage.substring(0, lastDot));
+    }
+
+    private static <T> String getPackageName(Class<T> clazz) {
+        String fqName = clazz.getName();
+        int lastDot = fqName.lastIndexOf('.');
+        if (lastDot == -1) return "";
+        return fqName.substring(0, lastDot);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T defaultValue(Class<T> type) {
+        if (type.isPrimitive()) {
+            switch (type.getName()) {
+                case "boolean":
+                    return (T) Boolean.valueOf(false);
+                case "byte":
+                    return (T) Byte.valueOf((byte) 0);
+                case "short":
+                    return (T) Short.valueOf((short) 0);
+                case "int":
+                    return (T) Integer.valueOf(0);
+                case "long":
+                    return (T) Long.valueOf(0L);
+                case "float":
+                    return (T) Float.valueOf(0.0f);
+                case "double":
+                    return (T) Double.valueOf(0d);
+                case "char":
+                    return (T) Character.valueOf('\0');
+            }
+        }
+
+        if (type.isArray()) {
+            return null;
+        }
+
+        if (type == String.class) {
+            return (T) "";
+        }
+
+        return null;
     }
 }

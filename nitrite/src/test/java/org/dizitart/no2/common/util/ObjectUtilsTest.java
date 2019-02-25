@@ -18,10 +18,15 @@
 
 package org.dizitart.no2.common.util;
 
+import lombok.Data;
+import org.dizitart.no2.collection.objects.data.ChildClass;
+import org.dizitart.no2.collection.objects.data.Employee;
 import org.junit.Test;
+import org.locationtech.jts.geom.LineString;
 
-import static org.dizitart.no2.common.util.ObjectUtils.isKeyedRepository;
-import static org.dizitart.no2.common.util.ObjectUtils.isRepository;
+import java.time.LocalDateTime;
+
+import static org.dizitart.no2.common.util.ObjectUtils.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -52,4 +57,22 @@ public class ObjectUtilsTest {
         assertFalse(isKeyedRepository("abcd+e"));
     }
 
+    @Test
+    public void testNewInstance() {
+        EnclosingType type = newInstance(EnclosingType.class, true);
+        System.out.println(type);
+    }
+
+    @Data
+    private static class EnclosingType {
+        private ChildClass childClass;
+        private LineString geometry;
+        private FieldType fieldType;
+    }
+
+    @Data
+    private static class FieldType {
+        private Employee employee;
+        private LocalDateTime currentDate;
+    }
 }
