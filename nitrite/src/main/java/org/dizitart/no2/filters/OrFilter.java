@@ -23,7 +23,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.common.ExecutorServiceManager;
+import org.dizitart.no2.common.concurrent.ExecutorServiceManager;
 import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.store.NitriteMap;
 
@@ -49,7 +49,7 @@ class OrFilter extends LogicalFilter {
     @Override
     public Set<NitriteId> apply(final NitriteMap<NitriteId, Document> documentMap) {
         Set<NitriteId> result = new LinkedHashSet<>();
-        ExecutorService executorService = ExecutorServiceManager.daemonExecutor();
+        ExecutorService executorService = ExecutorServiceManager.commonPool();
 
         try {
             List<Callable<Set<NitriteId>>> tasks = createTasks(filters, documentMap);

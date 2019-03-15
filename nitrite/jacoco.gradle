@@ -19,7 +19,7 @@
 apply plugin: 'jacoco'
 
 jacoco {
-    toolVersion = "0.7.6.201602180812"
+    toolVersion = "0.8.2"
     reportsDir = file("$buildDir/reports/jacoco/test")
 }
 
@@ -39,10 +39,14 @@ jacocoTestReport {
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
     reports {
-        xml.enabled true
-        xml.destination "${buildDir}/reports/jacoco/report.xml"
-        csv.enabled false
-        html.destination "${buildDir}/reports/coverage"
+        xml {
+            enabled = true
+            destination = new File(buildDir, "reports/jacoco/report.xml")
+        }
+        html {
+            enabled = true
+            destination = new File(buildDir, "reports/coverage")
+        }
     }
 
     afterEvaluate {

@@ -94,12 +94,17 @@ public class Constants {
     /**
      * The constant DAEMON_THREAD_NAME.
      */
-    static final String DAEMON_THREAD_NAME = "Worker." + NO2;
+    public static final String DAEMON_THREAD_NAME = "Worker." + NO2;
+
+    /**
+     * The constant DAEMON_THREAD_NAME.
+     */
+    public static final String SYNC_THREAD_NAME = "Sync." + NO2;
 
     /**
      * The constant SCHEDULED_THREAD_NAME.
      */
-    static final String SCHEDULED_THREAD_NAME = "ScheduledWorker." + NO2;
+    public static final String SCHEDULED_THREAD_NAME = "ScheduledWorker." + NO2;
 
     /**
      * The constant TAG_COLLECTIONS.

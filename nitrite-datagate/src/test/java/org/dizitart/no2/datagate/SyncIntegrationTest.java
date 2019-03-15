@@ -24,7 +24,7 @@ import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.collection.Cursor;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.objects.ObjectRepository;
-import org.dizitart.no2.common.ExecutorServiceManager;
+import org.dizitart.no2.common.concurrent.ExecutorServiceManager;
 import org.dizitart.no2.sync.*;
 import org.dizitart.no2.sync.types.UserAccount;
 import org.jongo.Jongo;
@@ -165,7 +165,7 @@ public class SyncIntegrationTest {
 
     @Test
     public void testDocumentSync() throws InterruptedException {
-        ExecutorService worker = ExecutorServiceManager.daemonExecutor();
+        ExecutorService worker = ExecutorServiceManager.commonPool();
         final CountDownLatch latch = new CountDownLatch(2);
 
         SyncHandle syncHandlePrimary = Replicator.of(primaryDb)
@@ -280,7 +280,7 @@ public class SyncIntegrationTest {
 
     @Test
     public void testObjectSync() throws InterruptedException {
-        ExecutorService worker = ExecutorServiceManager.daemonExecutor();
+        ExecutorService worker = ExecutorServiceManager.commonPool();
         final CountDownLatch latch = new CountDownLatch(2);
 
         SyncHandle syncHandlePrimary = Replicator.of(primaryDb)

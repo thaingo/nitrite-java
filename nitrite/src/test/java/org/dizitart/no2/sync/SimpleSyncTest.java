@@ -23,7 +23,6 @@ import org.awaitility.core.ConditionTimeoutException;
 import org.dizitart.no2.Document;
 import org.junit.Test;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -69,12 +68,7 @@ public class SimpleSyncTest extends BaseSyncTest {
 
         primary.insert(doc);
         assertEquals(secondary.find().size(), 0);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find().size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find().size() == 1);
         assertEquals(secondary.find().size(), 1);
 
 
@@ -82,12 +76,7 @@ public class SimpleSyncTest extends BaseSyncTest {
                 .firstOrNull();
         document.put("field", "two");
         primary.update(document);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find(eq("field", "two")).size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find(eq("field", "two")).size() == 1);
 
         Document document1 = secondary.find(eq("field", "two"))
                 .firstOrNull();
@@ -97,12 +86,7 @@ public class SimpleSyncTest extends BaseSyncTest {
         assertEquals(secondary.find().size(), 1);
 
         primary.remove(document);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find().size() == 0;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find().size() == 0);
 
         document1 = secondary.find().firstOrNull();
         assertNull(document1);
@@ -111,24 +95,14 @@ public class SimpleSyncTest extends BaseSyncTest {
 
         secondary.insert(doc);
         assertEquals(primary.find().size(), 0);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return primary.find().size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> primary.find().size() == 1);
         assertEquals(primary.find().size(), 1);
 
         document = secondary.find(eq("field", "one"))
                 .firstOrNull();
         document.put("field", "two");
         secondary.update(document);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return primary.find(eq("field", "two")).size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> primary.find(eq("field", "two")).size() == 1);
 
         document1 = primary.find(eq("field", "two"))
                 .firstOrNull();
@@ -138,12 +112,7 @@ public class SimpleSyncTest extends BaseSyncTest {
         assertEquals(secondary.find().size(), 1);
 
         secondary.remove(document);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return primary.find().size() == 0;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> primary.find().size() == 0);
 
         document1 = primary.find().firstOrNull();
         assertNull(document1);
@@ -178,12 +147,7 @@ public class SimpleSyncTest extends BaseSyncTest {
         Document doc2 = createDocument("second-key", "second-value");
         secondary.insert(new Document[]{ doc2 });
 
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return primary.find().size() == 3;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> primary.find().size() == 3);
 
         assertNotNull(primary.find(eq("first-key", "first-value")).firstOrNull());
         assertNotNull(primary.find(eq("second-key", "second-value")).firstOrNull());
@@ -192,20 +156,10 @@ public class SimpleSyncTest extends BaseSyncTest {
 
         doc1.put("first-key", "new-value");
         secondary.update(doc1);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return primary.find(eq("first-key", "new-value")).size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> primary.find(eq("first-key", "new-value")).size() == 1);
 
         secondary.remove(doc1);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return primary.find(eq("first-key", "new-value")).size() == 0;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> primary.find(eq("first-key", "new-value")).size() == 0);
     }
 
     @Test
@@ -237,12 +191,7 @@ public class SimpleSyncTest extends BaseSyncTest {
         Document doc2 = createDocument("second-key", "second-value");
         primary.insert(new Document[]{ doc2 });
 
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find().size() == 3;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find().size() == 3);
 
         assertNotNull(secondary.find(eq("first-key", "first-value")).firstOrNull());
         assertNotNull(secondary.find(eq("second-key", "second-value")).firstOrNull());
@@ -251,20 +200,10 @@ public class SimpleSyncTest extends BaseSyncTest {
 
         doc1.put("first-key", "new-value");
         primary.update(doc1);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find(eq("first-key", "new-value")).size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find(eq("first-key", "new-value")).size() == 1);
 
         primary.remove(doc1);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find(eq("first-key", "new-value")).size() == 0;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find(eq("first-key", "new-value")).size() == 0);
     }
 
     @Test
@@ -296,12 +235,7 @@ public class SimpleSyncTest extends BaseSyncTest {
         Document doc2 = createDocument("second-key", "second-value");
         primary.insert(new Document[]{ doc2 });
 
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find().size() == 3 && primary.find().size() == 3;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find().size() == 3 && primary.find().size() == 3);
 
         assertNotNull(secondary.find(eq("first-key", "first-value")).firstOrNull());
         assertNotNull(secondary.find(eq("second-key", "second-value")).firstOrNull());
@@ -310,37 +244,17 @@ public class SimpleSyncTest extends BaseSyncTest {
 
         doc1.put("first-key", "new-value");
         primary.update(doc1);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find(eq("first-key", "new-value")).size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find(eq("first-key", "new-value")).size() == 1);
 
         primary.remove(doc1);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find(eq("first-key", "new-value")).size() == 0;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find(eq("first-key", "new-value")).size() == 0);
 
         doc2.put("second-key", "new-value");
         secondary.update(doc2);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return primary.find(eq("second-key", "new-value")).size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> primary.find(eq("second-key", "new-value")).size() == 1);
 
         secondary.remove(doc2);
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return primary.find(eq("second-key", "new-value")).size() == 0;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> primary.find(eq("second-key", "new-value")).size() == 0);
 
         assertEquals(primary.find().size(), 1);
         assertEquals(secondary.find().size(), 1);
@@ -372,12 +286,7 @@ public class SimpleSyncTest extends BaseSyncTest {
         Document doc1 = createDocument("first-key", "first-value");
         primary.insert(new Document[]{ doc1 });
 
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find().size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find().size() == 1);
 
         syncHandlePrimary.pauseSync();
         assertTrue(syncHandlePrimary.isPaused());
@@ -387,12 +296,7 @@ public class SimpleSyncTest extends BaseSyncTest {
 
         boolean notSynced = false;
         try {
-            await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    return secondary.find(eq("first-key", "new-value")).size() == 1;
-                }
-            });
+            await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find(eq("first-key", "new-value")).size() == 1);
         } catch (ConditionTimeoutException cte) {
             notSynced = true;
         } finally {
@@ -402,11 +306,6 @@ public class SimpleSyncTest extends BaseSyncTest {
         syncHandlePrimary.resumeSync();
         assertFalse(syncHandlePrimary.isPaused());
 
-        await().atMost(5, TimeUnit.SECONDS).until(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return secondary.find(eq("first-key", "new-value")).size() == 1;
-            }
-        });
+        await().atMost(5, TimeUnit.SECONDS).until(() -> secondary.find(eq("first-key", "new-value")).size() == 1);
     }
 }

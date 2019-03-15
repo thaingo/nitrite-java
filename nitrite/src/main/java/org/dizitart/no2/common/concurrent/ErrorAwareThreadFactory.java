@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2017-2018 Nitrite author or authors.
+ * Copyright 2017-2019 Nitrite author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  *
  */
 
-package org.dizitart.no2.common;
+package org.dizitart.no2.common.concurrent;
 
 import lombok.extern.slf4j.Slf4j;
 

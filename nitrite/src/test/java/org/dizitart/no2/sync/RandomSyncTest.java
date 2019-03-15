@@ -26,7 +26,7 @@ import org.dizitart.no2.collection.objects.Cursor;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.collection.objects.data.DataGenerator;
 import org.dizitart.no2.collection.objects.data.Employee;
-import org.dizitart.no2.common.ExecutorServiceManager;
+import org.dizitart.no2.common.concurrent.ExecutorServiceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -108,7 +108,7 @@ public class RandomSyncTest {
 
     @Test
     public void testRandomSync() throws InterruptedException {
-        ExecutorService worker = ExecutorServiceManager.daemonExecutor();
+        ExecutorService worker = ExecutorServiceManager.commonPool();
         final CountDownLatch latch = new CountDownLatch(2);
 
         SyncHandle syncHandlePrimary = Replicator.of(primaryDb)

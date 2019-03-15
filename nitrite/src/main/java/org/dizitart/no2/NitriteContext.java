@@ -23,20 +23,18 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.dizitart.no2.filters.Filter;
-import org.dizitart.no2.index.TextIndexer;
-import org.dizitart.no2.index.fulltext.TextTokenizer;
 import org.dizitart.no2.common.mapper.JacksonMapper;
 import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.common.util.StringUtils;
+import org.dizitart.no2.filters.Filter;
+import org.dizitart.no2.index.TextIndexer;
+import org.dizitart.no2.index.fulltext.TextTokenizer;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 
-import static org.dizitart.no2.common.ExecutorServiceManager.shutdownExecutors;
+import static org.dizitart.no2.common.concurrent.ExecutorServiceManager.shutdownExecutors;
 import static org.dizitart.no2.common.util.ObjectUtils.isRepository;
 
 /**
@@ -134,12 +132,6 @@ public class NitriteContext {
 
     @Getter(AccessLevel.NONE)
     private Set<Module> jacksonModule;
-
-    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
-    private ExecutorService workerPool;
-
-    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
-    private ScheduledExecutorService scheduledWorkerPool;
 
     /**
      * Instantiates a new Nitrite context.

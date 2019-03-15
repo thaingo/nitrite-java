@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.Document.createDocument;
-import static org.dizitart.no2.common.ExecutorServiceManager.shutdownExecutors;
+import static org.dizitart.no2.common.concurrent.ExecutorServiceManager.shutdownExecutors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

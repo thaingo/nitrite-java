@@ -21,6 +21,7 @@ package org.dizitart.no2.sync;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.dizitart.no2.common.concurrent.ExecutorServiceManager;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -38,7 +39,6 @@ import static org.dizitart.no2.exceptions.ErrorMessage.REPLICATOR_ALREADY_RUNNIN
 @Setter(AccessLevel.PACKAGE)
 public final class SyncHandle {
     private CollectionReplicator replicator;
-    private ScheduledExecutorService replicatorPool;
     private ScheduledFuture replicatorHandle;
     private SyncService syncService;
     private boolean stopped =true;
@@ -74,7 +74,7 @@ public final class SyncHandle {
         }
 
         TimeSpan syncDelay = syncConfig.getSyncDelay();
-        this.replicatorHandle = replicatorPool.scheduleWithFixedDelay(replicator, 0,
+        this.replicatorHandle = getReplicatorPool().scheduleWithFixedDelay(replicator, 0,
                 syncDelay.getTime(), syncDelay.getTimeUnit());
 
         stopped = false;
@@ -175,5 +175,9 @@ public final class SyncHandle {
      * */
     public boolean isStopped() {
         return stopped;
+    }
+
+    private ScheduledExecutorService getReplicatorPool() {
+        return ExecutorServiceManager.scheduledExecutor();
     }
 }

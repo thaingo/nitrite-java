@@ -21,7 +21,7 @@ package org.dizitart.no2.collection.operation;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.IndexType;
-import org.dizitart.no2.common.ExecutorServiceManager;
+import org.dizitart.no2.common.concurrent.ExecutorServiceManager;
 import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.index.ComparableIndexer;
@@ -62,7 +62,7 @@ class IndexTemplate {
                   TextIndexer textIndexer,
                   SpatialIndexer spatialIndexer) {
         this.indexBuildRegistry = new ConcurrentHashMap<>();
-        this.rebuildExecutor = ExecutorServiceManager.daemonExecutor();
+        this.rebuildExecutor = ExecutorServiceManager.commonPool();
         this.indexStore = indexStore;
         this.textIndexer = textIndexer;
         this.comparableIndexer = comparableIndexer;
