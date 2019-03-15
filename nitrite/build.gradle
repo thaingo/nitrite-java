@@ -43,9 +43,9 @@ dependencies {
     compile "com.squareup.okhttp3:okhttp:$okhttpVersion"
     compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     compile "org.locationtech.jts:jts-core:$jtsVersion"
-    
+
+    testAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion"
     testCompile "org.openjdk.jmh:jmh-core:$jmhVersion"
-    testCompile "org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion"
     testCompile "junit:junit:$junitVersion"
     testCompile "uk.co.jemos.podam:podam:$podamVersion"
     testCompile "org.apache.lucene:lucene-core:$luceneVersion"
