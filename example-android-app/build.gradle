@@ -46,7 +46,6 @@ android {
         exclude 'META-INF/license.txt'
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
-        exclude 'THIRD-PARTY'
     }
 
     compileSdkVersion 27
@@ -55,7 +54,6 @@ android {
         applicationId "org.dizitart.no2.sample.android"
         minSdkVersion 15
         targetSdkVersion 27
-        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -86,12 +84,10 @@ android {
 dependencies {
     implementation project(':nitrite')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:design:27.1.1'
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-    annotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion"
     testImplementation 'junit:junit:4.12'
     testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

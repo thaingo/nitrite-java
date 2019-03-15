@@ -54,9 +54,10 @@ class DefaultNitriteCollection implements NitriteCollection {
     private NitriteMap<NitriteId, Document> nitriteMap;
     private NitriteStore nitriteStore;
     private CollectionOperation collectionOperation;
-    private volatile boolean isDropped;
     private EventBus<ChangeInfo, ChangeListener> eventBus;
-    private String collectionName;
+
+    private final String collectionName;
+    private volatile boolean isDropped;
 
     DefaultNitriteCollection(NitriteMap<NitriteId, Document> nitriteMap, NitriteContext nitriteContext) {
         this.nitriteMap = nitriteMap;

@@ -36,7 +36,7 @@ import static org.dizitart.no2.common.Constants.META_MAP_NAME;
  * @author Anindya Chatterjee.
  */
 public final class NitriteMVStore implements NitriteStore {
-    private MVStore mvStore;
+    private final MVStore mvStore;
 
     /**
      * Instantiates a new {@link NitriteMVStore}.

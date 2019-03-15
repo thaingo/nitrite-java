@@ -31,7 +31,7 @@ import java.util.Iterator;
  * @author Anindya Chatterjee
  */
 public class NitriteMVRTreeMap extends NitriteMVMap<SpatialKey, Geometry> implements NitriteRTreeMap {
-    private MVRTreeMap<Geometry> mvMap;
+    private final MVRTreeMap<Geometry> mvMap;
 
     NitriteMVRTreeMap(MVRTreeMap<Geometry> mvMap, NitriteStore nitriteStore) {
         super(mvMap, nitriteStore);
