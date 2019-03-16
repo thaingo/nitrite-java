@@ -511,22 +511,40 @@ table.CodeRay td.code>pre{padding:0}
 .CodeRay .change .change{color:#66f}
 .CodeRay .head .head{color:#f4f}
 </style>
+<!--
+  ~
+  ~ Copyright 2017-2018 Nitrite author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
 <script>
-  var SeedAndDewConfig = {};
-  (function() {
-    SeedAndDewConfig['adClass'] = "snd-ad";
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    SeedAndDewConfig['projectId'] = '6bc6cfa1-f85f-44a3-a43e-28444b0ea5e5';
-    SeedAndDewConfig['loadStartTime'] = performance.now();
-    SeedAndDewConfig['apiVersion'] = '2018-05-28'
-    SeedAndDewConfig['sessionId'] = Math.random().toString(36).substring(2, 15);
-    var snd = document.createElement('script');
-    snd.type = 'text/javascript';
-    snd.async = true;
-    snd.src = 'https://www.seedanddew.com/static/embed.min.js';
-    (document.getElementsByTagName('head')[0] ||
-    document.getElementsByTagName('body')[0]).appendChild(snd);
-  })();
+    var SeedAndDewConfig = {};
+    (function() {
+        SeedAndDewConfig['adClass'] = "snd-ad";
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        SeedAndDewConfig['projectId'] = '6bc6cfa1-f85f-44a3-a43e-28444b0ea5e5';
+        SeedAndDewConfig['loadStartTime'] = performance.now();
+        SeedAndDewConfig['apiVersion'] = '2018-05-28'
+        SeedAndDewConfig['sessionId'] = Math.random().toString(36).substring(2, 15);
+        var snd = document.createElement('script');
+        snd.type = 'text/javascript';
+        snd.async = true;
+        snd.src = 'https://www.seedanddew.com/static/embed.min.js';
+        (document.getElementsByTagName('head')[0] ||
+            document.getElementsByTagName('body')[0]).appendChild(snd);
+    })();
 </script>
 </head>
 <body class="article toc2 toc-left">
@@ -535,8 +553,8 @@ table.CodeRay td.code>pre{padding:0}
 <div class="details">
 <span id="author" class="author">Anindya Chatterjee</span><br>
 <span id="email" class="email"><a href="mailto:anindya@dizitart.com">anindya@dizitart.com</a></span><br>
-<span id="revnumber">version 3.1.0,</span>
-<span id="revdate">2018-09-01 17:46:53 +05:30</span>
+<span id="revnumber">version 3.2.0,</span>
+<span id="revdate">2019-03-16 16:47:18 +05:30</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -717,7 +735,7 @@ any server for external application to connect to. It does not support sharding 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>org.dizitart<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>nitrite<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>3.1.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>3.2.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -726,7 +744,7 @@ any server for external application to connect to. It does not support sharding 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">'</span><span class="content">org.dizitart:nitrite:3.1.0</span><span class="delimiter">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">'</span><span class="content">org.dizitart:nitrite:3.2.0</span><span class="delimiter">'</span></span></code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -916,7 +934,7 @@ Click the <span class="icon"><i class="fa fa-file-code-o"></i></span> icon next 
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Nitrite
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/Nitrite.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/Nitrite.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 class provides several methods to create, query, close or compact a nitrite
 database.</p>
 </div>
@@ -924,7 +942,7 @@ database.</p>
 <h3 id="create-open-database">4.1. Create/Open Database</h3>
 <div class="paragraph">
 <p>A nitrite database can only be created and opened by NitriteBuilder
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/NitriteBuilder.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span> utility.</p>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/NitriteBuilder.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span> utility.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1253,7 +1271,7 @@ close.
 <div class="sectionbody">
 <div class="paragraph">
 <p>Nitrite stores data as Documents
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/Document.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/Document.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 which are JSON-like field and value pairs. Document is a schema-less data structure and it can store any arbitrary java object.</p>
 </div>
 <div class="listingblock">
@@ -1330,7 +1348,7 @@ which are JSON-like field and value pairs. Document is a schema-less data struct
 <div class="sectionbody">
 <div class="paragraph">
 <p>A unique identifier across a nitrite database. Each document in a NitriteCollection is associated
-with a unique NitriteId <span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/NitriteId.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>.</p>
+with a unique NitriteId <span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/NitriteId.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>.</p>
 </div>
 <div class="paragraph">
 <p>During insertion of a document, nitrite will generate a new NitriteId and put its value in the
@@ -1374,9 +1392,9 @@ assertEquals(docu.get(<span class="string"><span class="delimiter">&quot;</span>
 <h3 id="nitritecollection">7.1. NitriteCollection</h3>
 <div class="paragraph">
 <p>Nitrite stores documents into NitriteCollection
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/NitriteCollection.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>.
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/NitriteCollection.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>.
 NitriteCollection are analogous to a table in RDBMS. A NitriteCollection is constructed using a NitriteMap
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/store/NitriteMap.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/store/NitriteMap.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 which internally maintains a counted B+ tree to store documents.</p>
 </div>
 <div class="paragraph">
@@ -1434,7 +1452,7 @@ collection.insert(doc);</code></pre>
 <h3 id="objectrepository">7.2. ObjectRepository</h3>
 <div class="paragraph">
 <p>Along with NitriteCollection, nitrite also supports ObjectRepository
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/objects/ObjectRepository.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>.
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/objects/ObjectRepository.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>.
 It is a persistent generic collection of POJO classes. Internally it is backed by a NitriteCollection, where an object
 is converted into a Document and then stored.</p>
 </div>
@@ -1551,7 +1569,7 @@ ObjectRepository. More on these annotations will be discussed later.</p>
 <div class="paragraph">
 <p>Nitrite converts java objects to Document before storing it in an ObjectRepository and similarly converts the Document
 back to POJO while retrieving. The conversion is seamless for the end users. This conversion is managed by a NitriteMapper
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/mapper/NitriteMapper.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/mapper/NitriteMapper.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 implementation. By default NitriteMapper uses Jackson to convert POJO to a field-value map, but a custom
 implementation can be set via NitriteBuilder.</p>
 </div>
@@ -1603,7 +1621,7 @@ serialization. Those libraries heavily depend on reflection, but
 reflection has its toll. In environment like Android use of reflection
 degrades the performance drastically. To bypass this overhead, Nitrite
 provides a mechanism called Mappable
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/mapper/Mappable.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/mapper/Mappable.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 interface.</p>
 </div>
 <div class="paragraph">
@@ -1735,7 +1753,7 @@ The <code>close()</code> operation raises a <strong>CLOSE</strong> event.
 <h4 id="writeresult">7.4.1. WriteResult</h4>
 <div class="paragraph">
 <p>Each modify operation returns a WriteResult
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/WriteResult.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>.
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/WriteResult.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>.
 It represents the result of a modification operation in a
 collection. It is also an iterable constructs which iterates
 over all affected NitriteIds.</p>
@@ -2260,7 +2278,7 @@ Employee employee = repository.getById(id);</code></pre>
 </div>
 <div class="paragraph">
 <p>A Cursor
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/Cursor.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/Cursor.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 is a lazy record iterator. It iterates over a database search results and fetch Document from database
 on demand.</p>
 </div>
@@ -2286,7 +2304,7 @@ on demand.</p>
 </div>
 <div class="paragraph">
 <p>A FindOptions
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/FindOptions.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/FindOptions.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 is used to specify search options. It provides pagination as well as sorting mechanism on Cursor.</p>
 </div>
 <div class="listingblock">
@@ -2545,7 +2563,7 @@ user actions if registered.</p>
 An event listener implementation must be registered with a collection first,
 then the context information of the collection change event will be supplied to it
 via a ChangeInfo
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/event/ChangeInfo.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/event/ChangeInfo.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 object.</p>
 </div>
 <div class="listingblock">
@@ -2615,7 +2633,7 @@ Index can be created at any time on an empty or non-empty collection.
 </div>
 <div class="paragraph">
 <p>Indexes are stored in a NitriteMap
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/store/NitriteMap.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/store/NitriteMap.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 which internally maintains a counted B+ tree for persistence storage.</p>
 </div>
 <div class="paragraph">
@@ -3106,7 +3124,7 @@ Nitrite db = Nitrite.builder()
 <p>Nitrite&#8217;s built-in text indexing only supports english language. For
 other languages a third-party text indexing engines like lucene can be
 configured by implementing TextIndexingService
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/fulltext/TextIndexingService.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/fulltext/TextIndexingService.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 interface like below</p>
 </div>
 <div class="listingblock">
@@ -3856,7 +3874,7 @@ authority.
 <h3 id="synchandle">9.2. SyncHandle</h3>
 <div class="paragraph">
 <p>SyncHandle
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/sync/SyncHandle.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/sync/SyncHandle.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 is the handler for replication job. It can be used by the application code to control
 replication in various stages of application life-cycle.</p>
 </div>
@@ -4052,7 +4070,7 @@ After it expires the new client will acquire lock and starts replication.</p>
 </div>
 <div class="paragraph">
 <p>ChangeFeed
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/sync/ChangeFeed.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/sync/ChangeFeed.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 is the list of all cumulative changes in a collection (for both remote and local)
 within a certain time period. Feed is obtained using the document metadata and the
 remove log of a collection.</p>
@@ -4097,7 +4115,7 @@ to generate the <strong><em>updated feed</em></strong> and <strong><em>created f
 </div>
 <div class="paragraph">
 <p>Events can be listened to via an implementation of SyncEventListener
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/sync/SyncEventListener.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/sync/SyncEventListener.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 registered during configuration.</p>
 </div>
 <div style="page-break-after: always;"></div>
@@ -4111,7 +4129,7 @@ registered during configuration.</p>
 <h3 id="nitritestore">10.1. NitriteStore</h3>
 <div class="paragraph">
 <p>NitriteStore
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/store/NitriteStore.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/store/NitriteStore.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 is a storage abstraction layer of Nitrite database. Currently it uses h2 database&#8217;s
 <a href="http://www.h2database.com/html/mvstore.html" target="_blank">MVStore</a> as the underlying
 storage implementation.</p>
@@ -4125,7 +4143,7 @@ collections.</p>
 <h3 id="nitritemap">10.2. NitriteMap</h3>
 <div class="paragraph">
 <p>NitriteMap
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/store/NitriteMap.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/store/NitriteMap.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 is a persistent key-value pair named map which is the main building block of NitriteCollection and
 ObjectRepository. A NitriteMap is implemented using h2 database&#8217;s
 <a href="http://www.h2database.com/html/mvstore.html#maps" target="_blank">MVMap</a>.</p>
@@ -4133,7 +4151,7 @@ ObjectRepository. A NitriteMap is implemented using h2 database&#8217;s
 <div class="paragraph">
 <p>Each NitriteMap contains metadata which are mainly used for tracking changes to the collection.
 Metadata contains Attributes
-<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.1.0/org/dizitart/no2/meta/Attributes.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
+<span class="icon"><a class="image" href="http://static.javadoc.io/org.dizitart/nitrite/3.2.0/org/dizitart/no2/meta/Attributes.html" target="_blank"><i class="fa fa-file-code-o"></i></a></span>
 like create-time, last-modified-time, last-sync-time
 etc.</p>
 </div>
@@ -4505,7 +4523,7 @@ features like extension function, builders, infix functions etc.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>org.dizitart<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>potassium-nitrite<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>3.1.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>3.2.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4514,7 +4532,7 @@ features like extension function, builders, infix functions etc.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">'</span><span class="content">org.dizitart:potassium-nitrite:3.1.0</span><span class="delimiter">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">'</span><span class="content">org.dizitart:potassium-nitrite:3.2.0</span><span class="delimiter">'</span></span></code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -4758,8 +4776,8 @@ and not try to open the DB file again if it has already been opened in the same 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 3.1.0<br>
-Last updated 2018-09-01 17:46:53 +05:30
+Version 3.2.0<br>
+Last updated 2019-03-16 16:47:18 +05:30
 </div>
 </div>
 </body>
