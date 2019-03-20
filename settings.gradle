@@ -22,4 +22,5 @@ include 'nitrite-explorer'
 include 'example-android-app'
 include 'nitrite-datagate'
 include 'potassium-nitrite'
+include 'rx-nitrite'
 

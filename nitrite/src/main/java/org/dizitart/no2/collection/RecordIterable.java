@@ -18,9 +18,8 @@
 
 package org.dizitart.no2.collection;
 
-import io.reactivex.Observable;
-import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.common.util.Iterables;
+import org.dizitart.no2.filters.Filter;
 
 import java.util.List;
 
@@ -88,14 +87,5 @@ public interface RecordIterable<T> extends Iterable<T> {
      * */
     default List<T> toList() {
         return Iterables.toList(this);
-    }
-
-    /**
-     * Returns an {@link Observable} on the records.
-     *
-     * @return an {@link Observable} on the records
-     * */
-    default Observable<T> toObservable() {
-        return Observable.fromIterable(this);
     }
 }
