@@ -192,7 +192,7 @@ public class NitriteBuilderTest {
         NitriteBuilder builder = Nitrite
                 .builder()
                 .filePath(file)
-                .registerModule(testModule);
+                .registerJacksonModule(testModule);
         Nitrite db = builder.openOrCreate();
         NitriteContext context = db.getContext();
 

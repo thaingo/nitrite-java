@@ -44,7 +44,7 @@ public class NitriteContextTest {
     @Test
     public void testNitriteMapperWithModule() {
         Nitrite db = Nitrite.builder()
-                .registerModule(new TestModule())
+                .registerJacksonModule(new TestModule())
                 .openOrCreate();
         NitriteContext context = db.getContext();
         JacksonMapper mapper = (JacksonMapper) context.getNitriteMapper();

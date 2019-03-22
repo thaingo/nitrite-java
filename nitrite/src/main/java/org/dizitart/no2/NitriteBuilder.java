@@ -324,7 +324,7 @@ public class NitriteBuilder {
      * @see org.dizitart.no2.common.mapper.JacksonMapper
      * @see NitriteMapper
      * */
-    public NitriteBuilder registerModule(Module module) {
+    public NitriteBuilder registerJacksonModule(Module module) {
         this.jacksonModules.add(module);
         return this;
     }

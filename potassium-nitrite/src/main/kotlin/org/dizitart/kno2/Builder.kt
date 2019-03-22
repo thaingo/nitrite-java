@@ -112,7 +112,7 @@ class Builder internal constructor() {
      *
      * @param [module] jackson [Module] to register
      * */
-    fun registerModule(module: Module) {
+    fun registerJacksonModule(module: Module) {
         jacksonModules.add(module)
     }
 
@@ -142,7 +142,7 @@ class Builder internal constructor() {
         if (!autoCompact) builder.disableAutoCompact()
         if (disableShutdownHook) builder.disableShutdownHook()
         if (jacksonModules.isNotEmpty()) {
-            jacksonModules.forEach { builder.registerModule(it) }
+            jacksonModules.forEach { builder.registerJacksonModule(it) }
         }
 
         return builder

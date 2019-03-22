@@ -142,11 +142,7 @@ public class Nitrite implements Closeable {
     public <T> ObjectRepository<T> getRepository(Class<T> type) {
         checkOpened();
         String name = findRepositoryName(type);
-        NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
-        NitriteCollection collection = CollectionFactory.open(mapStore, context);
-        ObjectRepository<T> repository = RepositoryFactory.open(type, collection, context);
-        context.getRepositoryRegistry().put(name, type);
-        return repository;
+        return getRepositoryByName(name, type);
     }
 
     /**
@@ -166,11 +162,7 @@ public class Nitrite implements Closeable {
     public <T> ObjectRepository<T> getRepository(String key, Class<T> type) {
         checkOpened();
         String name = findRepositoryName(key, type);
-        NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
-        NitriteCollection collection = CollectionFactory.open(mapStore, context);
-        ObjectRepository<T> repository = RepositoryFactory.open(type, collection, context);
-        context.getRepositoryRegistry().put(name, type);
-        return repository;
+        return getRepositoryByName(name, type);
     }
 
     /**
@@ -291,6 +283,27 @@ public class Nitrite implements Closeable {
     }
 
     /**
+     * Checks whether the store is closed.
+     *
+     * @return `true` if closed; otherwise `false`.
+     */
+    public boolean isClosed() {
+        return store == null || store.isClosed();
+    }
+
+    /**
+     * Checks if a specific username and password combination is valid to access
+     * the database.
+     *
+     * @param userId   the user id
+     * @param password the password
+     * @return `true` if valid; otherwise `false`.
+     */
+    public boolean validateUser(String userId, String password) {
+        return validateUserPassword(store, userId, password);
+    }
+
+    /**
      * Closes the database. Unsaved changes are written to disk and compacted first
      * for a file based store.
      */
@@ -349,25 +362,12 @@ public class Nitrite implements Closeable {
         }
     }
 
-    /**
-     * Checks whether the store is closed.
-     *
-     * @return `true` if closed; otherwise `false`.
-     */
-    public boolean isClosed() {
-        return store == null || store.isClosed();
-    }
-
-    /**
-     * Checks if a specific username and password combination is valid to access
-     * the database.
-     *
-     * @param userId   the user id
-     * @param password the password
-     * @return `true` if valid; otherwise `false`.
-     */
-    public boolean validateUser(String userId, String password) {
-        return validateUserPassword(store, userId, password);
+    private <T> ObjectRepository<T> getRepositoryByName(String name, Class<T> type) {
+        NitriteMap<NitriteId, Document> mapStore = store.openMap(name);
+        NitriteCollection collection = CollectionFactory.open(mapStore, context);
+        ObjectRepository<T> repository = RepositoryFactory.open(type, collection, context);
+        context.getRepositoryRegistry().put(name, type);
+        return repository;
     }
 
     private void closeCollections() {
