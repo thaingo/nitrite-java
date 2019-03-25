@@ -60,7 +60,7 @@ dependencies {
 
 gradle.buildFinished { BuildResult result ->
     if (result.failure && !JavaVersion.current().isJava8Compatible()) {
-        gradle.rootProject.logger.error("\n* Warning:\nJDK ${JavaVersion.VERSION_1_8} is minimal requirement for building nitrite. " +
+        println("\n* Warning:\nJDK ${JavaVersion.VERSION_1_8} is minimal requirement for building nitrite. " +
                 "You have ${JavaVersion.current()}.")
     }
 }

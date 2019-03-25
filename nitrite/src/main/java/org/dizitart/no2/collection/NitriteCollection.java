@@ -166,7 +166,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      *
      * @return a cursor to all documents in the collection.
      */
-    Cursor find();
+    DocumentCursor find();
 
     /**
      * Applies a filter on the collection and returns a cursor to the
@@ -182,9 +182,9 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @return a cursor to all selected documents.
      * @throws org.dizitart.no2.exceptions.ValidationException if `filter` is null.
      * @see org.dizitart.no2.filters.Filter
-     * @see Cursor#project(Document)
+     * @see DocumentCursor#project(Document)
      */
-    Cursor find(Filter filter);
+    DocumentCursor find(Filter filter);
 
     /**
      * Returns a customized cursor to all documents in the collection.
@@ -195,9 +195,9 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @see FindOptions#limit(int, int)
      * @see FindOptions#sort(String, SortOrder)
      * @see SortOrder
-     * @see Cursor#project(Document)
+     * @see DocumentCursor#project(Document)
      */
-    Cursor find(FindOptions findOptions);
+    DocumentCursor find(FindOptions findOptions);
 
     /**
      * Applies a filter on the collection and returns a customized cursor to the
@@ -218,7 +218,7 @@ public interface NitriteCollection extends PersistentCollection<Document> {
      * @see FindOptions#limit(int, int)
      * @see FindOptions#sort(String, SortOrder)
      * @see SortOrder
-     * @see Cursor#project(Document)
+     * @see DocumentCursor#project(Document)
      */
-    Cursor find(Filter filter, FindOptions findOptions);
+    DocumentCursor find(Filter filter, FindOptions findOptions);
 }

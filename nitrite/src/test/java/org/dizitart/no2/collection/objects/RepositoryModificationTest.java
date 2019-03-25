@@ -519,7 +519,5 @@ public class RepositoryModificationTest extends BaseObjectRepositoryTest {
 
         WriteResult result = employeeRepository.update(Filter.ALL, document);
         assertEquals(result.getAffectedCount(), 10);
-        assertEquals(employeeRepository.getById(result.toObservable().firstElement()
-                .blockingGet()).getEmployeeNote().getText(), "some note text");
     }
 }

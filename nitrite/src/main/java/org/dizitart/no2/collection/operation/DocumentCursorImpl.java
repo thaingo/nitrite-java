@@ -20,7 +20,7 @@ package org.dizitart.no2.collection.operation;
 
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.Lookup;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.common.KeyValuePair;
@@ -38,14 +38,14 @@ import static org.dizitart.no2.exceptions.ErrorMessage.REMOVE_ON_DOCUMENT_ITERAT
 /**
  * @author Anindya Chatterjee.
  */
-class DocumentCursor implements Cursor {
+class DocumentCursorImpl implements DocumentCursor {
     private final Collection<NitriteId> resultSet;
     private final NitriteMap<NitriteId, Document> nitriteMap;
     private boolean hasMore;
     private int totalCount;
     private FindResult findResult;
 
-    DocumentCursor(FindResult findResult) {
+    DocumentCursorImpl(FindResult findResult) {
         if (findResult.getIdSet() != null) {
             resultSet = findResult.getIdSet();
         } else {
@@ -64,7 +64,7 @@ class DocumentCursor implements Cursor {
     }
 
     @Override
-    public RecordIterable<Document> join(Cursor cursor, Lookup lookup) {
+    public RecordIterable<Document> join(DocumentCursor cursor, Lookup lookup) {
         return new JoinedDocumentIterable(findResult, cursor, lookup);
     }
 

@@ -26,7 +26,7 @@ import lombok.Setter;
  *
  * @author Anindya Chatterjee.
  * @since 2.1.0
- * @see Cursor#join(Cursor, Lookup)
+ * @see DocumentCursor#join(DocumentCursor, Lookup)
  * @see org.dizitart.no2.collection.objects.Cursor#join(org.dizitart.no2.collection.objects.Cursor, Lookup, Class)
  */
 public class Lookup {

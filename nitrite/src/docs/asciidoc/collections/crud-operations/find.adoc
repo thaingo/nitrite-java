@@ -3,10 +3,10 @@ Finds documents/objects in a collection.
 .Find operations for NitriteCollection
 [source,java]
 --
-Cursor find()
-Cursor find(FindOptions findOptions)
-Cursor find(Filter filter)
-Cursor find(Filter filter, FindOptions findOptions)
+DocumentCursor find()
+DocumentCursor find(FindOptions findOptions)
+DocumentCursor find(Filter filter)
+DocumentCursor find(Filter filter, FindOptions findOptions)
 Document getById(NitriteId nitriteId);
 --
 
@@ -27,20 +27,20 @@ Further details about find filters are discussed in section <<index.adoc#filter,
 [source,java]
 --
 // extracts all records from the collections
-Cursor results = collection.find();
+DocumentCursor results = collection.find();
 
 // extracts paginated records from the collections
-Cursor results = collection.find(FindOptions.limit(0, 1));
+DocumentCursor results = collection.find(FindOptions.limit(0, 1));
 
 // extracts all records and sorts them based on the value of 'age' field
-Cursor results = collection.find(FindOptions.sort("age", SortOrder.Ascending));
+DocumentCursor results = collection.find(FindOptions.sort("age", SortOrder.Ascending));
 
 // extracts all records where value of 'age' field is greater than 30
-Cursor results = collection.find(Filters.gt("age", 30));
+DocumentCursor results = collection.find(Filters.gt("age", 30));
 
 // finds all records where 'age' field value is greater than 30
 // then sorts those records in ascending order and takes first 10 records
-Cursor results = collection.find(Filters.gt("age", 30), FindOptions
+DocumentCursor results = collection.find(Filters.gt("age", 30), FindOptions
                                         .sort("age", SortOrder.Ascending)
                                         .thenLimit(0, 10));
 
@@ -53,7 +53,7 @@ Document document = collection.getById(id);
 [source,java]
 --
 // extracts all objects from the repository
-org.dizitart.no2.collection.objects.Cursor<Employee> cursor = repository.find();
+Cursor<Employee> cursor = repository.find();
 
 // extracts paginated employee records from the repository
 Cursor<Employee> cursor = repository.find(limit(0, 1));
@@ -86,7 +86,7 @@ on demand.
 .Example
 [source,java]
 --
-Cursor cursor = collection.find();
+DocumentCursor cursor = collection.find();
 for (Document document : cursor) {
     //...
 }
@@ -109,13 +109,13 @@ is used to specify search options. It provides pagination as well as sorting mec
 .Example
 [source,java]
 --
-// sorts all records by age in ascending order then take first 10 records and return as a Cursor
-Cursor results = collection.find(sort("age", SortOrder.Ascending).thenLimit(0, 10));
+// sorts all records by age in ascending order then take first 10 records and return as a DocumentCursor
+DocumentCursor results = collection.find(sort("age", SortOrder.Ascending).thenLimit(0, 10));
 
 // sorts the records by age in ascending order
-Cursor results = collection.find(sort("age", SortOrder.Ascending));
+DocumentCursor results = collection.find(sort("age", SortOrder.Ascending));
 
 // fetch 10 records starting from offset = 2
-Cursor results = collection.find(limit(2, 10));
+DocumentCursor results = collection.find(limit(2, 10));
 
 --

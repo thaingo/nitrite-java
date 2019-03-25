@@ -1,13 +1,15 @@
 package org.dizitart.no2.rx;
 
-import io.reactivex.*;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.subjects.PublishSubject;
 import org.dizitart.no2.Document;
-import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.FindOptions;
-import org.dizitart.no2.collection.IndexOptions;
-import org.dizitart.no2.collection.RemoveOptions;
-import org.dizitart.no2.collection.UpdateOptions;
+import org.dizitart.no2.collection.*;
+import org.dizitart.no2.common.event.ChangeType;
+import org.dizitart.no2.common.event.ChangedItem;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.Index;
 
@@ -17,152 +19,168 @@ import java.util.Collection;
  * @author Anindya Chatterjee
  */
 class RxNitriteCollectionImpl implements RxNitriteCollection {
-    RxNitriteCollectionImpl(String name, Nitrite nitrite, Scheduler scheduler) {
+    private final NitriteCollection nitriteCollection;
+    private final PublishSubject<ChangedItem> updates;
 
+    RxNitriteCollectionImpl(NitriteCollection collection) {
+        this.nitriteCollection = collection;
+        this.updates = PublishSubject.create();
+        initializeUpdateObserver();
     }
 
     @Override
     public FlowableWriteResult insert(Document document, Document... documents) {
-        return null;
+        return new FlowableWriteResult(() -> nitriteCollection.insert(document, documents));
     }
 
     @Override
     public FlowableWriteResult update(Filter filter, Document update) {
-        return null;
+        return new FlowableWriteResult(() -> nitriteCollection.update(filter, update));
     }
 
     @Override
     public FlowableWriteResult update(Filter filter, Document update, UpdateOptions updateOptions) {
-        return null;
+        return new FlowableWriteResult(() -> nitriteCollection.update(filter, update, updateOptions));
     }
 
     @Override
     public FlowableWriteResult remove(Filter filter) {
-        return null;
+        return new FlowableWriteResult(() -> nitriteCollection.remove(filter));
     }
 
     @Override
     public FlowableWriteResult remove(Filter filter, RemoveOptions removeOptions) {
-        return null;
+        return new FlowableWriteResult(() -> nitriteCollection.remove(filter, removeOptions));
     }
 
     @Override
-    public FlowableCursor<Document> find() {
-        return null;
+    public FlowableDocumentCursor find() {
+        return new FlowableDocumentCursor(nitriteCollection::find);
     }
 
     @Override
-    public FlowableCursor<Document> find(Filter filter) {
-        return null;
+    public FlowableDocumentCursor find(Filter filter) {
+        return new FlowableDocumentCursor(() -> nitriteCollection.find(filter));
     }
 
     @Override
-    public FlowableCursor<Document> find(FindOptions findOptions) {
-        return null;
+    public FlowableDocumentCursor find(FindOptions findOptions) {
+        return new FlowableDocumentCursor(() -> nitriteCollection.find(findOptions));
     }
 
     @Override
-    public FlowableCursor<Document> find(Filter filter, FindOptions findOptions) {
-        return null;
+    public FlowableDocumentCursor find(Filter filter, FindOptions findOptions) {
+        return new FlowableDocumentCursor(() -> nitriteCollection.find(filter, findOptions));
     }
 
     @Override
     public Completable createIndex(String field, IndexOptions indexOptions) {
-        return null;
+        return Completable.fromAction(() -> nitriteCollection.createIndex(field, indexOptions));
     }
 
     @Override
     public Completable rebuildIndex(String field, boolean async) {
-        return null;
+        return Completable.fromAction(() -> nitriteCollection.rebuildIndex(field, async));
     }
 
     @Override
     public Single<Collection<Index>> listIndices() {
-        return null;
+        return Single.fromCallable(nitriteCollection::listIndices);
     }
 
     @Override
     public Single<Boolean> hasIndex(String field) {
-        return null;
+        return Single.fromCallable(() -> nitriteCollection.hasIndex(field));
     }
 
     @Override
     public Single<Boolean> isIndexing(String field) {
-        return null;
+        return Single.fromCallable(() -> nitriteCollection.isIndexing(field));
     }
 
     @Override
     public Completable dropIndex(String field) {
-        return null;
+        return Completable.fromAction(() -> nitriteCollection.dropIndex(field));
     }
 
     @Override
-    public Completable dropAllIndices(String field) {
-        return null;
+    public Completable dropAllIndices() {
+        return Completable.fromAction(nitriteCollection::dropAllIndices);
     }
 
     @Override
     public FlowableWriteResult insert(Document[] items) {
-        return null;
+        return new FlowableWriteResult(() -> nitriteCollection.insert(items));
     }
 
     @Override
     public FlowableWriteResult update(Document element) {
-        return null;
+        return new FlowableWriteResult(() -> nitriteCollection.update(element));
     }
 
     @Override
     public FlowableWriteResult update(Document element, boolean upsert) {
-        return null;
+        return new FlowableWriteResult(() -> nitriteCollection.update(element, upsert));
     }
 
     @Override
     public FlowableWriteResult remove(Document element) {
-        return null;
+        return new FlowableWriteResult(() -> nitriteCollection.remove(element));
     }
 
     @Override
     public Single<Document> getById(NitriteId nitriteId) {
-        return null;
+        return Single.fromCallable(() -> nitriteCollection.getById(nitriteId));
     }
 
     @Override
     public Completable drop() {
-        return null;
+        return Completable.fromAction(nitriteCollection::drop);
     }
 
     @Override
     public Single<Boolean> isDropped() {
-        return null;
+        return Single.fromCallable(nitriteCollection::isDropped);
     }
 
     @Override
     public Single<Boolean> isClosed() {
-        return null;
+        return Single.fromCallable(nitriteCollection::isClosed);
     }
 
     @Override
     public Completable close() {
-        return null;
+        return Completable.fromAction(nitriteCollection::close);
     }
 
     @Override
     public String getName() {
-        return null;
+        return nitriteCollection.getName();
     }
 
     @Override
     public Single<Long> size() {
-        return null;
+        return Single.fromCallable(nitriteCollection::size);
     }
 
     @Override
-    public Flowable<Document> observe(NitriteId nitriteId, BackpressureStrategy backpressureStrategy) {
-        return null;
+    public Flowable<Document> observe(BackpressureStrategy backpressureStrategy) {
+        return updates.toFlowable(backpressureStrategy)
+                .map(ChangedItem::getDocument);
     }
 
     @Override
-    public Flowable<Document> observeAll(BackpressureStrategy backpressureStrategy) {
-        return null;
+    public Flowable<Document> observe(ChangeType changeType, BackpressureStrategy backpressureStrategy) {
+        return updates.toFlowable(backpressureStrategy)
+                .filter(changedItem -> changedItem.getChangeType() == changeType)
+                .map(ChangedItem::getDocument);
+    }
+
+    private void initializeUpdateObserver() {
+        nitriteCollection.register(changeInfo -> {
+            if (changeInfo != null && changeInfo.getChangedItems() != null) {
+                changeInfo.getChangedItems().forEach(updates::onNext);
+            }
+        });
     }
 }

@@ -43,7 +43,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
     public void testFindByUniqueIndex() throws ParseException {
         insert();
         collection.createIndex("firstName", IndexOptions.indexOptions(IndexType.Unique));
-        Cursor cursor = collection.find(eq("firstName", "fn1"));
+        DocumentCursor cursor = collection.find(eq("firstName", "fn1"));
         assertEquals(cursor.size(), 1);
 
         cursor = collection.find(eq("firstName", "fn10"));
@@ -137,7 +137,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
         collection.createIndex("lastName", IndexOptions.indexOptions(IndexType.NonUnique));
         collection.createIndex("birthDay", IndexOptions.indexOptions(IndexType.NonUnique));
 
-        Cursor cursor = collection.find(eq("lastName", "ln2"));
+        DocumentCursor cursor = collection.find(eq("lastName", "ln2"));
         assertEquals(cursor.size(), 2);
 
         cursor = collection.find(eq("lastName", "ln20"));
@@ -230,7 +230,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
         collection.createIndex("body", IndexOptions.indexOptions(IndexType.Fulltext));
         assertTrue(collection.hasIndex("body"));
 
-        Cursor cursor = collection.find(text("body", "Lorem"));
+        DocumentCursor cursor = collection.find(text("body", "Lorem"));
         assertEquals(cursor.size(), 1);
 
         cursor = collection.find(text("body", "nosql"));
@@ -253,7 +253,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
         assertTrue(collection.hasIndex("body"));
         insert();
 
-        Cursor cursor = collection.find(text("body", "Lorem"));
+        DocumentCursor cursor = collection.find(text("body", "Lorem"));
         assertEquals(cursor.size(), 1);
 
         cursor = collection.find(text("body", "quick brown"));
@@ -278,7 +278,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
         insert();
         collection.createIndex("birthDay", IndexOptions.indexOptions(IndexType.Unique));
 
-        Cursor cursor = collection.find(sort("birthDay", SortOrder.Ascending));
+        DocumentCursor cursor = collection.find(sort("birthDay", SortOrder.Ascending));
         assertEquals(cursor.size(), 3);
         List<Date> dateList = new ArrayList<>();
         for (Document document : cursor) {
@@ -292,7 +292,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
         insert();
         collection.createIndex("birthDay", IndexOptions.indexOptions(IndexType.Unique));
 
-        Cursor cursor = collection.find(sort("birthDay", SortOrder.Descending));
+        DocumentCursor cursor = collection.find(sort("birthDay", SortOrder.Descending));
         assertEquals(cursor.size(), 3);
         List<Date> dateList = new ArrayList<>();
         for (Document document : cursor) {
@@ -306,7 +306,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
         insert();
         collection.createIndex("birthDay", IndexOptions.indexOptions(IndexType.Unique));
 
-        Cursor cursor = collection.find(
+        DocumentCursor cursor = collection.find(
                 sort("birthDay", SortOrder.Descending).thenLimit(1, 2));
         assertEquals(cursor.size(), 2);
         List<Date> dateList = new ArrayList<>();
@@ -338,7 +338,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
     public void testFindAfterDroppedIndex() {
         insert();
         collection.createIndex("firstName", IndexOptions.indexOptions(IndexType.Unique));
-        Cursor cursor = collection.find(eq("firstName", "fn1"));
+        DocumentCursor cursor = collection.find(eq("firstName", "fn1"));
         assertEquals(cursor.size(), 1);
 
         collection.dropIndex("firstName");
@@ -351,7 +351,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
         insert();
         collection.createIndex("body", IndexOptions.indexOptions(IndexType.Fulltext));
 
-        Cursor cursor = collection.find(text("body", "Lo"));
+        DocumentCursor cursor = collection.find(text("body", "Lo"));
         assertEquals(cursor.size(), 0);
 
         cursor = collection.find(text("body", "Lo*"));
@@ -369,7 +369,7 @@ public class CollectionFindByIndexTest extends BaseCollectionTest {
         insert();
         collection.createIndex("body", IndexOptions.indexOptions(IndexType.Fulltext));
 
-        Cursor cursor = collection.find(text("body", ""));
+        DocumentCursor cursor = collection.find(text("body", ""));
         assertEquals(cursor.size(), 0);
     }
 

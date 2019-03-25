@@ -18,7 +18,7 @@
 
 package org.dizitart.no2;
 
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.collection.NitriteCollection;
@@ -123,7 +123,7 @@ public class MultiThreadedTest {
                         }
 
                         long unixTime = (long) document.get("unixTime");
-                        Cursor cursor = collection.find(Filter.eq("unixTime", unixTime));
+                        DocumentCursor cursor = collection.find(Filter.eq("unixTime", unixTime));
                         assertTrue(cursor.size() >= 0);
 
                         if (collection.hasIndex("text") && !collection.isIndexing("text")) {
@@ -150,7 +150,7 @@ public class MultiThreadedTest {
         assertTrue(collection.hasIndex("text"));
         assertTrue(collection.hasIndex("date"));
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), docCounter.get());
 
         cursor = collection.find(Filter.gt("unixTime", 1));

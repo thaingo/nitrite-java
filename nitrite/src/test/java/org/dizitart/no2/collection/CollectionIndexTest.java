@@ -114,7 +114,7 @@ public class CollectionIndexTest extends BaseCollectionTest {
         WriteResult result = collection.remove(eq("firstName", "fn1"));
         assertEquals(result.getAffectedCount(), 1);
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 2);
 
         result = collection.remove(text("body", "Lorem"));

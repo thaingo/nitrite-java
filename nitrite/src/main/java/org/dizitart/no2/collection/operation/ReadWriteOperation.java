@@ -21,7 +21,7 @@ package org.dizitart.no2.collection.operation;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.collection.RemoveOptions;
 import org.dizitart.no2.collection.UpdateOptions;
@@ -126,7 +126,7 @@ class ReadWriteOperation {
     }
 
     WriteResultImpl update(Filter filter, Document update, UpdateOptions updateOptions) {
-        Cursor cursor;
+        DocumentCursor cursor;
         if (filter == null) {
             cursor = queryTemplate.find();
         } else {
@@ -209,7 +209,7 @@ class ReadWriteOperation {
     }
 
     WriteResultImpl remove(Filter filter, RemoveOptions removeOptions) {
-        Cursor cursor;
+        DocumentCursor cursor;
         if (filter == null) {
             cursor = queryTemplate.find();
         } else {

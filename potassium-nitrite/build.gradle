@@ -48,6 +48,7 @@ dependencies {
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
+    
     testCompile "junit:junit:$junitVersion"
     testCompile project (path: ':nitrite', configuration: 'testArchives')
     testCompile "org.threeten:threetenbp:$threeTenBpVersion"

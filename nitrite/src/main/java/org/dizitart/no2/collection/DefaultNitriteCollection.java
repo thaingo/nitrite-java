@@ -158,14 +158,14 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public Cursor find(Filter filter) {
+    public DocumentCursor find(Filter filter) {
         checkOpened();
 
         return collectionOperation.find(filter);
     }
 
     @Override
-    public Cursor find(FindOptions findOptions) {
+    public DocumentCursor find(FindOptions findOptions) {
         checkOpened();
         notNull(findOptions, errorMessage("findOptions cannot be null", VE_FIND_NULL_FIND_OPTIONS));
 
@@ -173,7 +173,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public Cursor find(Filter filter, FindOptions findOptions) {
+    public DocumentCursor find(Filter filter, FindOptions findOptions) {
         checkOpened();
         notNull(findOptions, errorMessage("findOptions cannot be null", VE_FIND_FILTERED_NULL_FIND_OPTIONS));
 
@@ -181,7 +181,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     }
 
     @Override
-    public Cursor find() {
+    public DocumentCursor find() {
         checkOpened();
 
         return collectionOperation.find();

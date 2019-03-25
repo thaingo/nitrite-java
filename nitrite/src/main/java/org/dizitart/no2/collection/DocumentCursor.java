@@ -28,7 +28,7 @@ import org.dizitart.no2.NitriteId;
  *
  * [[app-listing]]
  * [source,java]
- * .Example of {@link Cursor}
+ * .Example of {@link DocumentCursor}
  * --
  *  // create/open a database
  *  Nitrite db = Nitrite.builder()
@@ -38,7 +38,7 @@ import org.dizitart.no2.NitriteId;
  *  NitriteCollection collection = db.getCollection("test");
  *
  *  // returns all ids un-filtered
- *  Cursor result = collection.find();
+ *  DocumentCursor result = collection.find();
  *
  *  for (Document doc : result) {
  *      // use your logic with the retrieved doc here
@@ -47,14 +47,10 @@ import org.dizitart.no2.NitriteId;
  *
  * --
  *
- * [icon="{@docRoot}/note.png"]
- * NOTE: To create an iterator over the documents instead of the ids,
- * call on the {@link Cursor}.
- *
  *  @author Anindya Chatterjee
- *  @since 1.0
+ *  @since 4.0
  */
-public interface Cursor extends RecordIterable<Document> {
+public interface DocumentCursor extends RecordIterable<Document> {
 
     /**
      * Gets a lazy iterable containing all the selected keys of the result documents.
@@ -77,5 +73,5 @@ public interface Cursor extends RecordIterable<Document> {
      * @return a lazy iterable of joined documents.
      * @since 2.1.0
      */
-    RecordIterable<Document> join(Cursor foreignCursor, Lookup lookup);
+    RecordIterable<Document> join(DocumentCursor foreignCursor, Lookup lookup);
 }

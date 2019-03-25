@@ -18,10 +18,6 @@
 
 package org.dizitart.no2.collection;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.TestObserver;
 import org.dizitart.no2.BaseCollectionTest;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
@@ -55,7 +51,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     public void testFindAll() {
         insert();
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 3);
     }
 
@@ -63,7 +59,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     public void testFindWithFilter() throws ParseException {
         insert();
 
-        Cursor cursor = collection.find(gt("birthDay",
+        DocumentCursor cursor = collection.find(gt("birthDay",
                 simpleDateFormat.parse("2012-07-01T16:02:48.440Z")));
         assertEquals(cursor.size(), 1);
 
@@ -148,7 +144,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     public void testFindWithLimit() {
         insert();
 
-        Cursor cursor = collection.find(limit(0, 1));
+        DocumentCursor cursor = collection.find(limit(0, 1));
         assertEquals(cursor.size(), 1);
         assertTrue(cursor.hasMore());
 
@@ -169,7 +165,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     public void testFindSortAscending() {
         insert();
 
-        Cursor cursor = collection.find(sort("birthDay", SortOrder.Ascending));
+        DocumentCursor cursor = collection.find(sort("birthDay", SortOrder.Ascending));
         assertEquals(cursor.size(), 3);
         List<Date> dateList = new ArrayList<>();
         for (Document document : cursor) {
@@ -182,7 +178,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     public void testFindSortDescending() {
         insert();
 
-        Cursor cursor = collection.find(sort("birthDay", SortOrder.Descending));
+        DocumentCursor cursor = collection.find(sort("birthDay", SortOrder.Descending));
         assertEquals(cursor.size(), 3);
         List<Date> dateList = new ArrayList<>();
         for (Document document : cursor) {
@@ -195,7 +191,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     public void testFindLimitAndSort() {
         insert();
 
-        Cursor cursor = collection.find(
+        DocumentCursor cursor = collection.find(
                 sort("birthDay", SortOrder.Descending).thenLimit(1, 2));
         assertEquals(cursor.size(), 2);
         List<Date> dateList = new ArrayList<>();
@@ -226,28 +222,28 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindSortOnNonExistingField() {
         insert();
-        Cursor cursor = collection.find(sort("my-value", SortOrder.Descending));
+        DocumentCursor cursor = collection.find(sort("my-value", SortOrder.Descending));
         assertEquals(cursor.size(), 3);
     }
 
     @Test
     public void testFindInvalidField(){
         insert();
-        Cursor cursor = collection.find(eq("myField", "myData"));
+        DocumentCursor cursor = collection.find(eq("myField", "myData"));
         assertEquals(cursor.size(), 0);
     }
 
     @Test
     public void testFindInvalidFieldWithInvalidAccessor() {
         insert();
-        Cursor cursor = collection.find(eq("myField.0", "myData"));
+        DocumentCursor cursor = collection.find(eq("myField.0", "myData"));
         assertEquals(cursor.size(), 0);
     }
 
     @Test
     public void testFindLimitAndSortInvalidField() {
         insert();
-        Cursor cursor = collection.find(
+        DocumentCursor cursor = collection.find(
                 sort("birthDay2", SortOrder.Descending).thenLimit(1, 2));
         assertEquals(cursor.size(), 2);
     }
@@ -271,7 +267,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindWithFilterAndOption() {
         insert();
-        Cursor cursor = collection.find(lte("birthDay", new Date()),
+        DocumentCursor cursor = collection.find(lte("birthDay", new Date()),
                 sort("firstName", SortOrder.Ascending).thenLimit(1, 2));
         assertEquals(cursor.size(), 2);
     }
@@ -279,7 +275,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindTextWithRegex() {
         insert();
-        Cursor cursor = collection.find(regex("body", "hello"));
+        DocumentCursor cursor = collection.find(regex("body", "hello"));
         assertEquals(cursor.size(), 1);
 
         cursor = collection.find(regex("body", "test"));
@@ -295,7 +291,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testProject() {
         insert();
-        Cursor cursor = collection.find(lte("birthDay", new Date()),
+        DocumentCursor cursor = collection.find(lte("birthDay", new Date()),
                 sort("firstName", SortOrder.Ascending).thenLimit(0, 3));
         int iteration = 0;
         for (Document document : cursor) {
@@ -318,7 +314,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testProjectWithCustomDocument() {
         insert();
-        Cursor cursor = collection.find(lte("birthDay", new Date()),
+        DocumentCursor cursor = collection.find(lte("birthDay", new Date()),
                 sort("firstName", SortOrder.Ascending).thenLimit(0, 3));
 
         Document projection = createDocument("firstName", null)
@@ -357,7 +353,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindWithArrayEqual() {
         insert();
-        Cursor ids = collection.find(eq("data", new Comparable[]{3, 4, 3}));
+        DocumentCursor ids = collection.find(eq("data", new Comparable[]{3, 4, 3}));
         assertNotNull(ids);
         assertEquals(ids.size(), 1);
     }
@@ -365,7 +361,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindWithArrayEqualFailForWrongCardinality() {
         insert();
-        Cursor ids = collection.find(eq("data", new byte[]{4, 3, 3}));
+        DocumentCursor ids = collection.find(eq("data", new byte[]{4, 3, 3}));
         assertNotNull(ids);
         assertEquals(ids.size(), 0);
     }
@@ -373,7 +369,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindWithIterableEqual() {
         insert();
-        Cursor ids = collection.find(eq("list",
+        DocumentCursor ids = collection.find(eq("list",
                 new ArrayList<String>() {{ add("three"); add("four"); add("three"); }}));
         assertNotNull(ids);
         assertEquals(ids.size(), 1);
@@ -382,7 +378,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindWithIterableEqualFailForWrongCardinality() {
         insert();
-        Cursor ids = collection.find(eq("list",
+        DocumentCursor ids = collection.find(eq("list",
                 new ArrayList<String>() {{ add("four"); add("three"); add("three"); }}));
         assertNotNull(ids);
         assertEquals(ids.size(), 0);
@@ -391,7 +387,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindInArray() {
         insert();
-        Cursor ids = collection.find(elemMatch("data", and(gte("$", 2), lt("$", 5))));
+        DocumentCursor ids = collection.find(elemMatch("data", and(gte("$", 2), lt("$", 5))));
         assertNotNull(ids);
         assertEquals(ids.size(), 3);
 
@@ -407,7 +403,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindInList() {
         insert();
-        Cursor ids = collection.find(elemMatch("list", regex("$", "three")));
+        DocumentCursor ids = collection.find(elemMatch("list", regex("$", "three")));
         assertNotNull(ids);
         assertEquals(ids.size(), 2);
 
@@ -515,7 +511,7 @@ public class CollectionFindTest extends BaseCollectionTest {
         document.put("xyz", null);
 
         collection.insert(document);
-        Cursor cursor = collection.find(eq("abc", "123"));
+        DocumentCursor cursor = collection.find(eq("abc", "123"));
         assertEquals(cursor.size(), 1);
         assertEquals(cursor.toList().size(), 1);
 
@@ -556,7 +552,7 @@ public class CollectionFindTest extends BaseCollectionTest {
 
     @Test
     public void testFilterAll() {
-        Cursor cursor = collection.find(ALL);
+        DocumentCursor cursor = collection.find(ALL);
         assertNotNull(cursor);
         assertEquals(cursor.size(), 0);
 
@@ -580,7 +576,7 @@ public class CollectionFindTest extends BaseCollectionTest {
         doc = new Document().put("id", "test-2").put("group", "groupA").put("startTime", DateTime.now());
         assertEquals(1, coll.insert(doc).getAffectedCount());
 
-        Cursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
+        DocumentCursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
         assertEquals(2, cursor.size());
         assertNull(cursor.toList().get(1).get("startTime"));
         assertNotNull(cursor.toList().get(0).get("startTime"));
@@ -603,7 +599,7 @@ public class CollectionFindTest extends BaseCollectionTest {
         doc = new Document().put("id", "test-1").put("group", "groupA");
         assertEquals(1, coll.insert(doc).getAffectedCount());
 
-        Cursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
+        DocumentCursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
         assertEquals(2, cursor.size());
     }
 
@@ -619,35 +615,35 @@ public class CollectionFindTest extends BaseCollectionTest {
         doc = new Document().put("id", "test-1").put("group", "groupA");
         assertEquals(1, coll.insert(doc).getAffectedCount());
 
-        Cursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
+        DocumentCursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
         assertEquals(2, cursor.size());
 
-        Cursor cursor2 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Default));
+        DocumentCursor cursor2 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Default));
         assertEquals(2, cursor2.size());
 
         assertThat(cursor.toList(), is(cursor2.toList()));
 
-        Cursor cursor3 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.First));
+        DocumentCursor cursor3 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.First));
         assertEquals(2, cursor3.size());
 
         assertThat(cursor.toList(), is(cursor3.toList()));
 
-        Cursor cursor4 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Last));
+        DocumentCursor cursor4 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending, NullOrder.Last));
         assertEquals(2, cursor4.size());
 
         assertThat(cursor.toList(), is(cursor4.toList()));
 
-        Cursor cursor5 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Last));
+        DocumentCursor cursor5 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Last));
         assertEquals(2, cursor5.size());
 
         assertThat(cursor.toList(), is(cursor5.toList()));
 
-        Cursor cursor6 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.First));
+        DocumentCursor cursor6 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.First));
         assertEquals(2, cursor6.size());
 
         assertThat(cursor.toList(), is(cursor6.toList()));
 
-        Cursor cursor7 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Default));
+        DocumentCursor cursor7 = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Ascending, NullOrder.Default));
         assertEquals(2, cursor7.size());
 
         assertThat(cursor.toList(), is(cursor7.toList()));
@@ -673,7 +669,7 @@ public class CollectionFindTest extends BaseCollectionTest {
         Document doc3 = new Document().put("id", "test-3").put("group", "groupA").put("startTime", DateTime.now().plusMinutes(1));
         assertEquals(1, coll.insert(doc3).getAffectedCount());
 
-        Cursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
+        DocumentCursor cursor = coll.find(eq("group", "groupA"), FindOptions.sort("startTime", SortOrder.Descending));
         assertEquals(3, cursor.size());
         assertThat(Arrays.asList(doc3, doc2, doc1), is(cursor.toList()));
 
@@ -703,40 +699,9 @@ public class CollectionFindTest extends BaseCollectionTest {
     }
 
     @Test
-    public void testFindObservable() {
-        insert();
-
-        Observable<Document> documentObservable = collection.find().toObservable();
-        TestObserver<Document> observer = new TestObserver<>(new Observer<Document>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                assertNotNull(d);
-            }
-
-            @Override
-            public void onNext(Document keyValuePairs) {
-                assertNotNull(keyValuePairs);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                fail(e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-                System.out.println("Completed");
-            }
-        });
-        documentObservable.subscribeWith(observer);
-
-        observer.assertSubscribed();
-    }
-
-    @Test
     public void testFindFilterInvalidAccessor() {
         insert();
-        Cursor cursor = collection.find(Filter.eq("lastName.name", "ln2"));
+        DocumentCursor cursor = collection.find(Filter.eq("lastName.name", "ln2"));
         assertEquals(cursor.size(), 0);
     }
 }

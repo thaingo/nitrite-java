@@ -33,6 +33,4 @@ public interface RxObjectRepository<T> extends RxPersistentCollection<T> {
     FlowableCursor<T> find(Filter filter, FindOptions findOptions);
 
     Class<T> getType();
-
-    RxNitriteCollection getDocumentCollection();
 }

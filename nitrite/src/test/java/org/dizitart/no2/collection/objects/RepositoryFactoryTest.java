@@ -21,7 +21,7 @@ package org.dizitart.no2.collection.objects;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.*;
 import org.dizitart.no2.common.event.ChangeListener;
 import org.dizitart.no2.exceptions.ValidationException;
@@ -88,22 +88,22 @@ public class RepositoryFactoryTest {
         }
 
         @Override
-        public Cursor find() {
+        public DocumentCursor find() {
             return null;
         }
 
         @Override
-        public Cursor find(Filter filter) {
+        public DocumentCursor find(Filter filter) {
             return null;
         }
 
         @Override
-        public Cursor find(FindOptions findOptions) {
+        public DocumentCursor find(FindOptions findOptions) {
             return null;
         }
 
         @Override
-        public Cursor find(Filter filter, FindOptions findOptions) {
+        public DocumentCursor find(Filter filter, FindOptions findOptions) {
             return null;
         }
 

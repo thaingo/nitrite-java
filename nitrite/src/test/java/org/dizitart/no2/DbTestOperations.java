@@ -123,7 +123,7 @@ public class DbTestOperations {
         collection = db.getCollection("test");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 3);
 
         cursor = collection.find(gt("birthDay",

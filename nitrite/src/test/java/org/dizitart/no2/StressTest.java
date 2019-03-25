@@ -19,7 +19,7 @@
 package org.dizitart.no2;
 
 import lombok.Data;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.collection.NitriteCollection;
@@ -96,7 +96,7 @@ public class StressTest {
         }
 
         start= System.currentTimeMillis();
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         System.out.println("Size ->" + cursor.size());
         System.out.println("Records size calculated in " + ((System.currentTimeMillis() - start) / (1000)) + " seconds");
 

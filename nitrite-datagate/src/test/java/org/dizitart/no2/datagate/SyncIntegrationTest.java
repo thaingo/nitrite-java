@@ -21,7 +21,7 @@ package org.dizitart.no2.datagate;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.common.concurrent.ExecutorServiceManager;
@@ -216,7 +216,7 @@ public class SyncIntegrationTest {
                 primary.insert(document);
             }
 
-            Cursor cursor = primary.find();
+            DocumentCursor cursor = primary.find();
 
             log.info("****************** Updating data to primary **********************");
             int i = 0;

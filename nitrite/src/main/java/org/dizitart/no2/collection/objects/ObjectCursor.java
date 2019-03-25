@@ -19,6 +19,7 @@
 package org.dizitart.no2.collection.objects;
 
 import org.dizitart.no2.Document;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.Lookup;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.common.mapper.NitriteMapper;
@@ -37,11 +38,11 @@ import static org.dizitart.no2.exceptions.ErrorMessage.*;
  * @author Anindya Chatterjee
  * */
 class ObjectCursor<T> implements Cursor<T> {
-    private org.dizitart.no2.collection.Cursor cursor;
+    private DocumentCursor cursor;
     private NitriteMapper nitriteMapper;
     private Class<T> type;
 
-    ObjectCursor(NitriteMapper nitriteMapper, org.dizitart.no2.collection.Cursor cursor, Class<T> type) {
+    ObjectCursor(NitriteMapper nitriteMapper, DocumentCursor cursor, Class<T> type) {
         this.nitriteMapper = nitriteMapper;
         this.cursor = cursor;
         this.type = type;

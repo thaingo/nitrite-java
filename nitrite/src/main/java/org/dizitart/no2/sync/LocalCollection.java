@@ -23,7 +23,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.meta.Attributes;
@@ -119,7 +119,7 @@ class LocalCollection {
             } else {
                 // local document not found
                 // check if it has been deleted recently
-                Cursor removeLogs = changeLogRepository.find(
+                DocumentCursor removeLogs = changeLogRepository.find(
                         Filter.and(
                                 Filter.eq(COLLECTION, getName()),
                                 Filter.eq(DELETED_ID, document.getId().getIdValue()),

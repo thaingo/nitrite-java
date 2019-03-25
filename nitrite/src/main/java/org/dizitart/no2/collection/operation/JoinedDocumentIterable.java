@@ -20,7 +20,7 @@ package org.dizitart.no2.collection.operation;
 
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.Lookup;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.exceptions.InvalidOperationException;
@@ -39,10 +39,10 @@ class JoinedDocumentIterable implements RecordIterable<Document> {
     private final NitriteMap<NitriteId, Document> nitriteMap;
     private boolean hasMore;
     private int totalCount;
-    private Cursor foreignCursor;
+    private DocumentCursor foreignCursor;
     private Lookup lookup;
 
-    JoinedDocumentIterable(FindResult findResult, Cursor foreignCursor, Lookup lookup) {
+    JoinedDocumentIterable(FindResult findResult, DocumentCursor foreignCursor, Lookup lookup) {
         this.foreignCursor = foreignCursor;
         this.lookup = lookup;
         if (findResult.getIdSet() != null) {
@@ -104,7 +104,7 @@ class JoinedDocumentIterable implements RecordIterable<Document> {
             throw new InvalidOperationException(REMOVE_ON_DOCUMENT_ITERATOR_NOT_SUPPORTED);
         }
 
-        private Document join(Document localDocument, Cursor foreignCursor, Lookup lookup) {
+        private Document join(Document localDocument, DocumentCursor foreignCursor, Lookup lookup) {
             Object localObject = localDocument.get(lookup.getLocalField());
             if (localObject == null) return localDocument;
             Document resultDocument = new Document(localDocument);

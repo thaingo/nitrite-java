@@ -18,7 +18,7 @@
 
 package org.dizitart.no2;
 
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.IndexType;
 import org.dizitart.no2.filters.BaseFilter;
 import org.dizitart.no2.store.NitriteMap;
@@ -38,7 +38,7 @@ public class CustomFilterTest extends BaseCollectionTest {
     public void testCustomFilter() {
         insert();
         collection.createIndex("firstName", indexOptions(IndexType.NonUnique));
-        Cursor cursor = collection.find(new BaseFilter("", "") {
+        DocumentCursor cursor = collection.find(new BaseFilter("", "") {
             @Override
             public Set<NitriteId> apply(NitriteMap<NitriteId, Document> documentMap) {
                 return getIndexedQueryTemplate().getComparableIndexer().findEqual("firstName", "fn1");

@@ -129,7 +129,7 @@ public class SpatialIndexTest {
         assertEquals(cursor.toList(), Arrays.asList(object1, object2));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.intersects("location", search));
+        DocumentCursor cursor1 = collection.find(Filter.intersects("location", search));
         assertEquals(cursor1.size(), 2);
         assertEquals(cursor1.toList(), Arrays.asList(doc1, doc2));
     }
@@ -144,7 +144,7 @@ public class SpatialIndexTest {
         assertEquals(cursor.toList(), Collections.singletonList(object1));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.within("location", search));
+        DocumentCursor cursor1 = collection.find(Filter.within("location", search));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc1));
     }
@@ -159,7 +159,7 @@ public class SpatialIndexTest {
         assertEquals(cursor.toList(), Collections.singletonList(object1));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.near("location", search, 20.0));
+        DocumentCursor cursor1 = collection.find(Filter.near("location", search, 20.0));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc1));
     }
@@ -175,7 +175,7 @@ public class SpatialIndexTest {
         assertEquals(cursor.toList(), Collections.singletonList(object1));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.near("location", coordinate, 20.0));
+        DocumentCursor cursor1 = collection.find(Filter.near("location", coordinate, 20.0));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc1));
     }
@@ -198,7 +198,7 @@ public class SpatialIndexTest {
         assertEquals(cursor.toList(), Collections.singletonList(object3));
 
         collection.createIndex("location", IndexOptions.indexOptions(IndexType.Spatial));
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.geoEq("location", search, EqualityType.Exact));
+        DocumentCursor cursor1 = collection.find(Filter.geoEq("location", search, EqualityType.Exact));
         assertEquals(cursor1.size(), 1);
         assertEquals(cursor1.toList(), Collections.singletonList(doc3));
 
@@ -216,7 +216,7 @@ public class SpatialIndexTest {
         WKTReader reader = new WKTReader();
         Geometry search = reader.read("POLYGON ((490 490, 536 490, 536 515, 490 515, 490 490))");
 
-        org.dizitart.no2.collection.Cursor cursor1 = collection.find(Filter.intersects("location", search));
+        DocumentCursor cursor1 = collection.find(Filter.intersects("location", search));
         assertEquals(cursor1.size(), 2);
         assertEquals(cursor1.toList(), Arrays.asList(doc1, doc2));
     }

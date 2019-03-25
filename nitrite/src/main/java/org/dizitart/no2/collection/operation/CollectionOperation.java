@@ -219,7 +219,7 @@ public class CollectionOperation {
      * @param filter the filter
      * @return the result set
      */
-    public Cursor find(Filter filter) {
+    public DocumentCursor find(Filter filter) {
         return queryTemplate.find(filter);
     }
 
@@ -228,7 +228,7 @@ public class CollectionOperation {
      *
      * @return the result set
      */
-    public Cursor find() {
+    public DocumentCursor find() {
         return queryTemplate.find();
     }
 
@@ -238,7 +238,7 @@ public class CollectionOperation {
      * @param findOptions the find options
      * @return the result set
      */
-    public Cursor find(FindOptions findOptions) {
+    public DocumentCursor find(FindOptions findOptions) {
         return queryTemplate.find(findOptions);
     }
 
@@ -249,7 +249,7 @@ public class CollectionOperation {
      * @param findOptions the find options
      * @return the result set
      */
-    public Cursor find(Filter filter, FindOptions findOptions) {
+    public DocumentCursor find(Filter filter, FindOptions findOptions) {
         return queryTemplate.find(filter, findOptions);
     }
 

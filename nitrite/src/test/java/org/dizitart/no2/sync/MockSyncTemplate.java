@@ -20,7 +20,7 @@ package org.dizitart.no2.sync;
 
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.meta.Attributes;
@@ -145,7 +145,7 @@ class MockSyncTemplate implements SyncTemplate {
                 existing.putAll(doc);
                 remoteCollection.update(existing);
             } else if (existing == null) {
-                Cursor removeLogs = removeLogRepository.find(
+                DocumentCursor removeLogs = removeLogRepository.find(
                         Filter.and(
                                 Filter.eq(COLLECTION, remoteCollection.getName()),
                                 Filter.eq(DELETED_ID, document.getId().getIdValue()),

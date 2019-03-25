@@ -24,7 +24,7 @@ import javafx.scene.image.ImageView;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.store.NitriteMap;
@@ -135,7 +135,7 @@ class NitriteHelper {
     }
 
     List<NitriteId> getResultList(NitriteCollection collection, Filter filter) {
-        Cursor cursor = collection.find(filter);
+        DocumentCursor cursor = collection.find(filter);
         List<NitriteId> list = new ArrayList<>();
         for (Document document : cursor) {
             NitriteId id = document.getId();

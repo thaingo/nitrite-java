@@ -20,12 +20,12 @@ public interface RxNitriteCollection extends RxPersistentCollection<Document> {
 
     FlowableWriteResult remove(Filter filter, RemoveOptions removeOptions);
 
-    FlowableCursor<Document> find();
+    FlowableDocumentCursor find();
 
-    FlowableCursor<Document> find(Filter filter);
+    FlowableDocumentCursor find(Filter filter);
 
-    FlowableCursor<Document> find(FindOptions findOptions);
+    FlowableDocumentCursor find(FindOptions findOptions);
 
-    FlowableCursor<Document> find(Filter filter, FindOptions findOptions);
+    FlowableDocumentCursor find(Filter filter, FindOptions findOptions);
 
 }

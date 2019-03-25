@@ -20,7 +20,7 @@ package org.dizitart.no2.collection.operation;
 
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.FindOptions;
 import org.dizitart.no2.collection.NullOrder;
 import org.dizitart.no2.collection.SortOrder;
@@ -57,17 +57,17 @@ class QueryTemplate {
         return nitriteMap.get(nitriteId);
     }
 
-    Cursor find() {
+    DocumentCursor find() {
         FindResult findResult = new FindResult();
         findResult.setHasMore(false);
         findResult.setTotalCount(nitriteMap.size());
         findResult.setIdSet(nitriteMap.keySet());
         findResult.setNitriteMap(nitriteMap);
 
-        return new DocumentCursor(findResult);
+        return new DocumentCursorImpl(findResult);
     }
 
-    Cursor find(Filter filter) {
+    DocumentCursor find(Filter filter) {
         if (filter == null) {
             return find();
         }
@@ -90,18 +90,18 @@ class QueryTemplate {
             findResult.setIdSet(result);
         }
 
-        return new DocumentCursor(findResult);
+        return new DocumentCursorImpl(findResult);
     }
 
-    Cursor find(FindOptions findOptions) {
+    DocumentCursor find(FindOptions findOptions) {
         FindResult findResult = new FindResult();
         findResult.setNitriteMap(nitriteMap);
         setUnfilteredResultSet(findOptions, findResult);
 
-        return new DocumentCursor(findResult);
+        return new DocumentCursorImpl(findResult);
     }
 
-    Cursor find(Filter filter, FindOptions findOptions) {
+    DocumentCursor find(Filter filter, FindOptions findOptions) {
         if (filter == null) {
             return find(findOptions);
         }
@@ -110,7 +110,7 @@ class QueryTemplate {
         findResult.setNitriteMap(nitriteMap);
         setFilteredResultSet(filter, findOptions, findResult);
 
-        return new DocumentCursor(findResult);
+        return new DocumentCursorImpl(findResult);
     }
 
     private void setUnfilteredResultSet(FindOptions findOptions, FindResult findResult) {

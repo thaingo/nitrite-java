@@ -6,6 +6,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.IndexOptions;
+import org.dizitart.no2.common.event.ChangeType;
 import org.dizitart.no2.index.Index;
 
 import java.util.Collection;
@@ -26,7 +27,7 @@ public interface RxPersistentCollection<T> {
 
     Completable dropIndex(String field);
 
-    Completable dropAllIndices(String field);
+    Completable dropAllIndices();
 
     FlowableWriteResult insert(T[] items);
 
@@ -50,7 +51,7 @@ public interface RxPersistentCollection<T> {
 
     Single<Long> size();
 
-    Flowable<T> observe(NitriteId nitriteId, BackpressureStrategy backpressureStrategy);
+    Flowable<T> observe(BackpressureStrategy backpressureStrategy);
 
-    Flowable<T> observeAll(BackpressureStrategy backpressureStrategy);
+    Flowable<T> observe(ChangeType changeType, BackpressureStrategy backpressureStrategy);
 }

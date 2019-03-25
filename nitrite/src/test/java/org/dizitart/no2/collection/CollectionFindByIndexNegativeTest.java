@@ -34,7 +34,7 @@ public class CollectionFindByIndexNegativeTest extends BaseCollectionTest {
         insert();
         collection.createIndex("body", IndexOptions.indexOptions(IndexType.Fulltext));
 
-        Cursor cursor = collection.find(text("body", "*ipsum dolor*"));
+        DocumentCursor cursor = collection.find(text("body", "*ipsum dolor*"));
         assertEquals(cursor.size(), 1);
     }
 
@@ -43,7 +43,7 @@ public class CollectionFindByIndexNegativeTest extends BaseCollectionTest {
         insert();
         collection.createIndex("body", IndexOptions.indexOptions(IndexType.Fulltext));
 
-        Cursor cursor = collection.find(text("body", "*"));
+        DocumentCursor cursor = collection.find(text("body", "*"));
         assertEquals(cursor.size(), 1);
     }
 }

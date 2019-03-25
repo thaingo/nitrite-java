@@ -2,7 +2,7 @@ package org.dizitart.no2.collection.operation;
 
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.exceptions.InvalidOperationException;
@@ -23,15 +23,15 @@ public class DocumentCursorTest {
     @Test
     public void testFindResult() {
         FindResult findResult = new FindResult();
-        DocumentCursor cursor = new DocumentCursor(findResult);
+        DocumentCursorImpl cursor = new DocumentCursorImpl(findResult);
         assertEquals(cursor.size(), 0);
 
         Nitrite db = Nitrite.builder().openOrCreate();
         NitriteCollection collection = db.getCollection("test");
         collection.insert(createDocument("first", "second"));
 
-        Cursor result = collection.find();
-        assertTrue(result instanceof DocumentCursor);
+        DocumentCursor result = collection.find();
+        assertTrue(result instanceof DocumentCursorImpl);
     }
 
     @Test(expected = InvalidOperationException.class)
@@ -40,7 +40,7 @@ public class DocumentCursorTest {
         NitriteCollection collection = db.getCollection("test");
         collection.insert(createDocument("first", "second"));
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         Iterator<Document> iterator = cursor.iterator();
         if (iterator.hasNext()) {
             iterator.next();

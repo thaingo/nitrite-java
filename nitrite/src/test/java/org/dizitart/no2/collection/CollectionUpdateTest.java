@@ -38,7 +38,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
     public void testUpdate() {
         insert();
 
-        Cursor cursor = collection.find(eq("firstName", "fn1"));
+        DocumentCursor cursor = collection.find(eq("firstName", "fn1"));
         assertEquals(cursor.size(), 1);
         for (Document document : cursor) {
             assertEquals(document.get("lastName"), "ln1");
@@ -74,7 +74,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
 
     @Test
     public void testOptionUpsert() {
-        Cursor cursor = collection.find(eq("firstName", "fn1"));
+        DocumentCursor cursor = collection.find(eq("firstName", "fn1"));
         assertEquals(cursor.size(), 0);
 
         WriteResult updateResult = collection.update(eq("firstName", "fn1"),
@@ -90,7 +90,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
 
     @Test
     public void testUpdateMultiple() {
-        Cursor cursor = collection.find(eq("firstName", "fn1"));
+        DocumentCursor cursor = collection.find(eq("firstName", "fn1"));
         assertEquals(cursor.size(), 0);
 
         insert();
@@ -106,7 +106,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
 
     @Test
     public void testUpdateWithOptionsUpsertFalse() {
-        Cursor cursor = collection.find(eq("firstName", "fn1"));
+        DocumentCursor cursor = collection.find(eq("firstName", "fn1"));
         assertEquals(cursor.size(), 0);
 
         UpdateOptions updateOptions = new UpdateOptions();
@@ -122,7 +122,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
 
     @Test
     public void testUpdateMultipleWithJustOnceFalse() {
-        Cursor cursor = collection.find(eq("firstName", "fn1"));
+        DocumentCursor cursor = collection.find(eq("firstName", "fn1"));
         assertEquals(cursor.size(), 0);
 
         insert();
@@ -141,7 +141,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
 
     @Test(expected = InvalidOperationException.class)
     public void testUpdateMultipleWithJustOnceTrue() {
-        Cursor cursor = collection.find(eq("firstName", "fn1"));
+        DocumentCursor cursor = collection.find(eq("firstName", "fn1"));
         assertEquals(cursor.size(), 0);
 
         insert();
@@ -158,7 +158,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
     public void testUpdateWithNewField() {
         insert();
 
-        Cursor cursor = collection.find(eq("firstName", "fn1"));
+        DocumentCursor cursor = collection.find(eq("firstName", "fn1"));
         assertEquals(cursor.size(), 1);
         for (Document document : cursor) {
             assertEquals(document.get("lastName"), "ln1");
@@ -179,7 +179,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
     public void testUpdateInvalidFilter() {
         insert();
 
-        Cursor cursor = collection.find(eq("lastName", "ln1"));
+        DocumentCursor cursor = collection.find(eq("lastName", "ln1"));
         assertEquals(cursor.size(), 1);
         for (Document document : cursor) {
             assertEquals(document.get("firstName"), "fn1");

@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @since 1.0
  * @author Anindya Chatterjee
- * @see Cursor
+ * @see DocumentCursor
  * @see org.dizitart.no2.collection.objects.Cursor
  */
 public interface RecordIterable<T> extends Iterable<T> {

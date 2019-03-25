@@ -34,7 +34,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
         WriteResult writeResult = collection.remove(Filter.not(Filter.eq("lastName", null)));
         assertEquals(writeResult.getAffectedCount(), 3);
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 0);
     }
 
@@ -48,7 +48,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
         WriteResult writeResult = collection.remove(Filter.not(Filter.eq("lastName", null)), removeOptions);
         assertEquals(writeResult.getAffectedCount(), 1);
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 2);
     }
 
@@ -56,7 +56,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
     public void testDeleteWithNonMatchingFilter() {
         insert();
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 3);
 
         WriteResult writeResult = collection.remove(Filter.eq("lastName", "a"));
@@ -65,7 +65,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
 
     @Test
     public void testDeleteInEmptyCollection() {
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 0);
 
         WriteResult writeResult = collection.remove(Filter.not(Filter.eq("lastName", null)));
@@ -77,7 +77,7 @@ public class CollectionDeleteTest extends BaseCollectionTest {
         collection.createIndex("firstName", IndexOptions.indexOptions(IndexType.Unique));
         insert();
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 3);
         assertTrue(collection.hasIndex("firstName"));
 

@@ -21,7 +21,7 @@ package org.dizitart.no2.tool;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.PersistentCollection;
 import org.dizitart.no2.collection.objects.ObjectRepository;
@@ -123,7 +123,7 @@ class NitriteJsonExporter {
         Collection<Index> indices = repository.listIndices();
         writeIndices(indices);
 
-        Cursor cursor = repository.getDocumentCollection().find();
+        DocumentCursor cursor = repository.getDocumentCollection().find();
         writeContent(cursor);
         generator.writeEndObject();
     }
@@ -140,7 +140,7 @@ class NitriteJsonExporter {
         Collection<Index> indices = repository.listIndices();
         writeIndices(indices);
 
-        Cursor cursor = repository.getDocumentCollection().find();
+        DocumentCursor cursor = repository.getDocumentCollection().find();
         writeContent(cursor);
         generator.writeEndObject();
     }
@@ -153,7 +153,7 @@ class NitriteJsonExporter {
         Collection<Index> indices = nitriteCollection.listIndices();
         writeIndices(indices);
 
-        Cursor cursor = nitriteCollection.find();
+        DocumentCursor cursor = nitriteCollection.find();
         writeContent(cursor);
         generator.writeEndObject();
     }
@@ -172,7 +172,7 @@ class NitriteJsonExporter {
         generator.writeEndArray();
     }
 
-    private void writeContent(Cursor cursor) throws IOException {
+    private void writeContent(DocumentCursor cursor) throws IOException {
         generator.writeFieldName(TAG_DATA);
         generator.writeStartArray();
         if (options.isExportData()) {

@@ -76,14 +76,14 @@ public class CollectionFindNegativeTest extends BaseCollectionTest {
     @Test(expected = FilterException.class)
     public void testFindWithRegexInvalidValue() {
         insert();
-        Cursor cursor = collection.find(Filter.regex("birthDay", "hello"));
+        DocumentCursor cursor = collection.find(Filter.regex("birthDay", "hello"));
         assertEquals(cursor.size(), 1);
     }
 
     @Test(expected = ValidationException.class)
     public void testInvalidProjection() {
         insert();
-        Cursor cursor = collection.find(Filter.lte("birthDay", new Date()),
+        DocumentCursor cursor = collection.find(Filter.lte("birthDay", new Date()),
                 sort("firstName", SortOrder.Ascending).thenLimit(0, 3));
 
         Document projection = createDocument("firstName", null)

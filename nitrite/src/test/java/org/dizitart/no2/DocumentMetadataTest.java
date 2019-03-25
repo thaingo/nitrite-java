@@ -18,7 +18,7 @@
 
 package org.dizitart.no2;
 
-import org.dizitart.no2.collection.Cursor;
+import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.common.event.ChangeType;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class DocumentMetadataTest extends BaseCollectionTest {
 
         long previous = document.getRevision();
 
-        Cursor cursor = collection.find(eq("test_key", "test_value"));
+        DocumentCursor cursor = collection.find(eq("test_key", "test_value"));
         document = cursor.firstOrNull();
         document.put("another_key", "another_value");
 

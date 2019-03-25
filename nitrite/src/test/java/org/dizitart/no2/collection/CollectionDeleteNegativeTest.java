@@ -36,7 +36,7 @@ public class CollectionDeleteNegativeTest extends BaseCollectionTest {
     public void testDrop() {
         collection.drop();
         insert();
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 3);
     }
 
@@ -44,7 +44,7 @@ public class CollectionDeleteNegativeTest extends BaseCollectionTest {
     public void testDeleteWithInvalidFilter() {
         insert();
 
-        Cursor cursor = collection.find();
+        DocumentCursor cursor = collection.find();
         assertEquals(cursor.size(), 3);
 
         WriteResult writeResult = collection.remove(gt("lastName", null));

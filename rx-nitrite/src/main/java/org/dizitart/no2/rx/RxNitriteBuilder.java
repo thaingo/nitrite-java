@@ -1,8 +1,6 @@
 package org.dizitart.no2.rx;
 
 import com.fasterxml.jackson.databind.Module;
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteBuilder;
 import org.dizitart.no2.common.mapper.NitriteMapper;
@@ -17,11 +15,9 @@ import java.io.File;
 public class RxNitriteBuilder {
 
     private final NitriteBuilder nitriteBuilder;
-    private Scheduler scheduler;
 
     RxNitriteBuilder(NitriteBuilder builder) {
         this.nitriteBuilder = builder;
-        this.scheduler = Schedulers.io();
     }
 
     public RxNitriteBuilder filePath(String path) {
@@ -84,18 +80,13 @@ public class RxNitriteBuilder {
         return this;
     }
 
-    public RxNitriteBuilder scheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
-        return this;
-    }
-
     public RxNitrite openOrCreate() {
         Nitrite nitrite = nitriteBuilder.openOrCreate();
-        return new RxNitrite(nitrite, scheduler);
+        return new RxNitrite(nitrite);
     }
 
     public RxNitrite openOrCreate(String userId, String password) {
         Nitrite nitrite = nitriteBuilder.openOrCreate(userId, password);
-        return new RxNitrite(nitrite, scheduler);
+        return new RxNitrite(nitrite);
     }
 }
