@@ -112,6 +112,7 @@ public class NitriteBuilder {
     private TextTokenizer textTokenizer;
     private NitriteMapper nitriteMapper;
     private Set<Module> jacksonModules;
+    private String fieldSeparator;
 
     NitriteBuilder(){
         jacksonModules = new HashSet<>();
@@ -330,6 +331,17 @@ public class NitriteBuilder {
     }
 
     /**
+     * Sets the embedded field separator character. Default value
+     * is `.`
+     *
+     * @return the {@link NitriteBuilder} instance.
+     * */
+    public NitriteBuilder fieldSeparator(String separator) {
+        this.fieldSeparator = separator;
+        return this;
+    }
+
+    /**
      * Opens or creates a new database. If it is an in-memory store, then it
      * will create a new one. If it is a file based store, and if the file does not
      * exists, then it will create a new file store and open; otherwise it will
@@ -504,6 +516,7 @@ public class NitriteBuilder {
             context.setAutoCompactEnabled(autoCompact);
             context.setNitriteMapper(nitriteMapper);
             context.setJacksonModule(jacksonModules);
+            NitriteContext.setFieldSeparator(fieldSeparator);
 
             NitriteStore nitriteStore = new NitriteMVStore(store);
 

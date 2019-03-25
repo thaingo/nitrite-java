@@ -80,6 +80,11 @@ public class RxNitriteBuilder {
         return this;
     }
 
+    public RxNitriteBuilder fieldSeparator(String separator) {
+        nitriteBuilder.fieldSeparator(separator);
+        return this;
+    }
+
     public RxNitrite openOrCreate() {
         Nitrite nitrite = nitriteBuilder.openOrCreate();
         return new RxNitrite(nitrite);

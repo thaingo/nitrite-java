@@ -19,6 +19,7 @@
 package org.dizitart.no2.collection.objects;
 
 import org.dizitart.no2.Document;
+import org.dizitart.no2.NitriteContext;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.exceptions.*;
@@ -33,7 +34,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-import static org.dizitart.no2.common.Constants.FIELD_SEPARATOR;
 import static org.dizitart.no2.common.util.DocumentUtils.skeletonDocument;
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
@@ -157,7 +157,7 @@ class RepositoryDelegate {
     }
 
     <T> Field getField(Class<T> type, String name, boolean recursive) {
-        if (name.contains(FIELD_SEPARATOR)) {
+        if (name.contains(NitriteContext.getFieldSeparator())) {
             return getEmbeddedField(type, name);
         } else {
             // first check declared fields (fix for kotlin properties, ref: issue #54)
@@ -190,7 +190,7 @@ class RepositoryDelegate {
     }
 
     private <T> Field getEmbeddedField(Class<T> startingClass, String embeddedField) {
-        String regex = "\\" + FIELD_SEPARATOR;
+        String regex = "\\" + NitriteContext.getFieldSeparator();
         String[] split = embeddedField.split(regex, 2);
         String key = split[0];
         String remaining = split.length == 2 ? split[1] : "";
@@ -208,7 +208,7 @@ class RepositoryDelegate {
                     VE_OBJ_INVALID_FIELD));
         }
 
-        if (!isNullOrEmpty(remaining) || remaining.contains(FIELD_SEPARATOR)) {
+        if (!isNullOrEmpty(remaining) || remaining.contains(NitriteContext.getFieldSeparator())) {
             return getEmbeddedField(field.getType(), remaining);
         } else {
             return field;

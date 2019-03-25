@@ -88,6 +88,39 @@ public class DocumentTest {
     }
 
     @Test
+    public void testGetValueWithCustomFieldSeparator() {
+        NitriteContext.setFieldSeparator(":");
+        MapperFacade nitriteMapper = new JacksonFacade();
+        assertNull(doc.get(""));
+        assertEquals(doc.get("score"), 1034);
+        assertEquals(doc.get("location:state"), "NY");
+        assertEquals(doc.get("location:address"), nitriteMapper.parse("{" +
+                "            line1: '40', " +
+                "            line2: 'ABC Street', " +
+                "            house: ['1', '2', '3'] " +
+                "       },"));
+        assertEquals(doc.get("location:address:line1"), "40");
+        assertNull(doc.get("location:category"));
+
+        assertEquals(doc.get("category"), doc.get("category"));
+        assertEquals(doc.get("category:2"), "grocery");
+        assertEquals(doc.get("location:address:house:2"), "3");
+
+        assertNotEquals(doc.get("location:address:test"), nitriteMapper.parse("{" +
+                "            line1: '40', " +
+                "            line2: 'ABC Street'" +
+                "       },"));
+        assertNotEquals(doc.get("location:address:test"), "a");
+        assertNull(doc.get(":"));
+        assertNull(doc.get("score:test"));
+
+        assertNull(doc.get("location.state"));
+        assertNull(doc.get("location.address"));
+        assertNull(doc.get("location.address.line1"));
+        assertNull(doc.get("location.category"));
+    }
+
+    @Test
     public void testGetValueObjectArray() {
         assertEquals(doc.get("objArray.0.value"), 1);
     }
@@ -115,7 +148,7 @@ public class DocumentTest {
     public void testGet() {
         String key = "first.array.-1";
         Document document = new Document()
-                .put("first", new Document().put("array", new int[] {0}));
+                .put("first", new Document().put("array", new int[]{0}));
         document.get(key);
     }
 

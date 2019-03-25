@@ -228,13 +228,14 @@ public class Document extends LinkedHashMap<String, Object>
                 if (isNullOrEmpty(prefix)) {
                     fields.addAll(((Document) value).getFieldsInternal(entry.getKey()));
                 } else {
-                    fields.addAll(((Document) value).getFieldsInternal(prefix + FIELD_SEPARATOR + entry.getKey()));
+                    fields.addAll(((Document) value).getFieldsInternal(prefix
+                            + NitriteContext.getFieldSeparator() + entry.getKey()));
                 }
             } else if (!(value instanceof Iterable)) {
                 if (isNullOrEmpty(prefix)) {
                     fields.add(entry.getKey());
                 } else {
-                    fields.add(prefix + FIELD_SEPARATOR + entry.getKey());
+                    fields.add(prefix + NitriteContext.getFieldSeparator() + entry.getKey());
                 }
             }
         }
@@ -242,7 +243,7 @@ public class Document extends LinkedHashMap<String, Object>
     }
 
     private Object deepGet(String field) {
-        if (field.contains(FIELD_SEPARATOR)) {
+        if (field.contains(NitriteContext.getFieldSeparator())) {
             return getByEmbeddedKey(field);
         } else {
             return null;
@@ -251,7 +252,7 @@ public class Document extends LinkedHashMap<String, Object>
 
     @SuppressWarnings("unchecked")
     private Object getByEmbeddedKey(String embeddedKey) {
-        String regex = "\\" + FIELD_SEPARATOR;
+        String regex = "\\" + NitriteContext.getFieldSeparator();
         String[] path = embeddedKey.split(regex);
         if (path.length < 1) {
             return null;

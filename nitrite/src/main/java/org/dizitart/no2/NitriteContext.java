@@ -23,6 +23,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.dizitart.no2.common.Constants;
 import org.dizitart.no2.common.mapper.JacksonMapper;
 import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.common.util.StringUtils;
@@ -47,6 +48,8 @@ import static org.dizitart.no2.common.util.ObjectUtils.isRepository;
 @Slf4j
 @Getter @Setter(AccessLevel.PACKAGE)
 public class NitriteContext {
+    private static String fieldSeparator = Constants.FIELD_SEPARATOR;
+
     /**
      * Gets the database file path. For in-memory database
      * it returns `null`.
@@ -176,6 +179,14 @@ public class NitriteContext {
                 collectionRegistry.remove(name);
             }
         }
+    }
+
+    public static String getFieldSeparator() {
+        return fieldSeparator;
+    }
+
+    static void setFieldSeparator(String separator) {
+        fieldSeparator = separator;
     }
 
     void shutdown() {

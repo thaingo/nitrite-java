@@ -220,8 +220,9 @@ public class Constants {
      * The constant GEOMETRY_ID
      * */
     public static final String GEOMETRY_ID = "geometry:";
+
     /**
      * Field separator.
      * */
-    public static String FIELD_SEPARATOR = ".";
+    public static final String FIELD_SEPARATOR = ".";
 }

@@ -21,9 +21,10 @@ package org.dizitart.kno2
 import com.fasterxml.jackson.databind.Module
 import org.dizitart.no2.Nitrite
 import org.dizitart.no2.NitriteBuilder
+import org.dizitart.no2.common.Constants
+import org.dizitart.no2.common.mapper.NitriteMapper
 import org.dizitart.no2.index.TextIndexer
 import org.dizitart.no2.index.fulltext.TextTokenizer
-import org.dizitart.no2.common.mapper.NitriteMapper
 import java.io.File
 
 /**
@@ -108,6 +109,13 @@ class Builder internal constructor() {
     var disableShutdownHook: Boolean = false
 
     /**
+     * Specifies the separator character for embedded field.
+     * Default value is `.`
+     *
+     * */
+    var fieldSeparator: String = Constants.FIELD_SEPARATOR
+
+    /**
      * Registers a jackson [Module] to the [KNO2JacksonFacade]
      *
      * @param [module] jackson [Module] to register
@@ -135,6 +143,7 @@ class Builder internal constructor() {
             }
         }
         builder.nitriteMapper(nitriteMapper)
+        builder.fieldSeparator(fieldSeparator)
 
         if (readOnly) builder.readOnly()
         if (compress) builder.compressed()
