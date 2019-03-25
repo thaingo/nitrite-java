@@ -66,9 +66,15 @@ class EqualsFilter extends BaseFilter {
                 && !getIndexedQueryTemplate().isIndexing(getField())
                 && value != null) {
 
-            if (getIndexedQueryTemplate().findIndex(getField()).getIndexType() == IndexType.Spatial) {
+            IndexType indexType = getIndexedQueryTemplate().findIndex(getField()).getIndexType();
+
+            if (indexType == IndexType.Spatial) {
                 throw new FilterException(errorMessage("eq cannot be used as a spatial filter, " +
                         "use geoEq instead.", FE_EQ_NOT_SPATIAL));
+            }
+
+            if (indexType == IndexType.Fulltext) {
+                return matchedSet(documentMap);
             }
 
             if (value instanceof Comparable) {
