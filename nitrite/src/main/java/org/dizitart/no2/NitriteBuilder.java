@@ -516,7 +516,9 @@ public class NitriteBuilder {
             context.setAutoCompactEnabled(autoCompact);
             context.setNitriteMapper(nitriteMapper);
             context.setJacksonModule(jacksonModules);
-            NitriteContext.setFieldSeparator(fieldSeparator);
+            if (!StringUtils.isNullOrEmpty(fieldSeparator)) {
+                NitriteContext.setFieldSeparator(fieldSeparator);
+            }
 
             NitriteStore nitriteStore = new NitriteMVStore(store);
 
