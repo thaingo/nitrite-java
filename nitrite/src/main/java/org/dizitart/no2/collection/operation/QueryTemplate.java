@@ -31,6 +31,7 @@ import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.IndexedQueryTemplate;
 import org.dizitart.no2.store.NitriteMap;
 
+import java.text.Collator;
 import java.util.*;
 
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
@@ -156,7 +157,15 @@ class QueryTemplate {
 
     private Set<NitriteId> sortIdSet(Collection<NitriteId> nitriteIdSet, FindOptions findOptions) {
         String sortField = findOptions.getField();
-        NavigableMap<Object, List<NitriteId>> sortedMap = new TreeMap<>();
+        Collator collator = findOptions.getCollator();
+
+        NavigableMap<Object, List<NitriteId>> sortedMap;
+        if (collator != null) {
+            sortedMap = new TreeMap<>(collator);
+        } else {
+            sortedMap = new TreeMap<>();
+        }
+
         Set<NitriteId> nullValueIds = new HashSet<>();
 
         for (NitriteId id : nitriteIdSet) {

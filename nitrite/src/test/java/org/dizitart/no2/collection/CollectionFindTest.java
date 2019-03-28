@@ -29,11 +29,9 @@ import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.text.Collator;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.collection.FindOptions.limit;
@@ -703,5 +701,19 @@ public class CollectionFindTest extends BaseCollectionTest {
         insert();
         DocumentCursor cursor = collection.find(Filter.eq("lastName.name", "ln2"));
         assertEquals(cursor.size(), 0);
+    }
+
+    @Test
+    public void testIssue144(){
+        Document doc1 = new Document().put("id", "test-1").put("fruit", "Apple");
+        Document doc2 = new Document().put("id", "test-2").put("fruit", "Ôrange");
+        Document doc3 = new Document().put("id", "test-3").put("fruit", "Pineapple");
+
+        NitriteCollection coll = db.getCollection("test");
+        coll.insert(doc1, doc2, doc3);
+
+        DocumentCursor cursor = coll.find(FindOptions.sort("fruit", SortOrder.Ascending,
+                Collator.getInstance(Locale.FRANCE)));
+        assertEquals(cursor.toList().get(1).get("fruit"), "Ôrange");
     }
 }
