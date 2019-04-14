@@ -43,6 +43,7 @@ public class DocumentTest {
 
     @Before
     public void setUp() {
+        NitriteContext.setFieldSeparator(null);
         MapperFacade mapperFacade = new JacksonFacade();
         doc = mapperFacade.parse("{" +
                 "  score: 1034," +

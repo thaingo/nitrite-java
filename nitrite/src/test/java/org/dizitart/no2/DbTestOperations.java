@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
  * @author Anindya Chatterjee.
  */
 public class DbTestOperations {
-    private static final String fileName = getRandomTempDbFile();
+    private final String fileName = getRandomTempDbFile();
 
     void createDb() {
         Nitrite db = new NitriteBuilder()

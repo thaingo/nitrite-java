@@ -101,7 +101,7 @@ class LocalCollection {
 
     private void modify(List<Document> modifiedDocuments) {
         for (Document doc : modifiedDocuments) {
-            Document document = new Document(doc);
+            Document document = doc.clone();
             document.put(DOC_SOURCE, REPLICATOR);
 
             Document localDocument = getLocalDocument(document);
@@ -138,12 +138,11 @@ class LocalCollection {
         NitriteId id = document.getId();
         Document doc = collection.getById(id);
         if (doc != null) {
-            return new Document(doc);
+            return doc.clone();
         }
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private List<Document> removedSince(long lastSequence, long newSequence) {
         Iterable<Document> removeLogs = changeLogRepository.find(
                 Filter.and(
@@ -156,8 +155,10 @@ class LocalCollection {
         List<Document> result = new ArrayList<>();
         if (removeLogs != null) {
             for (Document logEntry : removeLogs) {
-                Document document = new Document(logEntry.get(DELETED_ITEM, Document.class));
-                result.add(document);
+                Document document = logEntry.get(DELETED_ITEM, Document.class);
+                if (document != null) {
+                    result.add(document.clone());
+                }
             }
             log.debug("Removed since in " + getName() + ": from " + lastSequence + " now " + newSequence + " - " + result);
         }
@@ -174,8 +175,9 @@ class LocalCollection {
 
         List<Document> result = new ArrayList<>();
         for (Document document : findResult) {
-            Document doc = new Document(document);
-            result.add(doc);
+            if (document != null) {
+                result.add(document.clone());
+            }
         }
 
         log.debug("Modified since in " + getName() + ": from " + lastSequence + " to " + newSequence + " - " + result);

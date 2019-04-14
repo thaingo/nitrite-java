@@ -83,9 +83,12 @@ public class ReplicaStoreService {
 
         if (removeLogs != null) {
             for (NitriteDocument logEntry : removeLogs) {
-                Document document = new Document(logEntry.getDocument());
-                document.remove(DOC_SOURCE);
-                documentList.add(document);
+                Document document = logEntry.getDocument();
+                if (document != null) {
+                    Document item = document.clone();
+                    item.remove(DOC_SOURCE);
+                    documentList.add(item);
+                }
             }
         }
 
@@ -105,7 +108,7 @@ public class ReplicaStoreService {
 
         List<Document> result = new ArrayList<>();
         for (NitriteDocument nitriteDocument : documents) {
-            Document doc = new Document(nitriteDocument.getDocument());
+            Document doc = nitriteDocument.getDocument().clone();
             doc.remove(DOC_SOURCE);
             result.add(doc);
         }

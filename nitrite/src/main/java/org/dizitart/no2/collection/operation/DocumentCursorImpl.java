@@ -103,7 +103,11 @@ class DocumentCursorImpl implements DocumentCursor {
         @Override
         public Document next() {
             NitriteId next = iterator.next();
-            return nitriteMap.get(next);
+            Document document = nitriteMap.get(next);
+            if (document != null) {
+                return document.clone();
+            }
+            return null;
         }
 
         @Override

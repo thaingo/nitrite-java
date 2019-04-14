@@ -85,9 +85,13 @@ class JoinedObjectIterable<T> implements RecordIterable<T> {
 
         @Override
         public T next() {
-            Document record = new Document(documentIterator.next());
-            record.remove(DOC_ID);
-            return objectMapper.asObject(record, joinType);
+            Document item = documentIterator.next();
+            if (item != null) {
+                Document record = item.clone();
+                record.remove(DOC_ID);
+                return objectMapper.asObject(record, joinType);
+            }
+            return null;
         }
 
         @Override

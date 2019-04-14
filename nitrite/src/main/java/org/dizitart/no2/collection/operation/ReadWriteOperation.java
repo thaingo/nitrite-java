@@ -86,7 +86,8 @@ class ReadWriteOperation {
             }
 
             synchronized (lock) {
-                Document already = nitriteMap.putIfAbsent(nitriteId, document);
+                Document item = document.clone();
+                Document already = nitriteMap.putIfAbsent(nitriteId, item);
                 log.debug("Inserting document {} in {}", document, name);
 
                 if (already != null) {
@@ -97,7 +98,7 @@ class ReadWriteOperation {
                             "entry with same id already exists in " + name, UCE_CONSTRAINT_VIOLATED));
                 } else {
                     try {
-                        indexTemplate.updateIndexEntry(document, nitriteId);
+                        indexTemplate.updateIndexEntry(item, nitriteId);
                     } catch (UniqueConstraintException uce) {
                         log.error("Unique constraint violated for the document "
                                 + document + " in " + name, uce);
@@ -146,7 +147,7 @@ class ReadWriteOperation {
                 throw new InvalidOperationException(OBJ_MULTI_UPDATE_WITH_JUST_ONCE);
             }
 
-            update = new Document(update);
+            update = update.clone();
             update.remove(DOC_ID);
 
             if (!REPLICATOR.contentEquals(update.getSource())) {
@@ -167,7 +168,7 @@ class ReadWriteOperation {
                     NitriteId nitriteId = document.getId();
 
                     synchronized (lock) {
-                        Document oldDocument = new Document(document);
+                        Document oldDocument = document.clone();
 
                         log.debug("Document to update {} in {}", document, name);
 
@@ -182,7 +183,8 @@ class ReadWriteOperation {
                             document.putAll(update);
                         }
 
-                        nitriteMap.put(nitriteId, document);
+                        Document item = document.clone();
+                        nitriteMap.put(nitriteId, item);
                         log.debug("Document {} updated in {}", document, name);
 
                         // if 'update' only contains id value, affected count = 0
@@ -190,7 +192,7 @@ class ReadWriteOperation {
                             writeResult.addToList(nitriteId);
                         }
 
-                        indexTemplate.refreshIndexEntry(oldDocument, document, nitriteId);
+                        indexTemplate.refreshIndexEntry(oldDocument, item, nitriteId);
                     }
 
                     ChangedItem changedItem = new ChangedItem();

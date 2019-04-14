@@ -136,7 +136,7 @@ class MockSyncTemplate implements SyncTemplate {
         long time = System.currentTimeMillis();
 
         for (Document document : insertedDocuments) {
-            Document doc = new Document(document);
+            Document doc = document.clone();
             doc.put(DOC_SOURCE, REPLICATOR);
             doc.put(DOC_SYNCED, time);
 
@@ -163,7 +163,7 @@ class MockSyncTemplate implements SyncTemplate {
         long time = System.currentTimeMillis();
 
         for (Document document : removedDocuments) {
-            Document doc = new Document(document);
+            Document doc = document.clone();
             doc.put(DOC_SOURCE, REPLICATOR);
             doc.put(DOC_SYNCED, time);
             remoteCollection.remove(document);
@@ -191,10 +191,14 @@ class MockSyncTemplate implements SyncTemplate {
 
             if (removeLogs != null) {
                 for (Document logEntry : removeLogs) {
-                    Document document = new Document(logEntry.get(DELETED_ITEM, Document.class));
-                    document.remove(DOC_SYNCED);
-                    document.remove(DOC_SOURCE);
-                    documentList.add(document);
+                    Document document = logEntry.get(DELETED_ITEM, Document.class);
+
+                    if (document != null) {
+                        Document item = document.clone();
+                        item.remove(DOC_SYNCED);
+                        item.remove(DOC_SOURCE);
+                        documentList.add(item);
+                    }
                 }
             }
         }
@@ -212,7 +216,7 @@ class MockSyncTemplate implements SyncTemplate {
                 );
         List<Document> result = new ArrayList<>();
         for (Document document : findResult) {
-            Document doc = new Document(document);
+            Document doc = document.clone();
             doc.remove(DOC_SYNCED);
             doc.remove(DOC_SOURCE);
             result.add(doc);

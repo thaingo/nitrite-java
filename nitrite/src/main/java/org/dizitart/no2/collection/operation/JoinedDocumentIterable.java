@@ -96,7 +96,10 @@ class JoinedDocumentIterable implements RecordIterable<Document> {
         public Document next() {
             NitriteId next = iterator.next();
             Document document = nitriteMap.get(next);
-            return join(document, foreignCursor, lookup);
+            if (document != null) {
+                return join(document.clone(), foreignCursor, lookup);
+            }
+            return null;
         }
 
         @Override
@@ -107,7 +110,6 @@ class JoinedDocumentIterable implements RecordIterable<Document> {
         private Document join(Document localDocument, DocumentCursor foreignCursor, Lookup lookup) {
             Object localObject = localDocument.get(lookup.getLocalField());
             if (localObject == null) return localDocument;
-            Document resultDocument = new Document(localDocument);
             Set<Document> target = new HashSet<>();
 
             for (Document foreignDocument: foreignCursor) {
@@ -119,9 +121,9 @@ class JoinedDocumentIterable implements RecordIterable<Document> {
                 }
             }
             if (!target.isEmpty()) {
-                resultDocument.put(lookup.getTargetField(), target);
+                localDocument.put(lookup.getTargetField(), target);
             }
-            return resultDocument;
+            return localDocument;
         }
     }
 }

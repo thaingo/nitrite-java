@@ -259,9 +259,13 @@ class DefaultObjectRepository<T> implements ObjectRepository<T> {
         validateCollection();
         notNull(nitriteId, errorMessage("nitriteId cannot be null", VE_OBJ_NITRITE_ID_GET_NULL));
 
-        Document document = new Document(collection.getById(nitriteId));
-        document.remove(DOC_ID);
-        return nitriteMapper.asObject(document, type);
+        Document document = collection.getById(nitriteId);
+        if (document != null) {
+            Document item = document.clone();
+            item.remove(DOC_ID);
+            return nitriteMapper.asObject(item, type);
+        }
+        return null;
     }
 
     @Override

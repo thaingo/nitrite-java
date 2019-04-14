@@ -49,6 +49,8 @@ public class DocumentMetadataTest extends BaseCollectionTest {
         document.put("another_key", "another_value");
 
         collection.update(document);
+        cursor = collection.find(eq("test_key", "test_value"));
+        document = cursor.firstOrNull();
 
         assertTrue(document.getRevision() > previous);
 

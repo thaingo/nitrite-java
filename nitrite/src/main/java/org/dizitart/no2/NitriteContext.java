@@ -48,7 +48,8 @@ import static org.dizitart.no2.common.util.ObjectUtils.isRepository;
 @Slf4j
 @Getter @Setter(AccessLevel.PACKAGE)
 public class NitriteContext {
-    private static String fieldSeparator = Constants.FIELD_SEPARATOR;
+    private static final String defaultFieldSeparator = Constants.FIELD_SEPARATOR;
+    private static String fieldSeparator;
 
     /**
      * Gets the database file path. For in-memory database
@@ -182,6 +183,9 @@ public class NitriteContext {
     }
 
     public static String getFieldSeparator() {
+        if (StringUtils.isNullOrEmpty(fieldSeparator)) {
+            return defaultFieldSeparator;
+        }
         return fieldSeparator;
     }
 

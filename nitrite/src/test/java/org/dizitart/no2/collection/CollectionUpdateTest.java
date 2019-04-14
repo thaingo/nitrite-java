@@ -23,11 +23,13 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.NotIdentifiableException;
+import org.dizitart.no2.exceptions.UniqueConstraintException;
 import org.dizitart.no2.filters.Filter;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static org.dizitart.no2.Document.createDocument;
+import static org.dizitart.no2.collection.IndexOptions.indexOptions;
 import static org.dizitart.no2.filters.Filter.eq;
 import static org.dizitart.no2.filters.Filter.not;
 import static org.junit.Assert.*;
@@ -202,7 +204,7 @@ public class CollectionUpdateTest extends BaseCollectionTest {
         Document savedDoc1 = coll.find().firstOrNull();
         assertNotNull(savedDoc1);
 
-        Document clonedDoc1 = new Document(savedDoc1);
+        Document clonedDoc1 = savedDoc1.clone();
         assertEquals(savedDoc1, clonedDoc1);
 
         clonedDoc1.put("group", null);
@@ -240,5 +242,24 @@ public class CollectionUpdateTest extends BaseCollectionTest {
         NitriteCollection collection = db.getCollection("test");
         collection.close();
         collection.register(changeInfo -> fail("should not happen"));
+    }
+
+    @Test(expected = UniqueConstraintException.class)
+    public void testIssue151() {
+        Document doc1 = new Document().put("id", "test-1").put("fruit", "Apple");
+        Document doc2 = new Document().put("id", "test-2").put("fruit", "Ôrange");
+        NitriteCollection coll = db.getCollection("test");
+        coll.insert(doc1, doc2);
+
+        coll.createIndex("fruit", indexOptions(IndexType.Unique));
+
+        assertEquals(coll.find(eq("fruit", "Apple")).totalCount(), 1);
+
+        Document doc3 = coll.find(eq("id", "test-2")).firstOrNull();
+
+        doc3.put("fruit", "Apple");
+        coll.update(doc3);
+
+        assertEquals(coll.find(eq("fruit", "Apple")).totalCount(), 1);
     }
 }
