@@ -19,6 +19,7 @@
 package org.dizitart.no2.collection.objects;
 
 import org.dizitart.no2.Document;
+import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.DocumentCursor;
 import org.dizitart.no2.collection.Lookup;
 import org.dizitart.no2.collection.RecordIterable;
@@ -28,6 +29,7 @@ import org.dizitart.no2.exceptions.ValidationException;
 
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
+import java.util.Set;
 
 import static org.dizitart.no2.common.util.DocumentUtils.skeletonDocument;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
@@ -61,6 +63,11 @@ class ObjectCursor<T> implements Cursor<T> {
                                                          Lookup lookup, Class<Joined> type) {
         ObjectCursor<Foreign> foreignObjectCursor = (ObjectCursor<Foreign>) foreignCursor;
         return new JoinedObjectIterable<>(nitriteMapper, cursor.join(foreignObjectCursor.cursor, lookup), type);
+    }
+
+    @Override
+    public Set<NitriteId> idSet() {
+        return cursor.idSet();
     }
 
     @Override

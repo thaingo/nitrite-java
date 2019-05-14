@@ -22,6 +22,8 @@ package org.dizitart.no2.collection;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 
+import java.util.Set;
+
 /**
  * An interface to iterate over database {@code find()} results. It provides a
  * mechanism to iterate over all {@link NitriteId}s of the result.
@@ -74,4 +76,12 @@ public interface DocumentCursor extends RecordIterable<Document> {
      * @since 2.1.0
      */
     RecordIterable<Document> join(DocumentCursor foreignCursor, Lookup lookup);
+
+    /**
+     * Gets the set of all {@link NitriteId}s from the {@code find()} results.
+     *
+     * @return a set of all {@link NitriteId}s.
+     * @since 3.3.0
+     */
+    Set<NitriteId> idSet();
 }

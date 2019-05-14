@@ -28,9 +28,7 @@ import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.store.NitriteMap;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.*;
 
 import static org.dizitart.no2.exceptions.ErrorMessage.PROJECTION_WITH_NOT_NULL_VALUES;
 import static org.dizitart.no2.exceptions.ErrorMessage.REMOVE_ON_DOCUMENT_ITERATOR_NOT_SUPPORTED;
@@ -39,7 +37,7 @@ import static org.dizitart.no2.exceptions.ErrorMessage.REMOVE_ON_DOCUMENT_ITERAT
  * @author Anindya Chatterjee.
  */
 class DocumentCursorImpl implements DocumentCursor {
-    private final Collection<NitriteId> resultSet;
+    private final Set<NitriteId> resultSet;
     private final NitriteMap<NitriteId, Document> nitriteMap;
     private boolean hasMore;
     private int totalCount;
@@ -47,9 +45,9 @@ class DocumentCursorImpl implements DocumentCursor {
 
     DocumentCursorImpl(FindResult findResult) {
         if (findResult.getIdSet() != null) {
-            resultSet = findResult.getIdSet();
+            resultSet = Collections.unmodifiableSet(findResult.getIdSet());
         } else {
-            resultSet = new TreeSet<>();
+            resultSet = Collections.unmodifiableSet(new TreeSet<>());
         }
         this.nitriteMap = findResult.getNitriteMap();
         this.hasMore = findResult.isHasMore();
@@ -66,6 +64,11 @@ class DocumentCursorImpl implements DocumentCursor {
     @Override
     public RecordIterable<Document> join(DocumentCursor cursor, Lookup lookup) {
         return new JoinedDocumentIterable(findResult, cursor, lookup);
+    }
+
+    @Override
+    public Set<NitriteId> idSet() {
+        return resultSet;
     }
 
     @Override

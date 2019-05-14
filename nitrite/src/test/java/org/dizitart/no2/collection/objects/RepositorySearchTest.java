@@ -18,6 +18,7 @@
 
 package org.dizitart.no2.collection.objects;
 
+import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.FindOptions;
 import org.dizitart.no2.collection.RecordIterable;
 import org.dizitart.no2.collection.SortOrder;
@@ -27,6 +28,7 @@ import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.dizitart.no2.collection.FindOptions.sort;
 import static org.dizitart.no2.filters.Filter.*;
@@ -441,5 +443,12 @@ public class RepositorySearchTest extends BaseObjectRepositoryTest {
         assertTrue(repo.hasIndex("lastName"));
 
         assertEquals(repo.find(eq("age", 12)).firstOrNull(), first);
+    }
+
+    @Test
+    public void testIdSet() {
+        Cursor<Employee> employees = employeeRepository.find(sort("empId", SortOrder.Ascending));
+        Set<NitriteId> nitriteIds = employees.idSet();
+        assertEquals(nitriteIds.size(), 10);
     }
 }
