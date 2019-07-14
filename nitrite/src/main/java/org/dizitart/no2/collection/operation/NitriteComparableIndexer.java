@@ -267,7 +267,27 @@ class NitriteComparableIndexer implements ComparableIndexer {
     }
 
     @Override
-    public Set<NitriteId> findIn(String field, List<Comparable> values) {
+    public Set<NitriteId> findNotIn(String field, Collection<Comparable> values) {
+        notNull(field, errorMessage("field cannot be null", VE_FIND_NOT_IN_INDEX_NULL_FIELD));
+        notNull(values, errorMessage("values cannot be null", VE_FIND_NOT_IN_INDEX_NULL_VALUE));
+
+        Set<NitriteId> resultSet = new LinkedHashSet<>();
+        NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap
+                = indexStore.getIndexMap(field);
+
+        if (indexMap != null) {
+            for (Comparable comparable : indexMap.keySet()) {
+                if (!values.contains(comparable)) {
+                    resultSet.addAll(indexMap.get(comparable));
+                }
+            }
+        }
+
+        return resultSet;
+    }
+
+    @Override
+    public Set<NitriteId> findIn(String field, Collection<Comparable> values) {
         notNull(field, errorMessage("field cannot be null", VE_FIND_IN_INDEX_NULL_FIELD));
         notNull(values, errorMessage("values cannot be null", VE_FIND_IN_INDEX_NULL_VALUE));
 

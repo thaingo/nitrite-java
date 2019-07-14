@@ -194,8 +194,18 @@ public class NitriteContext {
     }
 
     void shutdown() {
+        if (textIndexer != null) {
+            textIndexer.close();
+        }
+
         shutdownExecutors(5);
         collectionRegistry.clear();
         repositoryRegistry.clear();
+    }
+
+    void externalCommit() {
+        if (textIndexer != null) {
+            textIndexer.commit();
+        }
     }
 }

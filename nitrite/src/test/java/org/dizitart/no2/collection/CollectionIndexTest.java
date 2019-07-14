@@ -20,15 +20,21 @@ package org.dizitart.no2.collection;
 
 import org.dizitart.no2.BaseCollectionTest;
 import org.dizitart.no2.Document;
+import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.index.Index;
+import org.dizitart.no2.services.LuceneService;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
 import static org.awaitility.Awaitility.await;
+import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.collection.IndexOptions.indexOptions;
 import static org.dizitart.no2.filters.Filter.eq;
@@ -207,5 +213,33 @@ public class CollectionIndexTest extends BaseCollectionTest {
 
         collection = db.getCollection("test");
         assertTrue(collection.hasIndex("firstName"));
+    }
+
+    @Test
+    public void testIssue174() throws IOException {
+        String file = getRandomTempDbFile();
+        Nitrite ndb = Nitrite.builder()
+                .textIndexer(new LuceneService())
+                .filePath(file)
+                .openOrCreate();
+
+        NitriteCollection coll = ndb.getCollection("lucene");
+
+        Document doc = Document.createDocument("text", "Quick brown fox").put("name", "Anindya");
+        Document doc2 = Document.createDocument("text", "Jump over lazy dog").put("name", "Chatterjee");
+
+        coll.insert(doc, doc2);
+
+        coll.createIndex("name", IndexOptions.indexOptions(IndexType.Unique));
+        coll.createIndex("text", IndexOptions.indexOptions(IndexType.Fulltext));
+
+        assertTrue(coll.hasIndex("name"));
+        assertTrue(coll.hasIndex("text"));
+
+        coll.dropIndex("text");
+
+        assertFalse(coll.hasIndex("text"));
+
+        Files.delete(Paths.get(file));
     }
 }

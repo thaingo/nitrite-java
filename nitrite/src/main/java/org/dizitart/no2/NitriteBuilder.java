@@ -33,6 +33,7 @@ import org.dizitart.no2.index.fulltext.TextTokenizer;
 import org.dizitart.no2.store.NitriteMVStore;
 import org.dizitart.no2.store.NitriteStore;
 import org.h2.mvstore.MVStore;
+import org.h2.mvstore.OffHeapStore;
 
 import java.io.File;
 import java.util.HashMap;
@@ -436,6 +437,11 @@ public class NitriteBuilder {
 
         if (!autoCommit) {
             builder = builder.autoCommitDisabled();
+        }
+
+        if (isNullOrEmpty(filePath)) {
+            // for in-memory store use off-heap storage
+            builder = builder.fileStore(new OffHeapStore());
         }
 
         // auto compact disabled github issue #41

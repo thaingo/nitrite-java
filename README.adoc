@@ -22,7 +22,8 @@ Nitrite is a server-less embedded database ideal for desktop, mobile or small we
 
 * Embedded database
 * Key-value, document and object store
-* In-memory or single file
+* In-memory off-heap store
+* Single file store
 * MongoDB like API
 * Index assisted search
 * Full text search
@@ -31,7 +32,7 @@ Nitrite is a server-less embedded database ideal for desktop, mobile or small we
 * RxJava support
 * Replication via Nitrite DataGate server
 * Very fast and lightweight
-* Full Android compatibility
+* Full Android compatibility (API Level 19)
 
 == Kotlin Extension
 
@@ -279,7 +280,7 @@ to test replication using the DataGate server. Please run the below command to c
 db.getSiblingDB('benchmark').createUser({user: 'bench', pwd: 'bench', roles: [{role: 'readWrite', db: 'benchmark'}, {role: 'dbAdmin', db: 'benchmark'}]})
 --
 
-The test suite also requires android sdk 24.4.1 to be installed and ANDROID_HOME environment variable to be setup
+The test suite also requires android sdk 27 to be installed and ANDROID_HOME environment variable to be setup
 properly to test the android example.
 
 == Support / Feedback

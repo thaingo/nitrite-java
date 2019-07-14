@@ -128,6 +128,16 @@ class NitriteTextIndexer implements TextIndexer {
         }
     }
 
+    @Override
+    public void commit() {
+        // nothing to do
+    }
+
+    @Override
+    public void close() {
+        // nothing to do
+    }
+
     private void createOrUpdate(NitriteId id, String field, String text) {
         try {
             Set<String> words = tokenizerService.tokenize(text);

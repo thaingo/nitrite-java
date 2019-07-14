@@ -44,4 +44,18 @@ public interface TextIndexer extends Indexer<String> {
      * @return the result set
      */
     Set<NitriteId> findText(String field, String value);
+
+    /**
+     * Commits any unsaved changes. Third-party implementation should use
+     * this method to persists unsaved changes.
+     *
+     * */
+    void commit();
+
+    /**
+     * Closes all opened resources. Third-party implementation should use
+     * this method to close all resources before database closes.
+     *
+     * */
+    void close();
 }

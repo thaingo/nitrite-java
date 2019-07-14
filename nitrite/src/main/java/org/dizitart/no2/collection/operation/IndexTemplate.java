@@ -245,6 +245,9 @@ class IndexTemplate {
                     break;
                 case Fulltext:
                     textIndexer.dropIndex(field);
+                    if (!(textIndexer instanceof NitriteTextIndexer)) {
+                        indexStore.dropIndex(field);
+                    }
                     break;
                 case Spatial:
                     spatialIndexer.dropIndex(field);

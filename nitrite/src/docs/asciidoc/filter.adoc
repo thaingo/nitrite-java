@@ -35,6 +35,10 @@ the whole collection.
 |In
 |in(String, Object[])
 |Matches any of the values specified in an array.
+
+|NotIn
+|notIn(String, Object[])
+|Matches none of the values specified in an array.
 |===
 
 

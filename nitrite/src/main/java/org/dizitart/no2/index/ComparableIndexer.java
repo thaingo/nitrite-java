@@ -20,7 +20,7 @@ package org.dizitart.no2.index;
 
 import org.dizitart.no2.NitriteId;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -80,5 +80,14 @@ public interface ComparableIndexer extends Indexer<Comparable> {
      * @param values the values
      * @return the result set
      */
-    Set<NitriteId> findIn(String field, List<Comparable> values);
+    Set<NitriteId> findIn(String field, Collection<Comparable> values);
+
+    /**
+     * Finds with notIn filer using index.
+     *
+     * @param field  the value
+     * @param values the values
+     * @return the result set
+     */
+    Set<NitriteId> findNotIn(String field, Collection<Comparable> values);
 }

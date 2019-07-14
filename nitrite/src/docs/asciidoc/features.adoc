@@ -1,6 +1,7 @@
 * Embedded database
 * Key-value, document and object store
-* In-memory or single file
+* In-memory off-heap store
+* Single file store
 * MongoDB like API
 * Index assisted search
 * Full text search
@@ -9,4 +10,4 @@
 * RxJava support
 * Replication via Nitrite DataGate server
 * Very fast and lightweight
-* Full Android compatibility
+* Full Android compatibility (API Level 19)

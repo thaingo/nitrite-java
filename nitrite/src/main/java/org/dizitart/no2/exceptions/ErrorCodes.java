@@ -141,6 +141,12 @@ public class ErrorCodes {
     public static final int VE_LISTENER_NULL = 1111;
     public static final int VE_TYPE_NULL = 1112;
     public static final int VE_COLLECTION_NULL = 1113;
+    public static final int VE_FIND_NOT_IN_INDEX_NULL_FIELD = 1114;
+    public static final int VE_FIND_NOT_IN_INDEX_NULL_VALUE = 1115;
+    public static final int VE_NOT_IN_FILTER_NULL_FIELD = 1116;
+    public static final int VE_NOT_IN_FILTER_EMPTY_FIELD = 1117;
+    public static final int VE_NOT_IN_FILTER_NULL_VALUES = 1118;
+    public static final int VE_NOT_IN_FILTER_EMPTY_VALUES = 1119;
 
     // endregion
 
@@ -221,6 +227,7 @@ public class ErrorCodes {
     static final int FE_SEARCH_TERM_INVALID_TRAILING_STAR = 4034;
     static final int FE_MULTIPLE_WORDS_WITH_WILDCARD = 4035;
     public static final int FE_EQUAL_NOT_COMPARABLE = 4036;
+    public static final int FE_NOT_IN_SEARCH_TERM_NOT_COMPARABLE = 4037;
 
     // endregion
 

@@ -20,8 +20,12 @@ package org.dizitart.no2.filters;
 
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.common.mapper.NitriteMapper;
+import org.dizitart.no2.exceptions.FilterException;
 import org.dizitart.no2.exceptions.ValidationException;
 import org.dizitart.no2.index.IndexedQueryTemplate;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.dizitart.no2.common.util.ValidationUtils.notEmpty;
 import static org.dizitart.no2.common.util.ValidationUtils.notNull;
@@ -56,6 +60,28 @@ public abstract class BaseFilter implements Filter {
 
     protected boolean isObjectFilter() {
         return this.nitriteMapper != null;
+    }
+
+    protected Set<Comparable> convertValues(Set<Comparable> values) {
+        if (isObjectFilter()) {
+            Set<Comparable> convertedValues = new HashSet<>();
+
+            for (Comparable comparable : values) {
+                if (comparable == null
+                        || !getNitriteMapper().isValueType(comparable)) {
+                    throw new FilterException(errorMessage("search term " + comparable
+                            + " is not a comparable", FE_IN_SEARCH_TERM_NOT_COMPARABLE));
+                }
+
+                if (getNitriteMapper().isValueType(comparable)) {
+                    Comparable convertValue = (Comparable) getNitriteMapper().convertValue(comparable);
+                    convertedValues.add(convertValue);
+                }
+            }
+
+            return convertedValues;
+        }
+        return values;
     }
 
     @Override

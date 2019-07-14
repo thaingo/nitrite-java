@@ -148,6 +148,8 @@ class ElementMatchFilter implements Filter {
             return matchLesser(item, filter);
         } else if (filter instanceof InFilter) {
             return matchIn(item, filter);
+        } else if (filter instanceof NotInFilter) {
+            return matchNotIn(item, filter);
         } else if (filter instanceof RegexFilter) {
             return matchRegex(item, filter);
         } else {
@@ -276,7 +278,7 @@ class ElementMatchFilter implements Filter {
     }
 
     private boolean matchIn(Object item, Filter filter) {
-        List<Comparable> values = ((InFilter) filter).getObjectList();
+        Set<Comparable> values = ((InFilter) filter).getComparableSet();
         if (values != null) {
             if (item instanceof Document) {
                 Document document = (Document) item;
@@ -286,6 +288,22 @@ class ElementMatchFilter implements Filter {
                 }
             } else if (item instanceof Comparable) {
                 return values.contains(item);
+            }
+        }
+        return false;
+    }
+
+    private boolean matchNotIn(Object item, Filter filter) {
+        Set<Comparable> values = ((NotInFilter) filter).getComparableSet();
+        if (values != null) {
+            if (item instanceof Document) {
+                Document document = (Document) item;
+                Object docValue = document.get(((NotInFilter) filter).getField());
+                if (docValue instanceof Comparable) {
+                    return !values.contains(docValue);
+                }
+            } else if (item instanceof Comparable) {
+                return !values.contains(item);
             }
         }
         return false;
