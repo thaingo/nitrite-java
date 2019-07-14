@@ -141,6 +141,9 @@ public class ObjectUtils {
         }
 
         if (o1 instanceof Number && o2 instanceof Number) {
+            if (o1.getClass() != o2.getClass()) {
+                return false;
+            }
             // cast to Number and take care of boxing and compare
             return compare((Number) o1, (Number) o2) == 0;
         } else if (o1 instanceof Iterable && o2 instanceof Iterable)  {
@@ -192,7 +195,7 @@ public class ObjectUtils {
 
             if (createSkeleton) {
                 Field[] fields = type.getDeclaredFields();
-                if (fields != null && fields.length > 0) {
+                if (fields.length > 0) {
                     for (Field field : fields) {
                         // set value for non static fields
                         if (!Modifier.isStatic(field.getModifiers())) {

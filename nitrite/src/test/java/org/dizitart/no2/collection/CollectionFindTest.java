@@ -125,7 +125,7 @@ public class CollectionFindTest extends BaseCollectionTest {
                 ));
         assertEquals(cursor.size(), 2);
 
-        cursor = collection.find(eq("data.1", 4));
+        cursor = collection.find(eq("data.1", (byte) 4));
         assertEquals(cursor.size(), 2);
 
         cursor = collection.find(lt("data.1", 4));
@@ -351,7 +351,7 @@ public class CollectionFindTest extends BaseCollectionTest {
     @Test
     public void testFindWithArrayEqual() {
         insert();
-        DocumentCursor ids = collection.find(eq("data", new Comparable[]{3, 4, 3}));
+        DocumentCursor ids = collection.find(eq("data", new byte[]{3, 4, 3}));
         assertNotNull(ids);
         assertEquals(ids.size(), 1);
     }

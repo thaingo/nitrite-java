@@ -22,6 +22,7 @@ import org.dizitart.no2.BaseCollectionTest;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.exceptions.IndexingException;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.Index;
 import org.dizitart.no2.services.LuceneService;
 import org.junit.Test;
@@ -213,6 +214,28 @@ public class CollectionIndexTest extends BaseCollectionTest {
 
         collection = db.getCollection("test");
         assertTrue(collection.hasIndex("firstName"));
+    }
+
+    @Test
+    public void testIssue178() {
+        collection.dropAllIndices();
+        collection.remove(Filter.ALL);
+
+        Document doc1 = Document.createDocument("field", 5);
+        Document doc2 = Document.createDocument("field", 4.3);
+        Document doc3 = Document.createDocument("field", 0.03);
+        Document doc4 = Document.createDocument("field", 4);
+        Document doc5 = Document.createDocument("field", 5.0);
+
+        collection.insert(doc1, doc2, doc3, doc4, doc5);
+
+        DocumentCursor cursor = collection.find(Filter.eq("field", 5));
+        assertEquals(cursor.size(), 1);
+
+        collection.createIndex("field", IndexOptions.indexOptions(IndexType.NonUnique));
+
+        cursor = collection.find(Filter.eq("field", 5));
+        assertEquals(cursor.size(), 1);
     }
 
     @Test
