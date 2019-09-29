@@ -18,12 +18,14 @@
 
 package org.dizitart.no2;
 
-import org.dizitart.no2.collection.IndexOptions;
-import org.dizitart.no2.collection.IndexType;
-import org.dizitart.no2.collection.NitriteCollection;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.dizitart.no2.collection.*;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.exceptions.NitriteIOException;
 import org.dizitart.no2.exceptions.ValidationException;
+import org.dizitart.no2.index.annotations.Id;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +43,7 @@ import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.common.Constants.INTERNAL_NAME_SEPARATOR;
 import static org.dizitart.no2.common.Constants.META_MAP_NAME;
-import static org.dizitart.no2.filters.Filter.ALL;
+import static org.dizitart.no2.filters.Filter.*;
 import static org.junit.Assert.*;
 
 public class NitriteTest {
@@ -342,5 +344,51 @@ public class NitriteTest {
     public void testIssue112() {
         Nitrite db = Nitrite.builder().filePath("/tmp").openOrCreate();
         assertNull(db);
+    }
+
+    @Test
+    public void testIssue185() {
+        final ObjectRepository<Receipt> repository = db.getRepository(Receipt.class);
+        final Receipt receipt = new Receipt();
+        receipt.clientRef = "111-11111";
+        receipt.status = Receipt.Status.PREPARING;
+
+        new Thread(() -> {
+            for (int i = 0; i < 1000; ++i) {
+                repository.update(receipt, true);
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ignored) {
+                }
+                repository.remove(receipt);
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }).start();
+
+        for (int i = 0; i < 1000; ++i) {
+            repository.find(not(eq("status", Receipt.Status.COMPLETED)), FindOptions.sort("createdTimestamp", SortOrder.Descending)).toList();
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ignored) {
+            }
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Receipt {
+        public enum Status {
+            COMPLETED,
+            PREPARING,
+        }
+
+        private Status status;
+        @Id
+        private String clientRef;
+        private Long createdTimestamp = System.currentTimeMillis();
     }
 }

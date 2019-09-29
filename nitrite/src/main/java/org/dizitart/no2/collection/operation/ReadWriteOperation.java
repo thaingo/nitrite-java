@@ -40,7 +40,7 @@ import static org.dizitart.no2.exceptions.ErrorMessage.OBJ_MULTI_UPDATE_WITH_JUS
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
- *
+ * TODO: Accommodate find operations here for better synchronization (ref: issue 185)
  * @author Anindya Chatterjee
  * */
 @Slf4j

@@ -170,6 +170,8 @@ class QueryTemplate {
 
         for (NitriteId id : nitriteIdSet) {
             Document document = nitriteMap.get(id);
+            if (document == null) continue;
+
             Object value = document.get(sortField);
 
             if (value != null) {
