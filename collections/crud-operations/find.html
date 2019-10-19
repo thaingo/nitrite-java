@@ -633,14 +633,59 @@ is used to specify search options. It provides pagination as well as sorting mec
 <span class="comment">// sorts the records by age in ascending order</span>
 <span class="predefined-type">Cursor</span> results = collection.find(sort(<span class="string"><span class="delimiter">&quot;</span><span class="content">age</span><span class="delimiter">&quot;</span></span>, SortOrder.Ascending));
 
+<span class="comment">// sorts the records by name in ascending order with custom collator</span>
+<span class="predefined-type">Cursor</span> results = collection.find(sort(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, SortOrder.Ascending, <span class="predefined-type">Collator</span>.getInstance(<span class="predefined-type">Locale</span>.FRANCE)));
+
 <span class="comment">// fetch 10 records starting from offset = 2</span>
 <span class="predefined-type">Cursor</span> results = collection.find(limit(<span class="integer">2</span>, <span class="integer">10</span>));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Filter Embedded Document/Object</strong></p>
+</div>
+<div class="paragraph">
+<p>Find operation can query on embedded document/object also. Nitrite uses field separator <code>.</code> for querying
+embedded object.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// find a document which contains an &quot;info&quot; embedded document with age 30</span>
+<span class="predefined-type">Document</span> doc = createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">John</span><span class="delimiter">&quot;</span></span>)
+     .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Doe</span><span class="delimiter">&quot;</span></span>)
+     .put(<span class="string"><span class="delimiter">&quot;</span><span class="content">info</span><span class="delimiter">&quot;</span></span>, createDocument(<span class="string"><span class="delimiter">&quot;</span><span class="content">age</span><span class="delimiter">&quot;</span></span>, <span class="integer">30</span>));
+collection.insert(doc);
+
+<span class="predefined-type">Cursor</span> results = collection.find(Filters.eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">info.age</span><span class="delimiter">&quot;</span></span>, <span class="integer">30</span>));
+
+
+<span class="comment">// find an employee whose note contains email addresses</span>
+<span class="annotation">@Data</span>
+<span class="annotation">@Indices</span>({
+        <span class="annotation">@Index</span>(value = <span class="string"><span class="delimiter">&quot;</span><span class="content">employeeNote.text</span><span class="delimiter">&quot;</span></span>, type = IndexType.Fulltext)
+})
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Employee</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
+    <span class="annotation">@Id</span>
+    <span class="directive">private</span> <span class="predefined-type">Long</span> empId;
+
+    <span class="directive">private</span> Note employeeNote;
+}
+
+<span class="annotation">@Data</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Note</span> {
+    <span class="annotation">@Id</span>
+    <span class="directive">private</span> <span class="predefined-type">Long</span> noteId;
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> text;
+}
+
+<span class="predefined-type">Cursor</span>&lt;Employee&gt; cursor = employeeRepository.find(regex(<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeNote.text</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">^[a-z0-9._%+-]+@[a-z0-9.-]+</span><span class="char">\\</span><span class="content">.[a-z]{2,6}$</span><span class="delimiter">&quot;</span></span>));</code></pre>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-16 16:47:18 +05:30
+Last updated 2019-10-19 10:45:04 +05:30
 </div>
 </div>
 </body>

@@ -614,6 +614,13 @@ collection.find(in(<span class="string"><span class="delimiter">&quot;</span><sp
 </div>
 </div>
 <div class="listingblock">
+<div class="title">notIn()</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// matches all documents where 'age' field does not have value in [20, 30, 40]</span>
+collection.find(notIn(<span class="string"><span class="delimiter">&quot;</span><span class="content">age</span><span class="delimiter">&quot;</span></span>, <span class="integer">20</span>, <span class="integer">30</span>, <span class="integer">40</span>));</code></pre>
+</div>
+</div>
+<div class="listingblock">
 <div class="title">elemMatch()</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// matches all documents which has an array field - 'color' and the array</span>
@@ -653,7 +660,7 @@ collection.find(regex(<span class="string"><span class="delimiter">&quot;</span>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-28 14:00:23 +05:30
+Last updated 2019-07-14 19:27:53 +05:30
 </div>
 </div>
 </body>

@@ -595,6 +595,25 @@ Compound index is not supported in Nitrite.
 <pre class="CodeRay highlight"><code data-lang="java"><span class="type">void</span> createIndex(<span class="predefined-type">String</span> field, IndexOptions indexOptions)</code></pre>
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Nitrite supports indexing on embedded field also</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">collection.createIndex(<span class="string"><span class="delimiter">&quot;</span><span class="content">info.age</span><span class="delimiter">&quot;</span></span>, indexOptions(IndexType.NonUnique, <span class="predefined-constant">true</span>));</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -718,7 +737,7 @@ collection.rebuildIndex(<span class="string"><span class="delimiter">&quot;</spa
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-29 08:06:03 +05:30
+Last updated 2019-10-19 10:45:04 +05:30
 </div>
 </div>
 </body>

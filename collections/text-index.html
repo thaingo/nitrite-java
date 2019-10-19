@@ -896,7 +896,6 @@ interface like below</p>
             IndexWriterConfig iwc = <span class="keyword">new</span> IndexWriterConfig(analyzer);
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             indexWriter = <span class="keyword">new</span> IndexWriter(indexDirectory, iwc);
-            commit();
         } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
             <span class="keyword">throw</span> <span class="keyword">new</span> IndexingException(errorMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">could not create full-text index</span><span class="delimiter">&quot;</span></span>, <span class="integer">0</span>), e);
         } <span class="keyword">catch</span> (<span class="exception">VirtualMachineError</span> vme) {
@@ -917,7 +916,6 @@ interface like below</p>
 
             <span class="directive">synchronized</span> (<span class="local-variable">this</span>) {
                 indexWriter.addDocument(document);
-                commit();
             }
         } <span class="keyword">catch</span> (<span class="exception">IOException</span> ioe) {
             <span class="keyword">throw</span> <span class="keyword">new</span> IndexingException(errorMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">could not write full-text index data for </span><span class="delimiter">&quot;</span></span> + text, <span class="integer">0</span>), ioe);
@@ -942,7 +940,6 @@ interface like below</p>
 
             <span class="directive">synchronized</span> (<span class="local-variable">this</span>) {
                 indexWriter.updateDocument(<span class="keyword">new</span> Term(CONTENT_ID, jsonId), document);
-                commit();
             }
         } <span class="keyword">catch</span> (<span class="exception">IOException</span> ioe) {
             <span class="keyword">throw</span> <span class="keyword">new</span> IndexingException(errorMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">could not update full-text index for </span><span class="delimiter">&quot;</span></span> + text, <span class="integer">0</span>), ioe);
@@ -959,7 +956,6 @@ interface like below</p>
 
             <span class="directive">synchronized</span> (<span class="local-variable">this</span>) {
                 indexWriter.deleteDocuments(idTerm);
-                commit();
             }
         } <span class="keyword">catch</span> (<span class="exception">IOException</span> ioe) {
             <span class="keyword">throw</span> <span class="keyword">new</span> IndexingException(errorMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">could not remove full-text index for </span><span class="delimiter">&quot;</span></span> + id, <span class="integer">0</span>));
@@ -983,7 +979,6 @@ interface like below</p>
 
                 <span class="directive">synchronized</span> (<span class="local-variable">this</span>) {
                     indexWriter.deleteDocuments(query);
-                    commit();
                 }
             } <span class="keyword">catch</span> (<span class="exception">IOException</span> ioe) {
                 <span class="keyword">throw</span> <span class="keyword">new</span> IndexingException(errorMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">could not remove full-text index for value </span><span class="delimiter">&quot;</span></span> + field, <span class="integer">0</span>));
@@ -1081,7 +1076,6 @@ interface like below</p>
             IndexWriterConfig iwc = <span class="keyword">new</span> IndexWriterConfig(analyzer);
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             indexWriter = <span class="keyword">new</span> IndexWriter(indexDirectory, iwc);
-            commit();
         } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
             <span class="keyword">throw</span> <span class="keyword">new</span> IndexingException(errorMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">could not drop full-text index</span><span class="delimiter">&quot;</span></span>, <span class="integer">0</span>), e);
         }
@@ -1091,7 +1085,6 @@ interface like below</p>
     <span class="directive">public</span> <span class="type">void</span> clear() {
         <span class="keyword">try</span> {
             indexWriter.deleteAll();
-            commit();
         } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
             <span class="keyword">throw</span> <span class="keyword">new</span> IndexingException(errorMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">could not clear full-text index</span><span class="delimiter">&quot;</span></span>, <span class="integer">0</span>), e);
         }
@@ -1108,8 +1101,25 @@ interface like below</p>
         <span class="keyword">throw</span> vme;
     }
 
-    <span class="directive">private</span> <span class="directive">synchronized</span> <span class="type">void</span> commit() <span class="directive">throws</span> <span class="exception">IOException</span> {
-        indexWriter.commit();
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> commit() {
+        <span class="keyword">try</span> {
+            indexWriter.commit();
+        } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> IndexingException(errorMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">could not commit unsaved changes</span><span class="delimiter">&quot;</span></span>, <span class="integer">0</span>), e);
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> close() {
+        <span class="keyword">if</span> (indexWriter != <span class="predefined-constant">null</span>) {
+            <span class="keyword">try</span> {
+                commit();
+                indexWriter.close();
+            } <span class="keyword">catch</span> (<span class="exception">IOException</span> ioe) {
+                <span class="comment">// ignore it</span>
+            }
+        }
     }
 }
 
@@ -1123,7 +1133,7 @@ Nitrite db = Nitrite.builder()
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-16 16:47:18 +05:30
+Last updated 2019-10-19 10:45:04 +05:30
 </div>
 </div>
 </body>
