@@ -34,6 +34,8 @@ import org.dizitart.no2.store.IndexStore;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.util.Collection;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * A service class for Nitrite database operations.
@@ -49,6 +51,9 @@ public class CollectionOperation {
     private QueryTemplate queryTemplate;
     private IndexStore indexStore;
     private EventBus<ChangeInfo, ChangeListener> eventBus;
+    private ReentrantReadWriteLock readWriteLock;
+    private Lock readLock;
+    private Lock writeLock;
 
     /**
      * Instantiates a new CollectionOperation.
@@ -75,7 +80,12 @@ public class CollectionOperation {
      * @param async     asynchronous operation if set to `true`
      */
     public void createIndex(String field, IndexType indexType, boolean async) {
-        indexTemplate.ensureIndex(field, indexType, async);
+        try {
+            writeLock.lock();
+            indexTemplate.ensureIndex(field, indexType, async);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**
@@ -85,7 +95,12 @@ public class CollectionOperation {
      * @param isAsync asynchronous operation if set to `true`
      */
     public void rebuildIndex(Index index, boolean isAsync) {
-        indexTemplate.rebuildIndex(index, isAsync);
+        try {
+            writeLock.lock();
+            indexTemplate.rebuildIndex(index, isAsync);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**
@@ -95,7 +110,12 @@ public class CollectionOperation {
      * @return the index information.
      */
     public Index findIndex(String field) {
-        return indexTemplate.findIndex(field);
+        try {
+            readLock.lock();
+            return indexTemplate.findIndex(field);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     /**
@@ -104,7 +124,12 @@ public class CollectionOperation {
      * @param field the value
      */
     public void dropIndex(String field) {
-        indexTemplate.dropIndex(field);
+        try {
+            writeLock.lock();
+            indexTemplate.dropIndex(field);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**
@@ -114,7 +139,12 @@ public class CollectionOperation {
      * @return `true` if operation is still running; `false` otherwise.
      */
     public boolean isIndexing(String field) {
-        return indexTemplate.isIndexing(field);
+        try {
+            readLock.lock();
+            return indexTemplate.isIndexing(field);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     /**
@@ -124,14 +154,24 @@ public class CollectionOperation {
      * @return `true` if indexed; `false` otherwise.
      */
     public boolean hasIndex(String field) {
-        return indexTemplate.hasIndex(field);
+        try {
+            readLock.lock();
+            return indexTemplate.hasIndex(field);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     /**
      * Drops all indices.
      */
     public void dropAllIndices() {
-        indexTemplate.dropAllIndices();
+        try {
+            writeLock.lock();
+            indexTemplate.dropAllIndices();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**
@@ -140,7 +180,12 @@ public class CollectionOperation {
      * @return the collection of index information.
      */
     public Collection<Index> listIndexes() {
-        return indexTemplate.listIndexes();
+        try {
+            readLock.lock();
+            return indexTemplate.listIndexes();
+        } finally {
+            readLock.unlock();
+        }
     }
 
     // endregion
@@ -155,15 +200,20 @@ public class CollectionOperation {
      * @return the write result
      */
     public WriteResultImpl insert(Document document, Document... documents) {
-        int length = documents == null ? 0 : documents.length;
+        try {
+            int length = documents == null ? 0 : documents.length;
 
-        if (length > 0) {
-            Document[] array = new Document[length + 1];
-            array[0] = document;
-            System.arraycopy(documents, 0, array, 1, length);
-            return readWriteOperation.insert(array);
-        } else {
-            return readWriteOperation.insert(document);
+            writeLock.lock();
+            if (length > 0) {
+                Document[] array = new Document[length + 1];
+                array[0] = document;
+                System.arraycopy(documents, 0, array, 1, length);
+                return readWriteOperation.insert(array);
+            } else {
+                return readWriteOperation.insert(document);
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -174,7 +224,12 @@ public class CollectionOperation {
      * @return the write result
      */
     public WriteResult insert(Document[] documents) {
-        return readWriteOperation.insert(documents);
+        try {
+            writeLock.lock();
+            return readWriteOperation.insert(documents);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**
@@ -186,7 +241,12 @@ public class CollectionOperation {
      * @return the write result
      */
     public WriteResultImpl update(Filter filter, Document update, UpdateOptions updateOptions) {
-        return readWriteOperation.update(filter, update, updateOptions);
+        try {
+            writeLock.lock();
+            return readWriteOperation.update(filter, update, updateOptions);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**
@@ -197,16 +257,26 @@ public class CollectionOperation {
      * @return the write result
      */
     public WriteResultImpl remove(Filter filter, RemoveOptions removeOptions) {
-        return readWriteOperation.remove(filter, removeOptions);
+        try {
+            writeLock.lock();
+            return readWriteOperation.remove(filter, removeOptions);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**
      * Drops a nitrite collection from the store.
      */
     public void dropCollection() {
-        indexTemplate.dropAllIndices();
-        nitriteContext.removeFromRegistry(nitriteMap.getName());
-        nitriteMap.drop();
+        try {
+            writeLock.lock();
+            indexTemplate.dropAllIndices();
+            nitriteContext.removeFromRegistry(nitriteMap.getName());
+            nitriteMap.drop();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     // endregion
@@ -220,7 +290,12 @@ public class CollectionOperation {
      * @return the result set
      */
     public DocumentCursor find(Filter filter) {
-        return queryTemplate.find(filter);
+        try {
+            readLock.lock();
+            return queryTemplate.find(filter);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     /**
@@ -229,7 +304,12 @@ public class CollectionOperation {
      * @return the result set
      */
     public DocumentCursor find() {
-        return queryTemplate.find();
+        try {
+            readLock.lock();
+            return queryTemplate.find();
+        } finally {
+            readLock.unlock();
+        }
     }
 
     /**
@@ -239,7 +319,12 @@ public class CollectionOperation {
      * @return the result set
      */
     public DocumentCursor find(FindOptions findOptions) {
-        return queryTemplate.find(findOptions);
+        try {
+            readLock.lock();
+            return queryTemplate.find(findOptions);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     /**
@@ -250,7 +335,12 @@ public class CollectionOperation {
      * @return the result set
      */
     public DocumentCursor find(Filter filter, FindOptions findOptions) {
-        return queryTemplate.find(filter, findOptions);
+        try {
+            readLock.lock();
+            return queryTemplate.find(filter, findOptions);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     /**
@@ -260,7 +350,12 @@ public class CollectionOperation {
      * @return the document associated with the id; `null` otherwise.
      */
     public Document getById(NitriteId nitriteId) {
-        return queryTemplate.getById(nitriteId);
+        try {
+            readLock.lock();
+            return queryTemplate.getById(nitriteId);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     // endregion
@@ -284,6 +379,10 @@ public class CollectionOperation {
     }
 
     private void initialize() {
+        this.readWriteLock = new ReentrantReadWriteLock();
+        this.readLock = readWriteLock.readLock();
+        this.writeLock = readWriteLock.writeLock();
+
         this.indexStore = new NitriteIndexStore(nitriteMap);
         TextIndexer textIndexer = getTextIndexer();
         ComparableIndexer comparableIndexer = new NitriteComparableIndexer(nitriteMap, indexStore);

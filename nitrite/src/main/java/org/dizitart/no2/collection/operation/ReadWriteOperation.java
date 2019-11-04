@@ -40,7 +40,7 @@ import static org.dizitart.no2.exceptions.ErrorMessage.OBJ_MULTI_UPDATE_WITH_JUS
 import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 
 /**
- * TODO: Accommodate find operations here for better synchronization (ref: issue 185)
+ *
  * @author Anindya Chatterjee
  * */
 @Slf4j
@@ -50,8 +50,6 @@ class ReadWriteOperation {
     private final NitriteMap<NitriteId, Document> nitriteMap;
     private final EventBus<ChangeInfo, ChangeListener> eventBus;
     private final String name;
-
-    private final Object lock = new Object();
 
     ReadWriteOperation(IndexTemplate indexTemplate,
                        QueryTemplate queryTemplate,
@@ -85,26 +83,24 @@ class ReadWriteOperation {
                 document.remove(DOC_SOURCE);
             }
 
-            synchronized (lock) {
-                Document item = document.clone();
-                Document already = nitriteMap.putIfAbsent(nitriteId, item);
-                log.debug("Inserting document {} in {}", document, name);
+            Document item = document.clone();
+            Document already = nitriteMap.putIfAbsent(nitriteId, item);
+            log.debug("Inserting document {} in {}", document, name);
 
-                if (already != null) {
-                    // rollback changes
-                    nitriteMap.put(nitriteId, already);
-                    log.debug("Another document already exists with id {}", nitriteId);
-                    throw new UniqueConstraintException(errorMessage("id constraint violation, " +
-                            "entry with same id already exists in " + name, UCE_CONSTRAINT_VIOLATED));
-                } else {
-                    try {
-                        indexTemplate.updateIndexEntry(item, nitriteId);
-                    } catch (UniqueConstraintException uce) {
-                        log.error("Unique constraint violated for the document "
-                                + document + " in " + name, uce);
-                        nitriteMap.remove(nitriteId);
-                        throw uce;
-                    }
+            if (already != null) {
+                // rollback changes
+                nitriteMap.put(nitriteId, already);
+                log.debug("Another document already exists with id {}", nitriteId);
+                throw new UniqueConstraintException(errorMessage("id constraint violation, " +
+                    "entry with same id already exists in " + name, UCE_CONSTRAINT_VIOLATED));
+            } else {
+                try {
+                    indexTemplate.updateIndexEntry(item, nitriteId);
+                } catch (UniqueConstraintException uce) {
+                    log.error("Unique constraint violated for the document "
+                        + document + " in " + name, uce);
+                    nitriteMap.remove(nitriteId);
+                    throw uce;
                 }
             }
 
@@ -166,34 +162,30 @@ class ReadWriteOperation {
             for(final Document document : cursor) {
                 if (document != null) {
                     NitriteId nitriteId = document.getId();
+                    Document oldDocument = document.clone();
+                    log.debug("Document to update {} in {}", document, name);
 
-                    synchronized (lock) {
-                        Document oldDocument = document.clone();
-
-                        log.debug("Document to update {} in {}", document, name);
-
-                        if (!REPLICATOR.contentEquals(update.getSource())) {
-                            update.remove(DOC_SOURCE);
-                            document.putAll(update);
-                            int rev = document.getRevision();
-                            document.put(DOC_REVISION, rev + 1);
-                            document.put(DOC_MODIFIED, System.currentTimeMillis());
-                        } else {
-                            update.remove(DOC_SOURCE);
-                            document.putAll(update);
-                        }
-
-                        Document item = document.clone();
-                        nitriteMap.put(nitriteId, item);
-                        log.debug("Document {} updated in {}", document, name);
-
-                        // if 'update' only contains id value, affected count = 0
-                        if (update.size() > 0) {
-                            writeResult.addToList(nitriteId);
-                        }
-
-                        indexTemplate.refreshIndexEntry(oldDocument, item, nitriteId);
+                    if (!REPLICATOR.contentEquals(update.getSource())) {
+                        update.remove(DOC_SOURCE);
+                        document.putAll(update);
+                        int rev = document.getRevision();
+                        document.put(DOC_REVISION, rev + 1);
+                        document.put(DOC_MODIFIED, System.currentTimeMillis());
+                    } else {
+                        update.remove(DOC_SOURCE);
+                        document.putAll(update);
                     }
+
+                    Document item = document.clone();
+                    nitriteMap.put(nitriteId, item);
+                    log.debug("Document {} updated in {}", document, name);
+
+                    // if 'update' only contains id value, affected count = 0
+                    if (update.size() > 0) {
+                        writeResult.addToList(nitriteId);
+                    }
+
+                    indexTemplate.refreshIndexEntry(oldDocument, item, nitriteId);
 
                     ChangedItem changedItem = new ChangedItem();
                     changedItem.setDocument(document);
@@ -228,31 +220,28 @@ class ReadWriteOperation {
             filter, cursor.size(), removeOptions, name);
 
         List<ChangedItem> changedItems = new ArrayList<>(cursor.size());
+        for (Document document : cursor) {
+            NitriteId nitriteId = document.getId();
+            indexTemplate.removeIndexEntry(document, nitriteId);
 
-        synchronized (lock) {
-            for (Document document : cursor) {
-                NitriteId nitriteId = document.getId();
-                indexTemplate.removeIndexEntry(document, nitriteId);
+            Document removed = nitriteMap.remove(nitriteId);
+            int rev = removed.getRevision();
+            removed.put(DOC_REVISION, rev + 1);
+            removed.put(DOC_MODIFIED, System.currentTimeMillis());
 
-                Document removed = nitriteMap.remove(nitriteId);
-                int rev = removed.getRevision();
-                removed.put(DOC_REVISION, rev + 1);
-                removed.put(DOC_MODIFIED, System.currentTimeMillis());
+            log.debug("Document removed {} from {}", removed, name);
 
-                log.debug("Document removed {} from {}", removed, name);
+            result.addToList(nitriteId);
 
-                result.addToList(nitriteId);
+            ChangedItem changedItem = new ChangedItem();
+            changedItem.setDocument(removed);
+            changedItem.setChangeType(ChangeType.REMOVE);
+            changedItem.setChangeTimestamp(removed.getLastModifiedTime());
+            changedItems.add(changedItem);
 
-                ChangedItem changedItem = new ChangedItem();
-                changedItem.setDocument(removed);
-                changedItem.setChangeType(ChangeType.REMOVE);
-                changedItem.setChangeTimestamp(removed.getLastModifiedTime());
-                changedItems.add(changedItem);
-
-                if (removeOptions.isJustOne()) {
-                    notify(ChangeType.REMOVE, changedItems);
-                    return result;
-                }
+            if (removeOptions.isJustOne()) {
+                notify(ChangeType.REMOVE, changedItems);
+                return result;
             }
         }
 

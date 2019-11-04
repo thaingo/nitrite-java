@@ -86,7 +86,7 @@ class NitriteIndexStore implements IndexStore {
     }
 
     @Override
-    public synchronized void mark(String field, boolean dirty) {
+    public void mark(String field, boolean dirty) {
         IndexMeta meta = getIndexMetaMap().get(field);
         if (meta != null && meta.index != null) {
             meta.isDirty.set(dirty);
@@ -94,7 +94,7 @@ class NitriteIndexStore implements IndexStore {
     }
 
     @Override
-    public synchronized boolean isDirtyIndex(String field) {
+    public boolean isDirtyIndex(String field) {
         IndexMeta meta = getIndexMetaMap().get(field);
         return meta != null && meta.isDirty.get();
     }

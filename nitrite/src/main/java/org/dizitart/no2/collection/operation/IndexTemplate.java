@@ -54,8 +54,6 @@ class IndexTemplate {
     private final SpatialIndexer spatialIndexer;
     private final NitriteMapper nitriteMapper;
 
-    private final Object indexLock = new Object();
-
     IndexTemplate(NitriteMapper nitriteMapper,
                   IndexStore indexStore,
                   ComparableIndexer comparableIndexer,
@@ -72,16 +70,13 @@ class IndexTemplate {
 
     void ensureIndex(String field, IndexType indexType, boolean isAsync) {
         Index index;
-
-        synchronized (indexLock) {
-            if (!indexStore.hasIndex(field)) {
-                // if no index create index
-                index = indexStore.createIndex(field, indexType);
-            } else {
-                // if index already there throw
-                throw new IndexingException(errorMessage(
-                        "index already exists on " + field, IE_INDEX_EXISTS));
-            }
+        if (!indexStore.hasIndex(field)) {
+            // if no index create index
+            index = indexStore.createIndex(field, indexType);
+        } else {
+            // if index already there throw
+            throw new IndexingException(errorMessage(
+                "index already exists on " + field, IE_INDEX_EXISTS));
         }
 
         rebuildIndex(index, isAsync);
@@ -321,7 +316,7 @@ class IndexTemplate {
         }
     }
 
-    private synchronized AtomicBoolean getBuildFlag(String field) {
+    private AtomicBoolean getBuildFlag(String field) {
         AtomicBoolean flag = indexBuildRegistry.get(field);
         if (flag != null) return flag;
 
@@ -339,5 +334,4 @@ class IndexTemplate {
         }
         return geometry;
     }
-
 }
