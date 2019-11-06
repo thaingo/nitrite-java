@@ -4,6 +4,7 @@ import io.reactivex.Flowable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.dizitart.no2.index.annotations.Id;
 import org.junit.Before;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -47,6 +48,7 @@ public class RxBaseTest {
     @Data
     @AllArgsConstructor
     static class Employee {
+        @Id
         private String name;
         private Integer age;
 
