@@ -51,7 +51,6 @@ class ObjectCursor<T> implements Cursor<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <P> RecordIterable<P> project(Class<P> projectionType) {
         notNull(projectionType, errorMessage("projection cannot be null", VE_PROJECT_NULL_PROJECTION));
         Document dummyDoc = emptyDocument(nitriteMapper, projectionType);

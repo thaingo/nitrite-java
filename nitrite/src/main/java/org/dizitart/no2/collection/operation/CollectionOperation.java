@@ -51,7 +51,6 @@ public class CollectionOperation {
     private QueryTemplate queryTemplate;
     private IndexStore indexStore;
     private EventBus<ChangeInfo, ChangeListener> eventBus;
-    private ReentrantReadWriteLock readWriteLock;
     private Lock readLock;
     private Lock writeLock;
 
@@ -379,7 +378,7 @@ public class CollectionOperation {
     }
 
     private void initialize() {
-        this.readWriteLock = new ReentrantReadWriteLock();
+        ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
         this.readLock = readWriteLock.readLock();
         this.writeLock = readWriteLock.writeLock();
 

@@ -46,7 +46,6 @@ import static org.dizitart.no2.exceptions.ErrorMessage.errorMessage;
 class NitriteSpatialIndexer implements SpatialIndexer {
     private IndexStore indexStore;
     private NitriteMap<NitriteId, Document> nitriteMap;
-//    private final Object lock = new Object();
 
     NitriteSpatialIndexer(NitriteMap<NitriteId, Document> nitriteMap,
                           IndexStore indexStore) {

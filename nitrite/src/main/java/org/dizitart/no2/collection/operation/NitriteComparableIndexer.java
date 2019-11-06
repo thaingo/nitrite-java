@@ -49,63 +49,13 @@ class NitriteComparableIndexer implements ComparableIndexer {
 
     @Override
     public void writeIndex(NitriteId id, String field, Comparable element, boolean unique) {
-        NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap
-                = indexStore.getIndexMap(field);
-
-        // create the nitriteId list associated with the value
-        ConcurrentSkipListSet<NitriteId> nitriteIdList
-                = indexMap.get(element);
-
-        if (nitriteIdList == null) {
-            nitriteIdList = new ConcurrentSkipListSet<>();
-        }
-
-        if (unique && nitriteIdList.size() == 1
-                && !nitriteIdList.contains(id)) {
-            // if key is already exists for unique type, throw error
-            throw new UniqueConstraintException(errorMessage(
-                    "unique key constraint violation for " + field,
-                    UCE_WRITE_INDEX_CONSTRAINT_VIOLATED));
-        }
-
-        nitriteIdList.add(id);
-        indexMap.put(element, nitriteIdList);
+        addIndexEntry(id, field, element, unique, UCE_WRITE_INDEX_CONSTRAINT_VIOLATED);
     }
 
     @Override
     public void updateIndex(NitriteId id, String field, Comparable newElement, Comparable oldElement, boolean unique) {
-        NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap
-                = indexStore.getIndexMap(field);
-
-        // create the nitriteId list associated with the value
-        ConcurrentSkipListSet<NitriteId> nitriteIdList
-                = indexMap.get(newElement);
-
-        if (nitriteIdList == null) {
-            nitriteIdList = new ConcurrentSkipListSet<>();
-        }
-
-        if (unique && nitriteIdList.size() == 1
-                && !nitriteIdList.contains(id)) {
-            // if key is already exists for unique type, throw error
-            throw new UniqueConstraintException(errorMessage(
-                    "unique key constraint violation for " + field,
-                    UCE_UPDATE_INDEX_CONSTRAINT_VIOLATED));
-        }
-
-        // add the nitriteId to the list
-        nitriteIdList.add(id);
-        indexMap.put(newElement, nitriteIdList);
-
-        nitriteIdList = indexMap.get(oldElement);
-        if (nitriteIdList != null && !nitriteIdList.isEmpty()) {
-            nitriteIdList.remove(id);
-            if (nitriteIdList.size() == 0) {
-                indexMap.remove(oldElement);
-            } else {
-                indexMap.put(oldElement, nitriteIdList);
-            }
-        }
+        addIndexEntry(id, field, newElement, unique, UCE_UPDATE_INDEX_CONSTRAINT_VIOLATED);
+        removeIndex(id, field, oldElement);
     }
 
     @Override
@@ -115,7 +65,7 @@ class NitriteComparableIndexer implements ComparableIndexer {
 
         // create the nitrite list associated with the value
         ConcurrentSkipListSet<NitriteId> nitriteIdList = indexMap.get(element);
-        if (nitriteIdList != null) {
+        if (nitriteIdList != null && !nitriteIdList.isEmpty()) {
             nitriteIdList.remove(id);
             if (nitriteIdList.size() == 0) {
                 indexMap.remove(element);
@@ -304,5 +254,27 @@ class NitriteComparableIndexer implements ComparableIndexer {
         }
 
         return resultSet;
+    }
+
+    private void addIndexEntry(NitriteId id, String field, Comparable element, boolean unique, int errorCode) {
+        NitriteMap<Comparable, ConcurrentSkipListSet<NitriteId>> indexMap = indexStore.getIndexMap(field);
+
+        // create the nitriteId list associated with the value
+        ConcurrentSkipListSet<NitriteId> nitriteIdList
+            = indexMap.get(element);
+
+        if (nitriteIdList == null) {
+            nitriteIdList = new ConcurrentSkipListSet<>();
+        }
+
+        if (unique && nitriteIdList.size() == 1
+            && !nitriteIdList.contains(id)) {
+            // if key is already exists for unique type, throw error
+            throw new UniqueConstraintException(errorMessage(
+                "unique key constraint violation for " + field, errorCode));
+        }
+
+        nitriteIdList.add(id);
+        indexMap.put(element, nitriteIdList);
     }
 }
