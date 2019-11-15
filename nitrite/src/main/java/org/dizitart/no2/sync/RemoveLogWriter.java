@@ -22,16 +22,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.collection.NitriteCollection;
-import org.dizitart.no2.common.event.ChangeInfo;
 import org.dizitart.no2.common.event.ChangeListener;
 import org.dizitart.no2.common.event.ChangeType;
 import org.dizitart.no2.common.event.ChangedItem;
 
-import java.util.List;
+import java.util.Objects;
 
 import static org.dizitart.no2.Document.createDocument;
 import static org.dizitart.no2.common.Constants.*;
-import static org.dizitart.no2.common.util.Iterables.toList;
 import static org.dizitart.no2.common.util.StringUtils.isNullOrEmpty;
 
 /**
@@ -48,27 +46,24 @@ class RemoveLogWriter implements ChangeListener {
     }
 
     @Override
-    public void onChange(ChangeInfo changeInfo) {
-        String threadName = changeInfo.getOriginatingThread();
+    public void onChange(ChangedItem<Document> changedItem) {
+        String threadName = changedItem.getOriginatingThread();
 
         if (!isNullOrEmpty(threadName)
                 && !threadName.contains(CollectionReplicator.class.getSimpleName())) {
 
-            ChangeType action = changeInfo.getChangeType();
-            Iterable<ChangedItem> changedItems = changeInfo.getChangedItems();
+            ChangeType action = changedItem.getChangeType();
 
             if (action == ChangeType.REMOVE) {
-                queueRemovedItems(toList(changedItems));
+                queueRemovedItems(changedItem);
             }
         }
     }
 
-    private void queueRemovedItems(List<ChangedItem> changedItems) {
-        for (final ChangedItem item : changedItems) {
-            Document logEntry = createDocument(COLLECTION, this.collection)
-                    .put(DELETE_TIME, item.getChangeTimestamp())
-                    .put(DELETED_ITEM, item.getDocument());
-            changeLogRepository.insert(logEntry);
-        }
+    private void queueRemovedItems(ChangedItem<Document> changedItem) {
+        Document logEntry = Objects.requireNonNull(createDocument(COLLECTION, this.collection)
+            .put(DELETE_TIME, changedItem.getChangeTimestamp()))
+            .put(DELETED_ITEM, changedItem.getItem());
+        changeLogRepository.insert(logEntry);
     }
 }

@@ -132,7 +132,7 @@ public class Nitrite implements Closeable {
      * repository is already opened, it is returned as is.
      * 
      * [icon="{@docRoot}/note.png"]
-     * NOTE: Returned repository is thread-safe for concurrent use.
+     * NOTE: The returned repository is thread-safe for concurrent use.
      *
      * @param <T>  the type parameter
      * @param type the type of the object
@@ -151,10 +151,10 @@ public class Nitrite implements Closeable {
      * repository is already opened, it is returned as is.
      * 
      * [icon="{@docRoot}/note.png"]
-     * NOTE: Returned repository is thread-safe for concurrent use.
+     * NOTE: The returned repository is thread-safe for concurrent use.
      *
      * @param <T>  the type parameter
-     * @param key  the key that will be appended to the repositories name
+     * @param key  the key, which will be appended to the repositories name
      * @param type the type of the object
      * @return the repository containing objects of type {@link T}.
      * @see ObjectRepository

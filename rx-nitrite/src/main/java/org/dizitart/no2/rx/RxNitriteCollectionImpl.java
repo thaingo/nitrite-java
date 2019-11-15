@@ -1,9 +1,6 @@
 package org.dizitart.no2.rx;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
+import io.reactivex.*;
 import io.reactivex.subjects.PublishSubject;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
@@ -20,7 +17,7 @@ import java.util.Collection;
  */
 class RxNitriteCollectionImpl implements RxNitriteCollection {
     private final NitriteCollection nitriteCollection;
-    private final PublishSubject<ChangedItem> updates;
+    private final PublishSubject<ChangedItem<Document>> updates;
 
     RxNitriteCollectionImpl(NitriteCollection collection) {
         this.nitriteCollection = collection;
@@ -164,22 +161,19 @@ class RxNitriteCollectionImpl implements RxNitriteCollection {
     }
 
     @Override
-    public Flowable<Document> observe(BackpressureStrategy backpressureStrategy) {
-        return updates.toFlowable(backpressureStrategy)
-                .map(ChangedItem::getDocument);
+    public Observable<ChangedItem<Document>> observe() {
+        return updates;
     }
 
     @Override
-    public Flowable<Document> observe(ChangeType changeType, BackpressureStrategy backpressureStrategy) {
-        return updates.toFlowable(backpressureStrategy)
-                .filter(changedItem -> changedItem.getChangeType() == changeType)
-                .map(ChangedItem::getDocument);
+    public Observable<ChangedItem<Document>> observe(ChangeType changeType) {
+        return updates.filter(changedItem -> changedItem.getChangeType() == changeType);
     }
 
     private void initializeUpdateObserver() {
-        nitriteCollection.register(changeInfo -> {
-            if (changeInfo != null && changeInfo.getChangedItems() != null) {
-                changeInfo.getChangedItems().forEach(updates::onNext);
+        nitriteCollection.register(changedItem -> {
+            if (changedItem != null) {
+                updates.onNext(changedItem);
             }
         });
     }

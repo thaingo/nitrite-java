@@ -19,23 +19,24 @@
 package org.dizitart.no2.collection;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dizitart.no2.common.event.ChangeInfo;
+import org.dizitart.no2.Document;
 import org.dizitart.no2.common.event.ChangeListener;
+import org.dizitart.no2.common.event.ChangedItem;
 import org.dizitart.no2.common.event.NitriteEventBus;
 
 /**
  * @author Anindya Chatterjee.
  */
 @Slf4j
-class ChangeEventBus extends NitriteEventBus<ChangeInfo, ChangeListener> {
+class ChangeEventBus extends NitriteEventBus<ChangedItem<Document>, ChangeListener> {
 
     @Override
-    public void post(final ChangeInfo changeInfo) {
+    public void post(ChangedItem<Document> changedItem) {
         for (final ChangeListener listener : getListeners()) {
             String threadName = Thread.currentThread().getName();
-            changeInfo.setOriginatingThread(threadName);
+            changedItem.setOriginatingThread(threadName);
 
-            getEventExecutor().submit(() -> listener.onChange(changeInfo));
+            getEventExecutor().submit(() -> listener.onChange(changedItem));
         }
     }
 }

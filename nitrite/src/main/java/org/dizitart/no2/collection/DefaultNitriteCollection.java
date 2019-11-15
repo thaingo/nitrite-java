@@ -22,9 +22,9 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteContext;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.operation.CollectionOperation;
-import org.dizitart.no2.common.event.ChangeInfo;
 import org.dizitart.no2.common.event.ChangeListener;
 import org.dizitart.no2.common.event.ChangeType;
+import org.dizitart.no2.common.event.ChangedItem;
 import org.dizitart.no2.common.event.EventBus;
 import org.dizitart.no2.exceptions.IndexingException;
 import org.dizitart.no2.exceptions.NitriteIOException;
@@ -54,7 +54,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     private NitriteMap<NitriteId, Document> nitriteMap;
     private NitriteStore nitriteStore;
     private CollectionOperation collectionOperation;
-    private EventBus<ChangeInfo, ChangeListener> eventBus;
+    private EventBus<ChangedItem<Document>, ChangeListener> eventBus;
 
     private final String collectionName;
     private volatile boolean isDropped;
@@ -202,7 +202,7 @@ class DefaultNitriteCollection implements NitriteCollection {
         collectionOperation.dropCollection();
         isDropped = true;
         closeCollection();
-        eventBus.post(new ChangeInfo(ChangeType.DROP));
+        eventBus.post(new ChangedItem<>(ChangeType.DROP));
         closeEventBus();
     }
 
@@ -224,7 +224,7 @@ class DefaultNitriteCollection implements NitriteCollection {
     @Override
     public void close() {
         closeCollection();
-        eventBus.post(new ChangeInfo(ChangeType.CLOSE));
+        eventBus.post(new ChangedItem<>(ChangeType.CLOSE));
         closeEventBus();
     }
 

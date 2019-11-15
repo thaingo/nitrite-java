@@ -1,12 +1,10 @@
 package org.dizitart.no2.rx;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
+import io.reactivex.*;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.common.event.ChangeType;
+import org.dizitart.no2.common.event.ChangedItem;
 import org.dizitart.no2.index.Index;
 
 import java.util.Collection;
@@ -51,7 +49,7 @@ public interface RxPersistentCollection<T> {
 
     Single<Long> size();
 
-    Flowable<T> observe(BackpressureStrategy backpressureStrategy);
+    Observable<ChangedItem<T>> observe();
 
-    Flowable<T> observe(ChangeType changeType, BackpressureStrategy backpressureStrategy);
+    Observable<ChangedItem<T>> observe(ChangeType changeType);
 }

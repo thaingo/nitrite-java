@@ -18,6 +18,7 @@
 
 package org.dizitart.no2.common.event;
 
+import org.dizitart.no2.Document;
 import org.dizitart.no2.collection.NitriteCollection;
 
 /**
@@ -34,13 +35,10 @@ import org.dizitart.no2.collection.NitriteCollection;
  *  collection.register(new ChangeListener() {
  *
  *      @Override
- *      public void onChange(ChangeInfo changeInfo) {
- *          System.out.println("Action - " + changeInfo.getChangeType());
+ *      public void onChange(ChangedItem<Document> changedItem) {
+ *          System.out.println("Action - " + changedItem.getChangeType());
  *
- *          System.out.println("List of affected ids:");
- *          for (NitriteId id : changeInfo.getChangedItems()) {
- *              System.out.println("Id - " + id);
- *          }
+ *          System.out.println("Affected document - " + changedItem.getItem());
  *      }
  *  });
  *
@@ -54,7 +52,7 @@ public interface ChangeListener {
     /**
      * Listener routine to be invoked for each change event.
      *
-     * @param changeInfo the change information
+     * @param changedItem the change information
      */
-    void onChange(ChangeInfo changeInfo);
+    void onChange(ChangedItem<Document> changedItem);
 }

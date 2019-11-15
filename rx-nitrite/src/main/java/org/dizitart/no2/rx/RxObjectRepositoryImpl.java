@@ -1,9 +1,6 @@
 package org.dizitart.no2.rx;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
+import io.reactivex.*;
 import io.reactivex.subjects.PublishSubject;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
@@ -14,6 +11,7 @@ import org.dizitart.no2.collection.IndexOptions;
 import org.dizitart.no2.collection.RemoveOptions;
 import org.dizitart.no2.collection.objects.ObjectRepository;
 import org.dizitart.no2.common.event.ChangeType;
+import org.dizitart.no2.common.event.ChangedItem;
 import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.index.Index;
@@ -27,12 +25,12 @@ import java.util.Collection;
 class RxObjectRepositoryImpl<T> implements RxObjectRepository<T> {
     private final ObjectRepository<T> repository;
     private final NitriteContext nitriteContext;
-    private final PublishSubject<Pair<ChangeType, T>> updates;
+    private PublishSubject<ChangedItem<T>> updates;
 
     RxObjectRepositoryImpl(ObjectRepository<T> repository, NitriteContext nitriteContext) {
         this.repository = repository;
-        this.updates = PublishSubject.create();
         this.nitriteContext = nitriteContext;
+        this.updates = PublishSubject.create();
         initializeUpdateObserver();
     }
 
@@ -188,31 +186,26 @@ class RxObjectRepositoryImpl<T> implements RxObjectRepository<T> {
     }
 
     @Override
-    public Flowable<T> observe(BackpressureStrategy backpressureStrategy) {
-        return updates.toFlowable(backpressureStrategy)
-                .map(Pair::getValue);
+    public Observable<ChangedItem<T>> observe() {
+        return updates;
     }
 
     @Override
-    public Flowable<T> observe(ChangeType changeType, BackpressureStrategy backpressureStrategy) {
-        return updates.toFlowable(backpressureStrategy)
-                .filter(pair -> pair.getKey() == changeType)
-                .map(Pair::getValue);
+    public Observable<ChangedItem<T>> observe(ChangeType changeType) {
+        return updates.filter(item -> item.getChangeType() == changeType);
     }
 
     private void initializeUpdateObserver() {
-        repository.register(changeInfo -> {
-            if (changeInfo != null && changeInfo.getChangedItems() != null) {
-                changeInfo.getChangedItems().forEach(changedItem -> {
-                    try {
-                        Document document = changedItem.getDocument();
-                        NitriteMapper nitriteMapper = nitriteContext.getNitriteMapper();
-                        T object = nitriteMapper.asObject(document, getType());
-                        updates.onNext(new Pair<>(changedItem.getChangeType(), object));
-                    } catch (Exception e) {
-                        log.error("Error while listening to changed item", e);
-                    }
-                });
+        repository.register(changedItem -> {
+            try {
+                Document document = changedItem.getItem();
+                NitriteMapper nitriteMapper = nitriteContext.getNitriteMapper();
+                T object = nitriteMapper.asObject(document, getType());
+                ChangedItem<T> item = new ChangedItem<>(object, changedItem.getChangeType(),
+                    changedItem.getChangeTimestamp(), changedItem.getOriginatingThread());
+                updates.onNext(item);
+            } catch (Exception e) {
+                log.error("Error while listening to changed item", e);
             }
         });
     }

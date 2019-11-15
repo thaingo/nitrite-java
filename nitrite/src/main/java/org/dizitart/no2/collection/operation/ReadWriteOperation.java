@@ -22,16 +22,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.DocumentCursor;
-import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.collection.RemoveOptions;
 import org.dizitart.no2.collection.UpdateOptions;
-import org.dizitart.no2.common.event.*;
+import org.dizitart.no2.common.event.ChangeListener;
+import org.dizitart.no2.common.event.ChangeType;
+import org.dizitart.no2.common.event.ChangedItem;
+import org.dizitart.no2.common.event.EventBus;
 import org.dizitart.no2.exceptions.InvalidOperationException;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
+import org.dizitart.no2.filters.Filter;
 import org.dizitart.no2.store.NitriteMap;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.dizitart.no2.common.Constants.*;
@@ -48,13 +50,13 @@ class ReadWriteOperation {
     private final IndexTemplate indexTemplate;
     private final QueryTemplate queryTemplate;
     private final NitriteMap<NitriteId, Document> nitriteMap;
-    private final EventBus<ChangeInfo, ChangeListener> eventBus;
+    private final EventBus<ChangedItem<Document>, ChangeListener> eventBus;
     private final String name;
 
     ReadWriteOperation(IndexTemplate indexTemplate,
                        QueryTemplate queryTemplate,
                        NitriteMap<NitriteId, Document> nitriteMap,
-                       EventBus<ChangeInfo, ChangeListener> eventBus) {
+                       EventBus<ChangedItem<Document>, ChangeListener> eventBus) {
         this.indexTemplate = indexTemplate;
         this.queryTemplate = queryTemplate;
         this.nitriteMap = nitriteMap;
@@ -64,7 +66,6 @@ class ReadWriteOperation {
 
     WriteResultImpl insert(Document... documents) {
         List<NitriteId> nitriteIdList = new ArrayList<>(documents.length);
-        List<ChangedItem> changedItems = new ArrayList<>(documents.length);
 
         log.debug("Total {} document(s) to be inserted in {}", documents.length, name);
 
@@ -106,14 +107,12 @@ class ReadWriteOperation {
 
             nitriteIdList.add(nitriteId);
 
-            ChangedItem changedItem = new ChangedItem();
-            changedItem.setDocument(document);
+            ChangedItem<Document> changedItem = new ChangedItem<>();
+            changedItem.setItem(document);
             changedItem.setChangeTimestamp(document.getLastModifiedTime());
             changedItem.setChangeType(ChangeType.INSERT);
-            changedItems.add(changedItem);
+            notify(ChangeType.INSERT, changedItem);
         }
-
-        notify(ChangeType.INSERT, changedItems);
 
         WriteResultImpl result = new WriteResultImpl();
         result.setNitriteIdList(nitriteIdList);
@@ -158,7 +157,6 @@ class ReadWriteOperation {
             log.debug("Filter {} found total {} document(s) to update with options {} in {}",
                 filter, cursor.size(), updateOptions, name);
 
-            List<ChangedItem> changedItems = new ArrayList<>(cursor.size());
             for(final Document document : cursor) {
                 if (document != null) {
                     NitriteId nitriteId = document.getId();
@@ -187,15 +185,13 @@ class ReadWriteOperation {
 
                     indexTemplate.refreshIndexEntry(oldDocument, item, nitriteId);
 
-                    ChangedItem changedItem = new ChangedItem();
-                    changedItem.setDocument(document);
+                    ChangedItem<Document> changedItem = new ChangedItem<>();
+                    changedItem.setItem(document);
                     changedItem.setChangeType(ChangeType.UPDATE);
                     changedItem.setChangeTimestamp(document.getLastModifiedTime());
-                    changedItems.add(changedItem);
+                    notify(ChangeType.UPDATE, changedItem);
                 }
             }
-
-            notify(ChangeType.UPDATE, changedItems);
         }
 
         log.debug("Returning write result {} for collection {}", writeResult, name);
@@ -233,30 +229,25 @@ class ReadWriteOperation {
 
             result.addToList(nitriteId);
 
-            ChangedItem changedItem = new ChangedItem();
-            changedItem.setDocument(removed);
+            ChangedItem<Document> changedItem = new ChangedItem<>();
+            changedItem.setItem(removed);
             changedItem.setChangeType(ChangeType.REMOVE);
             changedItem.setChangeTimestamp(removed.getLastModifiedTime());
-            changedItems.add(changedItem);
+            notify(ChangeType.REMOVE, changedItem);
 
             if (removeOptions.isJustOne()) {
-                notify(ChangeType.REMOVE, changedItems);
                 return result;
             }
         }
-
-        notify(ChangeType.REMOVE, changedItems);
 
         log.debug("Returning write result {} for collection {}", result, name);
         return result;
     }
 
-    private void notify(ChangeType action, Collection<ChangedItem> changedItems) {
-        log.debug("Notifying {} event for items {} from {}", action, changedItems, name);
+    private void notify(ChangeType action, ChangedItem<Document> changedItem) {
+        log.debug("Notifying {} event for item {} from {}", action, changedItem, name);
         if (eventBus != null) {
-            ChangeInfo changeInfo = new ChangeInfo(action);
-            changeInfo.setChangedItems(changedItems);
-            eventBus.post(changeInfo);
+            eventBus.post(changedItem);
         }
     }
 }

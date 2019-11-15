@@ -3,6 +3,7 @@ package org.dizitart.no2.rx;
 import io.reactivex.Flowable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.index.annotations.Id;
 import org.junit.Before;
@@ -47,12 +48,11 @@ public class RxBaseTest {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     static class Employee {
         @Id
         private String name;
         private Integer age;
-
-        public Employee() {}
     }
 
     static abstract class BaseSubscriber<T> implements Subscriber<T> {

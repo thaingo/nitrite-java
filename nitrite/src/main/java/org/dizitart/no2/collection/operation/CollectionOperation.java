@@ -22,8 +22,8 @@ import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteContext;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.collection.*;
-import org.dizitart.no2.common.event.ChangeInfo;
 import org.dizitart.no2.common.event.ChangeListener;
+import org.dizitart.no2.common.event.ChangedItem;
 import org.dizitart.no2.common.event.EventBus;
 import org.dizitart.no2.common.mapper.NitriteMapper;
 import org.dizitart.no2.filters.Filter;
@@ -50,7 +50,7 @@ public class CollectionOperation {
     private ReadWriteOperation readWriteOperation;
     private QueryTemplate queryTemplate;
     private IndexStore indexStore;
-    private EventBus<ChangeInfo, ChangeListener> eventBus;
+    private EventBus<ChangedItem<Document>, ChangeListener> eventBus;
     private Lock readLock;
     private Lock writeLock;
 
@@ -62,7 +62,7 @@ public class CollectionOperation {
      */
     public CollectionOperation(NitriteMap<NitriteId, Document> nitriteMap,
                         NitriteContext nitriteContext,
-                        EventBus<ChangeInfo, ChangeListener> eventBus) {
+                        EventBus<ChangedItem<Document>, ChangeListener> eventBus) {
         this.nitriteMap = nitriteMap;
         this.nitriteContext = nitriteContext;
         this.eventBus = eventBus;

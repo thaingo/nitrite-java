@@ -18,10 +18,9 @@
 
 package org.dizitart.no2.common.event;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.dizitart.no2.Document;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -31,16 +30,17 @@ import java.io.Serializable;
  * @since 1.0
  * @author Anindya Chatterjee
  */
-@ToString
-@Getter @Setter
-public class ChangedItem implements Serializable {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ChangedItem<T> implements Serializable {
     /**
-     * Specifies the changed document.
+     * Specifies the changed item.
      *
-     * @param document the document.
-     * @returns the document.
+     * @param item the item that changed.
+     * @returns the item.
      * */
-    private Document document;
+    private T item;
 
     /**
      * Specifies the change type.
@@ -57,4 +57,18 @@ public class ChangedItem implements Serializable {
      * @returns the unix timestamp of the change.
      * */
     private long changeTimestamp;
+
+    /**
+     * Specifies the name of the thread where the change
+     * has been originated.
+     *
+     * @param originatingThread name of originating thread.
+     * @returns name of originating thread.
+     * @since 4.0.0
+     * */
+    private String originatingThread;
+
+    public ChangedItem(ChangeType changeType) {
+        this.changeType = changeType;
+    }
 }

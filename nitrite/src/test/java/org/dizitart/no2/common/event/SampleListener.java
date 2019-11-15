@@ -36,7 +36,7 @@ class SampleListener implements ChangeListener {
     }
 
     @Override
-    public void onChange(ChangeInfo changeInfo) {
+    public void onChange(ChangedItem changeInfo) {
         this.action = changeInfo.getChangeType();
         this.items = changeInfo.getChangedItems();
     }
