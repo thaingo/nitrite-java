@@ -26,6 +26,7 @@ import org.dizitart.no2.exceptions.ValidationException;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.text.MessageFormat;
 import java.util.*;
 
 import static org.dizitart.no2.NitriteId.createId;
@@ -252,7 +253,7 @@ public class Document extends LinkedHashMap<String, Object>
 
     @SuppressWarnings("unchecked")
     private Object getByEmbeddedKey(String embeddedKey) {
-        String regex = "\\" + NitriteContext.getFieldSeparator();
+        String regex = MessageFormat.format("\\{0}", NitriteContext.getFieldSeparator());
         String[] path = embeddedKey.split(regex);
         if (path.length < 1) {
             return null;
