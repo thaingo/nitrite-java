@@ -355,25 +355,31 @@ public class NitriteTest {
     }
 
     @Test
-    public void testIssue185() {
+    public void testIssue185() throws InterruptedException {
         final ObjectRepository<Receipt> repository = db.getRepository(Receipt.class);
         final Receipt receipt = new Receipt();
         receipt.clientRef = "111-11111";
         receipt.status = Receipt.Status.PREPARING;
+        CountDownLatch latch = new CountDownLatch(1);
 
         new Thread(() -> {
             for (int i = 0; i < 1000; ++i) {
-                repository.update(receipt, true);
                 try {
-                    Thread.sleep(50);
-                } catch (InterruptedException ignored) {
-                }
-                repository.remove(receipt);
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException ignored) {
+                    repository.update(receipt, true);
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException ignored) {
+                    }
+                    repository.remove(receipt);
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException ignored) {
+                    }
+                } catch (Throwable t) {
+                    t.printStackTrace();
                 }
             }
+            latch.countDown();
         }).start();
 
         for (int i = 0; i < 1000; ++i) {
@@ -383,6 +389,7 @@ public class NitriteTest {
             } catch (InterruptedException ignored) {
             }
         }
+        latch.await();
     }
 
     @Test
