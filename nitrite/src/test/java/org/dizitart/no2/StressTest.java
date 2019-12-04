@@ -31,7 +31,6 @@ import org.dizitart.no2.index.annotations.Index;
 import org.dizitart.no2.index.annotations.Indices;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
@@ -51,7 +50,6 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Anindya Chatterjee
  */
-@Ignore
 public class StressTest {
     private String fileName = getRandomTempDbFile();
     private Nitrite db;
@@ -79,7 +77,7 @@ public class StressTest {
         PodamFactory factory = new PodamFactoryImpl();
 
         long start= System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 100000; i++) {
             Document doc = new Document();
             doc.put("number", random.nextDouble());
             doc.put("name", factory.manufacturePojo(String.class));
@@ -101,6 +99,7 @@ public class StressTest {
         System.out.println("Records size calculated in " + ((System.currentTimeMillis() - start) / (1000)) + " seconds");
 
         int i = 0;
+        start= System.currentTimeMillis();
         for (Document element : cursor) {
             assertNotNull(element);
             i++;
@@ -108,6 +107,7 @@ public class StressTest {
                 System.out.println(i + " entries processed");
             }
         }
+        System.out.println("Iteration completed in " + ((System.currentTimeMillis() - start) / (1000)) + " seconds");
     }
 
     @After
