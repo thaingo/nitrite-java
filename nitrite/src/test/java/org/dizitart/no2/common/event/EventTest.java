@@ -41,9 +41,7 @@ import static org.awaitility.Awaitility.await;
 import static org.dizitart.no2.DbTestOperations.getRandomTempDbFile;
 import static org.dizitart.no2.filters.Filter.ALL;
 import static org.dizitart.no2.filters.Filter.eq;
-import static org.dizitart.no2.common.util.Iterables.firstOrNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * @author Anindya Chatterjee.
@@ -131,7 +129,7 @@ public class EventTest {
         employeeRepository.insert(employee);
         await().atMost(1, TimeUnit.SECONDS).until(listenerPrepared(ChangeType.INSERT));
         assertEquals(listener.getAction(), ChangeType.INSERT);
-        assertEquals(listener.getItems().size(), 1);
+        assertNotNull(listener.getItem());
     }
 
     @Test
@@ -142,16 +140,15 @@ public class EventTest {
         employeeRepository.insert(e);
         await().atMost(1, TimeUnit.SECONDS).until(listenerPrepared(ChangeType.INSERT));
         assertEquals(listener.getAction(), ChangeType.INSERT);
-        assertEquals(listener.getItems().size(), 1);
+        assertNotNull(listener.getItem());
 
         e.setAddress("xyz");
         employeeRepository.update(eq("empId", 1L), e);
         await().atMost(1, TimeUnit.SECONDS).until(listenerPrepared(ChangeType.UPDATE));
         assertEquals(listener.getAction(), ChangeType.UPDATE);
-        assertEquals(listener.getItems().size(), 1);
+        assertNotNull(listener.getItem());
 
-        ChangedItem item = firstOrNull(listener.getItems());
-        Employee byId = employeeRepository.getById(item.getDocument().getId());
+        Employee byId = employeeRepository.getById(listener.getItem().getId());
         assertEquals(byId.getAddress(), "xyz");
     }
 
@@ -164,7 +161,7 @@ public class EventTest {
         employeeRepository.update(eq("empId", 1), e, true);
         await().atMost(1, TimeUnit.SECONDS).until(listenerPrepared(ChangeType.INSERT));
         assertEquals(listener.getAction(), ChangeType.INSERT);
-        assertEquals(listener.getItems().size(), 1);
+        assertNotNull(listener.getItem());
     }
 
     @Test
@@ -181,7 +178,7 @@ public class EventTest {
 
         System.out.println("Action - " + listener.getAction());
         assertEquals(listener.getAction(), ChangeType.REMOVE);
-        assertEquals(listener.getItems().size(), 1);
+        assertNotNull(listener.getItem());
     }
 
     @Test
@@ -189,7 +186,7 @@ public class EventTest {
         employeeRepository.drop();
         await().atMost(1, TimeUnit.SECONDS).until(listenerPrepared(ChangeType.DROP));
         assertEquals(listener.getAction(), ChangeType.DROP);
-        assertNull(listener.getItems());
+        assertNull(listener.getItem());
     }
 
     @Test
@@ -200,7 +197,7 @@ public class EventTest {
 
         await().atMost(1, TimeUnit.SECONDS).until(listenerPrepared(ChangeType.CLOSE));
         assertEquals(listener.getAction(), ChangeType.CLOSE);
-        assertNull(listener.getItems());
+        assertNull(listener.getItem());
     }
 
     @Test
@@ -212,25 +209,15 @@ public class EventTest {
 
         employeeRepository.insert(e);
         assertNull(listener.getAction());
-        assertNull(listener.getItems());
+        assertNull(listener.getItem());
     }
 
     @Test
     public void testMultipleListeners() {
         final AtomicInteger count = new AtomicInteger(0);
-        employeeRepository.register(new ChangeListener() {
-            @Override
-            public void onChange(ChangeInfo changeInfo) {
-                count.incrementAndGet();
-            }
-        });
+        employeeRepository.register(changeInfo -> count.incrementAndGet());
 
-        employeeRepository.register(new ChangeListener() {
-            @Override
-            public void onChange(ChangeInfo changeInfo) {
-                count.incrementAndGet();
-            }
-        });
+        employeeRepository.register(changeInfo -> count.incrementAndGet());
 
         Employee e = new Employee();
         e.setEmpId(1L);
@@ -263,10 +250,6 @@ public class EventTest {
     }
 
     private Callable<Boolean> listenerPrepared(final ChangeType action) {
-        return new Callable<Boolean>() {
-            public Boolean call() throws Exception {
-                return listener.getAction() == action;
-            }
-        };
+        return () -> listener.getAction() == action;
     }
 }

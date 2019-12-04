@@ -18,26 +18,20 @@
 
 package org.dizitart.no2.common.event;
 
-import java.util.Collection;
+import lombok.Getter;
+import org.dizitart.no2.Document;
 
 /**
  * @author Anindya Chatterjee.
  */
+@Getter
 class SampleListener implements ChangeListener {
     private ChangeType action;
-    private Collection<ChangedItem> items;
-
-    ChangeType getAction() {
-        return action;
-    }
-
-    Collection<ChangedItem> getItems() {
-        return items;
-    }
+    private Document item;
 
     @Override
-    public void onChange(ChangedItem changeInfo) {
+    public void onChange(ChangedItem<Document> changeInfo) {
         this.action = changeInfo.getChangeType();
-        this.items = changeInfo.getChangedItems();
+        this.item = changeInfo.getItem();
     }
 }
