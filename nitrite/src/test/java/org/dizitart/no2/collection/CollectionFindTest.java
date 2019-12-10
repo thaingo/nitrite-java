@@ -736,4 +736,28 @@ public class CollectionFindTest extends BaseCollectionTest {
         Document byId = collection.getById(nitriteId);
         assertEquals(byId.get("lastName"), "ln1");
     }
+
+    @Test
+    public void testCollectionField() {
+        Document document = createDocument("name", "John")
+            .put("tags", new Document[] {
+                createDocument("type", "example").put("other", "value"),
+                createDocument("type", "another-example").put("other", "some-other-value")
+            });
+
+        NitriteCollection example = db.getCollection("example");
+        example.insert(document);
+
+        document = createDocument("name", "Jane")
+            .put("tags", new Document[] {
+                createDocument("type", "example2").put("other", "value2"),
+                createDocument("type", "another-example2").put("other", "some-other-value2")
+            });
+        example.insert(document);
+
+        DocumentCursor cursor = example.find(elemMatch("tags", eq("type", "example")));
+        for (Document doc : cursor) {
+            System.out.println(doc);
+        }
+    }
 }
